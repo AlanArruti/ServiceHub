@@ -8,12 +8,14 @@ public class Servicio {
     private double precio;
     private LocalDate fecha;
     private String categoria;
+    private Cliente cliente;
 
-    public Servicio(String nombre, String descripcion, double precio, String categoria) {
+    public Servicio(String nombre, String descripcion, double precio, String categoria, Cliente cliente) {
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.precio = precio;
         this.categoria = categoria;
+        this.cliente = cliente;
     }
 
     // Getters y Setters
@@ -31,6 +33,9 @@ public class Servicio {
 
     public LocalDate getFecha() { return fecha; }
     public void setFecha(LocalDate fecha) { this.fecha = fecha; }
+
+    public Cliente getCliente() { return cliente; }
+    public void setCliente(Cliente cliente) { this.cliente = cliente; }
 
     @Override
     public String toString() {
