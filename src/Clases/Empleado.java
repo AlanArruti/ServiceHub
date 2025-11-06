@@ -11,7 +11,9 @@ public class Empleado extends Persona{
     private List<String> herramientas;
     private double reputacion;
     private Map<LocalDate, Servicio> contrataciones = new HashMap<>();
-    private DisponibilidadEmpleado estado = DisponibilidadEmpleado.DISPONIBLE;
+    private DisponibilidadEmpleado estado;
+    private List<Calificacion> calificaciones;
+
 
     public Empleado(String nombre, String apellido, String email, String telefono) {
         super(nombre, apellido, email, telefono);
@@ -19,48 +21,18 @@ public class Empleado extends Persona{
         this.herramientas = new ArrayList<>();
         this.contrataciones = new HashMap<>();
         this.reputacion = 0.0;
+        this.calificaciones = new ArrayList<>();
     }
 
-    public Direccion getDireccion() {
-        return direccion;
-    }
+    public Direccion getDireccion() { return direccion; }
+    public void setDireccion(Direccion direccion) { this.direccion = direccion; }
 
-    public void setDireccion(Direccion direccion) {
-        this.direccion = direccion;
-    }
+    public List<String> getHerramientas() { return herramientas; }
+    public void setHerramientas(List<String> herramientas) { this.herramientas = herramientas; }
 
-    public List<String> getHerramientas() {
-        return herramientas;
-    }
-
-    public void setHerramientas(List<String> herramientas) {
-        this.herramientas = herramientas;
-    }
-
-    public double getReputacion() {
-        return reputacion;
-    }
-
-    public void setReputacion(double reputacion) {
-        if (reputacion < 0 || reputacion > 5) throw new IllegalArgumentException("La reputación debe ser entre 0 y 5");
-        this.reputacion = reputacion;
-    }
-
-    public Map<LocalDate, Servicio> getContrataciones() {
-        return contrataciones;
-    }
-
-    public void setContrataciones(Map<LocalDate, Servicio> contrataciones) {
-        this.contrataciones = contrataciones;
-    }
-
-    public DisponibilidadEmpleado getEstado() {
-        return estado;
-    }
-
-    public void setEstado(DisponibilidadEmpleado estado) {
-        this.estado = estado;
-    }
+    public DisponibilidadEmpleado getEstado() { return estado; }
+    public double getReputacion() { return reputacion; }
+    public List<Calificacion> getCalificaciones() { return calificaciones; }
 
     //Metodo para verificar disponibilidad
     public boolean estaDisponible(LocalDate fechaDeseada) {
@@ -89,6 +61,55 @@ public class Empleado extends Persona{
                 break;
             }
         }
+    }
+
+    //Metodo para actualizar las calificaciones
+    private void actualizarReputacion() {
+        if (calificaciones.isEmpty()) {
+            reputacion = 0.0;
+            return;
+        }
+        int suma = 0;
+        for (Calificacion v : calificaciones) {
+            suma += v.getPuntaje();
+        }
+        reputacion = (double) suma / calificaciones.size();
+    }
+
+
+    public void agregarValoracion(Cliente cliente, int puntaje, String comentario) {
+        boolean contratoPrevio = false;
+
+        //Recorremos todas las contrataciones para verificar si el cliente lo contrató
+        for (Servicio servicio : contrataciones.values()) {
+            if (servicio.getCliente().equals(cliente)) {
+                contratoPrevio = true;
+                break;
+            }
+        }
+
+        //Si no contrato no puede calificar
+        if (!contratoPrevio) {
+            System.out.println("El cliente " + cliente.getNombre() + " no ha contratado a este empleado.");
+            return;
+        }
+
+        if (puntaje < 1 || puntaje > 5) {
+            System.out.println("La calificación debe ser entre 1 y 5.");
+            return;
+        }
+
+        //agrego la calificacion y promedio las calificaciones
+        calificaciones.add(new Calificacion(cliente, this, puntaje, comentario));
+        actualizarReputacion();
+        System.out.println("Valoración registrada correctamente.");
+    }
+
+    public String toString() {
+        return "Empleado: " + getNombre() + " " + getApellido() +
+                " | Estado: " + estado +
+                " | Reputación: " + String.format("%.2f", reputacion) +
+                " | Servicios: " + contrataciones.size();
     }
 
     
