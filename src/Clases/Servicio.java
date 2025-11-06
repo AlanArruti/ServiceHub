@@ -5,7 +5,7 @@ import java.time.LocalDate;
 public class Servicio {
     private String nombre;
     private String descripcion;
-    private double precio;
+    private double precio; // aca hay que usar la interfaz
     private LocalDate fecha;
     private String categoria;
     private Cliente cliente;
