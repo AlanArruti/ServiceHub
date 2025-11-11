@@ -1,0 +1,167 @@
+package Clases;
+
+import Enums.Oficios;
+
+import java.util.Scanner;
+
+public class ElegirOficio {
+
+    public Oficios elegirOficio()
+    {
+        Scanner sc = new Scanner(System.in);
+        char seguir = 's';
+        int opcion;
+        Oficios oficio;
+
+        while (seguir == 's')
+        {
+
+            System.out.println("INGRESE EL OFICIO DEL QUE DESEA CONOCER MAS: ");
+            System.out.println("1 - PLOMERO. \n 2 - PINTOR. \n 3 - ELECTRICISTA. \n 4 - GASISTA. \n 5 - ALBAÑIL. \n 6 - CARPINTERO. \n 7 - HERRERO. \n 8 - JARDINERO.");
+
+            opcion = sc.nextInt();
+
+            switch (opcion)
+            {
+                case 1:{
+                    oficio = Oficios.PLOMERO;
+                    return oficio;
+                }
+                case 2:{
+                    oficio = Oficios.PINTOR;
+                    return oficio;
+                }
+                case 3:{
+                    oficio = Oficios.ELECTRICISTA;
+                    return oficio;
+                }
+                case 4:{
+                    oficio = Oficios.GASISTA;
+                    return oficio;
+                }
+                case 5:{
+                    oficio = Oficios.ALBAÑIL;
+                    return oficio;
+                }
+                case 6:{
+                    oficio = Oficios.CARPINTERO;
+                    return oficio;
+                }
+                case 7:{
+                    oficio = Oficios.HERRERO;
+                    return oficio;
+                }
+                case 8:{
+                    oficio = Oficios.JARDINERO;
+                    return oficio;
+                }
+                default:{
+                    System.out.println("OPCION INVALIDA");
+                }
+            }
+            System.out.println("¿Desea conocer informacion sobre otro oficio? (s/n) ");
+            sc.nextLine();
+            seguir = sc.next().charAt(0);
+        }
+    }
+
+
+    public void verInfoOficio()
+    {
+        Scanner sc = new Scanner(System.in);
+        Oficios oficio = elegirOficio();
+        char seguir = 's';
+
+        switch (oficio)
+        {
+            case PLOMERO:{
+                System.out.println("Se encarga de instalar, reparar y mantener cañerías de agua, desagües, sanitarios y griferías.");
+                System.out.println("\n¿Desea conocer a los empleados disponibles? (s/n)");
+                seguir = sc.next().charAt(0);
+
+                while (seguir == 's')
+                {
+                    // mostrar empleados disponibles, hay que terminarlo
+                }
+                break;
+            }
+            case PINTOR:{
+                System.out.println("Prepara superficies y aplica pintura o revestimientos en paredes, techos o muebles para proteger y decorar.");
+                System.out.println("\n¿Desea conocer a los empleados disponibles? (s/n)");
+                seguir = sc.next().charAt(0);
+
+                while (seguir == 's')
+                {
+                    // mostrar empleados disponibles y la info. hay que terminarlo
+                }
+                break;
+            }
+            case ELECTRICISTA:{
+                System.out.println("Instala, repara y mantiene sistemas eléctricos, enchufes, iluminación y cableado en hogares o empresas.");
+                System.out.println("\n¿Desea conocer a los empleados disponibles? (s/n)");
+                seguir = sc.next().charAt(0);
+
+                while (seguir == 's')
+                {
+                    // mostrar empleados disponibles y la info. hay que terminarlo
+                }
+                break;
+            }
+            case GASISTA:{
+                System.out.println("Coloca y repara cañerías de gas, calefones, cocinas y estufas, garantizando que funcionen de forma segura.");
+                System.out.println("\n¿Desea conocer a los empleados disponibles? (s/n)");
+                seguir = sc.next().charAt(0);
+
+                while (seguir == 's')
+                {
+                    // mostrar empleados disponibles y la info. hay que terminarlo
+                }
+                break;
+            }
+            case ALBAÑIL:{
+                System.out.println("Construye, repara y refacciona paredes, pisos, techos y estructuras con materiales como ladrillo, cemento o hormigón.");
+                System.out.println("\n¿Desea conocer a los empleados disponibles? (s/n)");
+                seguir = sc.next().charAt(0);
+
+                while (seguir == 's')
+                {
+                    // mostrar empleados disponibles y la info. hay que terminarlo
+                }
+                break;
+            }
+            case CARPINTERO:{
+                System.out.println("Diseña, fabrica y repara muebles o estructuras de madera (puertas, marcos, estanterías, etc.).");
+                System.out.println("\n¿Desea conocer a los empleados disponibles? (s/n)");
+                seguir = sc.next().charAt(0);
+
+                while (seguir == 's')
+                {
+                    // mostrar empleados disponibles y la info. hay que terminarlo
+                }
+                break;
+            }
+            case  HERRERO:{
+                System.out.println("Trabaja con metales, fabricando y reparando rejas, portones, estructuras y piezas metálicas.");
+                System.out.println("\n¿Desea conocer a los empleados disponibles? (s/n)");
+                seguir = sc.next().charAt(0);
+
+                while (seguir == 's')
+                {
+                    // mostrar empleados disponibles y la info. hay que terminarlo
+                }
+                break;
+            }
+            case JARDINERO:{
+                System.out.println("Se ocupa del mantenimiento de jardines: corta césped, poda plantas, siembra flores y cuida el riego.");
+                System.out.println("\n¿Desea conocer a los empleados disponibles? (s/n)");
+                seguir = sc.next().charAt(0);
+
+                while (seguir == 's')
+                {
+                    // mostrar empleados disponibles y la info. hay que terminarlo
+                }
+                break;
+            }
+        }
+    }
+}
