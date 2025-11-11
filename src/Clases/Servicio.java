@@ -3,24 +3,26 @@ package Clases;
 import java.time.LocalDate;
 
 public class Servicio {
-    private String nombre;
+
+    private String idServicio;
     private String descripcion;
     private double precio;
     private LocalDate fecha;
     private String categoria;
     private Cliente cliente;
 
-    public Servicio(String nombre, String descripcion, double precio, String categoria, Cliente cliente) {
-        this.nombre = nombre;
+    public Servicio(String idServicio, String descripcion, double precio, String categoria, Cliente cliente) {
+        this.idServicio = idServicio;
         this.descripcion = descripcion;
         this.precio = precio;
         this.categoria = categoria;
         this.cliente = cliente;
+        this.fecha = LocalDate.now();
     }
 
     // Getters y Setters
-    public String getNombre() { return nombre; }
-    public void setNombre(String nombre) { this.nombre = nombre; }
+    public String getIdServicio() { return idServicio; }
+    public void setIdServicio(String idServicio) { this.idServicio = idServicio; }
 
     public String getDescripcion() { return descripcion; }
     public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
@@ -40,9 +42,12 @@ public class Servicio {
     @Override
     public String toString() {
         return "Servicio{" +
-                "nombre='" + nombre + '\'' +
+                "ID='" + idServicio + '\'' +
+                ", descripcion='" + descripcion + '\'' +
                 ", categoria='" + categoria + '\'' +
-                ", precio=" + precio +
+                ", precio=" + precio + '\'' +
+                ",  fecha=" + fecha + '\'' +
+                ", cliente=" + (cliente != null ? cliente.getNombre() : "Sin asignar") +
                 '}';
     }
 }
