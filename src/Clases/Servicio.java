@@ -7,7 +7,7 @@ import java.time.LocalDate;
 public class Servicio implements Identificable {
 
     private static int contadorServicios = 1;
-    private String idServicio;
+    private final String idServicio;
     private String descripcion;
     private double precio;
     private LocalDate fecha;
@@ -23,24 +23,18 @@ public class Servicio implements Identificable {
         this.fecha = LocalDate.now();
     }
 
-    // Getters y Setters
+    // Getters
     public String getIdServicio() { return idServicio; }
-    public void setIdServicio(String idServicio) { this.idServicio = idServicio; }
 
     public String getDescripcion() { return descripcion; }
-    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
 
     public double getPrecio() { return precio; }
-    public void setPrecio(double precio) { this.precio = precio; }
 
     public String getCategoria() { return categoria; }
-    public void setCategoria(String categoria) { this.categoria = categoria; }
 
     public LocalDate getFecha() { return fecha; }
-    public void setFecha(LocalDate fecha) { this.fecha = fecha; }
 
     public Cliente getCliente() { return cliente; }
-    public void setCliente(Cliente cliente) { this.cliente = cliente; }
 
     //id autogenerado con srv antes del numero para saber que voy a buscar un servicio
     private String generarId() {
@@ -52,14 +46,28 @@ public class Servicio implements Identificable {
         return idServicio;
     }
 
+    // Hashcode/equals para el funcionamiento del contains
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Servicio)) return false;
+        Servicio s = (Servicio) o;
+        return idServicio.equals(s.idServicio);
+    }
+
+    @Override
+    public int hashCode() {
+        return idServicio.hashCode();
+    }
+
     @Override
     public String toString() {
         return "Servicio{" +
                 "ID='" + idServicio + '\'' +
                 ", descripcion='" + descripcion + '\'' +
                 ", categoria='" + categoria + '\'' +
-                ", precio=" + precio + '\'' +
-                ",  fecha=" + fecha + '\'' +
+                ", precio=" + precio +
+                ",  fecha=" + fecha +
                 ", cliente=" + (cliente != null ? cliente.getNombre() : "Sin asignar") +
                 '}';
     }

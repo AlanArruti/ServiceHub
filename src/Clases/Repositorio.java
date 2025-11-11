@@ -1,10 +1,12 @@
 package Clases;
 
 import Exceptions.PersonaNoEncontradaException;
+import Interfaces.Identificable;
 
 import java.util.*;
 
-public class Repositorio<T> {
+// clase generica que gestiona solo elementos identificables, aplicando genericidad y encapsulamiento.
+public class Repositorio<T extends Identificable> {
     private List<T> elementos;
 
     public Repositorio() {
@@ -31,19 +33,13 @@ public class Repositorio<T> {
         return elementos.size();
     }
 
-    public T buscarPorEmail(String email) throws PersonaNoEncontradaException {
+    public T buscarPorId(String id) throws PersonaNoEncontradaException {
         for (T elemento : elementos) {
-            // Verificamos si la clase tiene un metodo getEmail, para no hacer un extends Persona
-            try {
-                String mailElemento = (String) elemento.getClass().getMethod("getEmail").invoke(elemento);
-                if (mailElemento != null && mailElemento.equalsIgnoreCase(email)) {
-                    return elemento;
-                }
-            } catch (Exception e) {
-                // Si el tipo T no tiene getEmail, sigue con su funcionamiento
+            if (elemento.getIdentificador().equalsIgnoreCase(id)) {
+                return elemento;
             }
         }
-        throw new PersonaNoEncontradaException("No se encontró ninguna persona con el email: " + email);
+        throw new PersonaNoEncontradaException("No se encontró ningún elemento con el ID: " + id);
     }
 
     @Override

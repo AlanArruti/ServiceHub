@@ -3,7 +3,7 @@ package Clases;
 import Interfaces.Identificable;
 
 public abstract class Persona implements Identificable {
-    private int id;
+    private final int id;
     private static int contador = 1;
     private String dni;
     private String nombre;
@@ -19,7 +19,10 @@ public abstract class Persona implements Identificable {
         this.telefono = telefono;
     }
 
+    //Getters y setters
 
+    public int getId() { return id; }
+    public String getDni() { return dni; }
 
     public String getNombre() {
         return nombre;
@@ -57,7 +60,21 @@ public abstract class Persona implements Identificable {
         return String.valueOf(id); // Devuelve el ID numérico convertido a String
     }
 
-    
+    // Hashcode/equals para el funcionamiento del contains
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Persona)) return false;
+        Persona persona = (Persona) o;
+        return id == persona.id;
+    }
 
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(id);
+    }
 
+    public String toString() {
+        return nombre + " " + apellido + " (" + email + ")";
+    }
 }
