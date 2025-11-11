@@ -15,8 +15,8 @@ public class Empleado extends Persona{
     private List<Calificacion> calificaciones;
 
 
-    public Empleado(String nombre, String apellido, String email, String telefono) {
-        super(nombre, apellido, email, telefono);
+    public Empleado(String dni ,String nombre, String apellido, String email, String telefono) {
+        super(dni, nombre, apellido, email, telefono);
         this.estado = DisponibilidadEmpleado.DISPONIBLE;
         this.herramientas = new ArrayList<>();
         this.contrataciones = new HashMap<>();

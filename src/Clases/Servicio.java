@@ -1,9 +1,12 @@
 package Clases;
 
+import Interfaces.Identificable;
+
 import java.time.LocalDate;
 
-public class Servicio {
+public class Servicio implements Identificable {
 
+    private static int contadorServicios = 1;
     private String idServicio;
     private String descripcion;
     private double precio;
@@ -11,8 +14,8 @@ public class Servicio {
     private String categoria;
     private Cliente cliente;
 
-    public Servicio(String idServicio, String descripcion, double precio, String categoria, Cliente cliente) {
-        this.idServicio = idServicio;
+    public Servicio(String descripcion, double precio, String categoria, Cliente cliente) {
+        this.idServicio = generarId();
         this.descripcion = descripcion;
         this.precio = precio;
         this.categoria = categoria;
@@ -38,6 +41,16 @@ public class Servicio {
 
     public Cliente getCliente() { return cliente; }
     public void setCliente(Cliente cliente) { this.cliente = cliente; }
+
+    //id autogenerado con srv antes del numero para saber que voy a buscar un servicio
+    private String generarId() {
+        return "SRV" + contadorServicios++;
+    }
+
+    // implementacion de Identificable
+    public String getIdentificador() {
+        return idServicio;
+    }
 
     @Override
     public String toString() {

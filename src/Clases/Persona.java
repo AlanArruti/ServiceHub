@@ -1,28 +1,25 @@
 package Clases;
 
-public abstract class Persona {
+import Interfaces.Identificable;
+
+public abstract class Persona implements Identificable {
     private int id;
+    private static int contador = 1;
+    private String dni;
     private String nombre;
     private String apellido;
     private String email;
     private String telefono;
-    private static int contador = 0;
-
-    public Persona(String nombre, String apellido, String email, String telefono) {
+    public Persona(String dni ,String nombre, String apellido, String email, String telefono) {
         this.id = contador++;
+        this.dni = dni;
         this.nombre = nombre;
         this.apellido = apellido;
         this.email = email;
         this.telefono = telefono;
     }
 
-    public int getId() {
-        return id;
-    }
 
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getNombre() {
         return nombre;
@@ -54,6 +51,10 @@ public abstract class Persona {
 
     public void setTelefono(String telefono) {
         this.telefono = telefono;
+    }
+
+    public String getIdentificador() {
+        return String.valueOf(id); // Devuelve el ID numérico convertido a String
     }
 
     
