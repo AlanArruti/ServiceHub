@@ -5,13 +5,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GestorOficios {
-    private Generica<Empleado> empleados;
+    private Repositorio<Empleado> empleados;
     private List<Cliente> clientes;
     private List<Servicio> servicios;
 
 
     public GestorOficios() {
-        empleados = new Generica<>();
+        empleados = new Repositorio<>();
         clientes = new ArrayList<>();
         servicios = new ArrayList<>();
     }
@@ -27,7 +27,7 @@ public class GestorOficios {
     public List<Empleado> BuscarPorOficio(String categoria) {
         List<Empleado> resultado = new ArrayList<>();
 
-        for (Empleado e : empleados.Listar()) {
+        for (Empleado e : empleados.listar()) {
             if (e.estaDisponible(LocalDate.now()) && e.toString().contains(categoria)) {
                 resultado.add(e);
             }
@@ -36,7 +36,7 @@ public class GestorOficios {
     }
 
     public void mostrarEmpleados() {
-        for (Empleado e : empleados.Listar()) {
+        for (Empleado e : empleados.listar()) {
             System.out.println(e);
         }
     }

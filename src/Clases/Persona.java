@@ -1,28 +1,28 @@
 package Clases;
 
-public abstract class Persona {
-    private int id;
+import Interfaces.Identificable;
+
+public abstract class Persona implements Identificable {
+    private final int id;
+    private static int contador = 1;
+    private String dni;
     private String nombre;
     private String apellido;
     private String email;
     private String telefono;
-    private static int contador = 0;
-
-    public Persona(String nombre, String apellido, String email, String telefono) {
+    public Persona(String dni ,String nombre, String apellido, String email, String telefono) {
         this.id = contador++;
+        this.dni = dni;
         this.nombre = nombre;
         this.apellido = apellido;
         this.email = email;
         this.telefono = telefono;
     }
 
-    public int getId() {
-        return id;
-    }
+    //Getters y setters
 
-    public void setId(int id) {
-        this.id = id;
-    }
+    public int getId() { return id; }
+    public String getDni() { return dni; }
 
     public String getNombre() {
         return nombre;
@@ -56,7 +56,25 @@ public abstract class Persona {
         this.telefono = telefono;
     }
 
-    
+    public String getIdentificador() {
+        return String.valueOf(id); // Devuelve el ID numérico convertido a String
+    }
 
+    // Hashcode/equals para el funcionamiento del contains
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Persona)) return false;
+        Persona persona = (Persona) o;
+        return id == persona.id;
+    }
 
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(id);
+    }
+
+    public String toString() {
+        return nombre + " " + apellido + " (" + email + ")";
+    }
 }
