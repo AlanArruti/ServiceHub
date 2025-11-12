@@ -2,6 +2,7 @@ package Clases;
 
 import Enums.Oficios;
 
+import java.time.LocalDate;
 import java.util.Scanner;
 
 public class ElegirOficio {
@@ -68,9 +69,11 @@ public class ElegirOficio {
 
     public void verInfoOficio()
     {
+        GestorOficios g = new GestorOficios();
         Scanner sc = new Scanner(System.in);
         Oficios oficio = elegirOficio();
         char seguir = 's';
+        String dni, fecha;
 
         switch (oficio)
         {
@@ -81,7 +84,30 @@ public class ElegirOficio {
 
                 while (seguir == 's')
                 {
-                    // mostrar empleados disponibles, hay que terminarlo
+                    g.mostrarEmpleadoXcategoria("PLOMERO");
+
+                    while (seguir == 's')
+                    {
+                        System.out.println("Ingrese el DNI y la fecha de contratacion del Plomero para ver su disponibilidad. ");
+                        dni = sc.next();
+                        System.out.println("\n A LA HORA DE INGRESAR LA FECHA UTILICE EL FORMATO (yyyy/mm/dd) ----> Ejemplo: 2025-11-14");
+                        fecha = sc.next();
+
+                        boolean dispo = g.verSiEstaDisponible(dni, LocalDate.parse(fecha));
+
+                        if (dispo == true)
+                        {
+                            // viene el metodo de contratacion
+                            // es un quilombo con el servicio 
+                        }
+                        else
+                        {
+                            System.out.println("¿Desea volver a intentarlo con otra fecha? (s/n) ");
+                            seguir = sc.next().charAt(0);
+                        }
+                    }
+
+
                 }
                 break;
             }
@@ -92,7 +118,12 @@ public class ElegirOficio {
 
                 while (seguir == 's')
                 {
-                    // mostrar empleados disponibles y la info. hay que terminarlo
+                    g.mostrarEmpleadoXcategoria("PINTOR");
+                    System.out.println("Ingrese el DNI y la fecha de contratacion del Pintor para ver su disponibilidad. ");
+                    dni = sc.next();
+                    System.out.println("\n A LA HORA DE INGRESAR LA FECHA UTILICE EL FORMATO (yyyy/mm/dd) ----> Ejemplo: 2025-11-14");
+                    fecha = sc.next();
+                    g.verSiEstaDisponible(dni, LocalDate.parse(fecha));
                 }
                 break;
             }
@@ -103,7 +134,12 @@ public class ElegirOficio {
 
                 while (seguir == 's')
                 {
-                    // mostrar empleados disponibles y la info. hay que terminarlo
+                    g.mostrarEmpleadoXcategoria("ELECTRICISTA");
+                    System.out.println("Ingrese el DNI y la fecha de contratacion del Electricista para ver su disponibilidad. ");
+                    dni = sc.next();
+                    System.out.println("\n A LA HORA DE INGRESAR LA FECHA UTILICE EL FORMATO (yyyy/mm/dd) ----> Ejemplo: 2025-11-14");
+                    fecha = sc.next();
+                    g.verSiEstaDisponibilidad(dni, LocalDate.parse(fecha));
                 }
                 break;
             }
@@ -114,7 +150,12 @@ public class ElegirOficio {
 
                 while (seguir == 's')
                 {
-                    // mostrar empleados disponibles y la info. hay que terminarlo
+                    g.mostrarEmpleadoXcategoria("GASISTA");
+                    System.out.println("Ingrese el DNI y la fecha de contratacion del Gasista para ver su disponibilidad. ");
+                    dni = sc.next();
+                    System.out.println("\n A LA HORA DE INGRESAR LA FECHA UTILICE EL FORMATO (yyyy/mm/dd) ----> Ejemplo: 2025-11-14");
+                    fecha = sc.next();
+                    g.verSiEstaDisponibilidad(dni, LocalDate.parse(fecha));
                 }
                 break;
             }
@@ -125,7 +166,12 @@ public class ElegirOficio {
 
                 while (seguir == 's')
                 {
-                    // mostrar empleados disponibles y la info. hay que terminarlo
+                    g.mostrarEmpleadoXcategoria("ALBAÑIL");
+                    System.out.println("Ingrese el DNI y la fecha de contratacion del Albañil para ver su disponibilidad. ");
+                    dni = sc.next();
+                    System.out.println("\n A LA HORA DE INGRESAR LA FECHA UTILICE EL FORMATO (yyyy/mm/dd) ----> Ejemplo: 2025-11-14");
+                    fecha = sc.next();
+                    g.verSiEstaDisponibilidad(dni, LocalDate.parse(fecha));
                 }
                 break;
             }
@@ -136,7 +182,12 @@ public class ElegirOficio {
 
                 while (seguir == 's')
                 {
-                    // mostrar empleados disponibles y la info. hay que terminarlo
+                    g.mostrarEmpleadoXcategoria("CARPINTERO");
+                    System.out.println("Ingrese el DNI y la fecha de contratacion del Carpintero para ver su disponibilidad. ");
+                    dni = sc.next();
+                    System.out.println("\n A LA HORA DE INGRESAR LA FECHA UTILICE EL FORMATO (yyyy/mm/dd) ----> Ejemplo: 2025-11-14");
+                    fecha = sc.next();
+                    g.verSiEstaDisponibilidad(dni, LocalDate.parse(fecha));
                 }
                 break;
             }
@@ -147,7 +198,12 @@ public class ElegirOficio {
 
                 while (seguir == 's')
                 {
-                    // mostrar empleados disponibles y la info. hay que terminarlo
+                    g.mostrarEmpleadoXcategoria("HERRERO");
+                    System.out.println("Ingrese el DNI y la fecha de contratacion del Herrero para ver su disponibilidad. ");
+                    dni = sc.next();
+                    System.out.println("\n A LA HORA DE INGRESAR LA FECHA UTILICE EL FORMATO (yyyy/mm/dd) ----> Ejemplo: 2025-11-14");
+                    fecha = sc.next();
+                    g.verSiEstaDisponibilidad(dni, LocalDate.parse(fecha));
                 }
                 break;
             }
@@ -158,7 +214,12 @@ public class ElegirOficio {
 
                 while (seguir == 's')
                 {
-                    // mostrar empleados disponibles y la info. hay que terminarlo
+                    g.mostrarEmpleadoXcategoria("JARDINERO");
+                    System.out.println("Ingrese el DNI y la fecha de contratacion del Jardinero para ver su disponibilidad. ");
+                    dni = sc.next();
+                    System.out.println("\n A LA HORA DE INGRESAR LA FECHA UTILICE EL FORMATO (yyyy/mm/dd) ----> Ejemplo: 2025-11-14");
+                    fecha = sc.next();
+                    g.verSiEstaDisponibilidad(dni, LocalDate.parse(fecha));
                 }
                 break;
             }

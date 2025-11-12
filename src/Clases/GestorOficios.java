@@ -1,5 +1,7 @@
 package Clases;
 
+import Exceptions.PersonaNoEncontradaException;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,15 +26,26 @@ public class GestorOficios {
         clientes.add(c);
     }
 
-    public List<Empleado> BuscarPorOficio(String categoria) {
-        List<Empleado> resultado = new ArrayList<>();
 
+    // muestra los empleados por oficio segun el que pida el usuario
+    public void mostrarEmpleadoXcategoria(String categoria) {
         for (Empleado e : empleados.listar()) {
-            if (e.estaDisponible(LocalDate.now()) && e.toString().contains(categoria)) {
-                resultado.add(e);
+            if (e.getOficio().equals(categoria)) {
+                System.out.println(e.toString());
             }
         }
-        return resultado;
+    }
+
+    // ver la disponibilidad del empleado en la fecha que pide el usuario
+
+    public boolean verSiEstaDisponible(String dni, LocalDate fecha) {
+
+        for (Empleado e : empleados.listar()) {
+            if (e.getDni().equals(dni)) {
+                return e.estaDisponible(fecha); // la funcion devuelve true
+            }
+        }
+        return false;
     }
 
     public void mostrarEmpleados() {

@@ -1,10 +1,10 @@
 package Clases;
 
 import Enums.DisponibilidadEmpleado;
+import Enums.Oficios;
 import Exceptions.EmpleadoNoDisponibleException;
 import java.time.LocalDate;
 import java.util.*;
-
 
 public class Empleado extends Persona{
     private Direccion direccion;
@@ -13,16 +13,20 @@ public class Empleado extends Persona{
     private Map<LocalDate, Servicio> contrataciones = new HashMap<>();
     private DisponibilidadEmpleado estado;
     private List<Calificacion> calificaciones;
+    private Oficios oficio;
 
-
-    public Empleado(String dni ,String nombre, String apellido, String email, String telefono) {
+    public Empleado(String dni ,String nombre, String apellido, String email, String telefono, Oficios oficio) {
         super(dni, nombre, apellido, email, telefono);
         this.estado = DisponibilidadEmpleado.DISPONIBLE;
         this.herramientas = new ArrayList<>();
         this.contrataciones = new HashMap<>();
         this.reputacion = 0.0;
         this.calificaciones = new ArrayList<>();
+        this.oficio = oficio;
     }
+
+    public Oficios getOficio() {return oficio;}
+    public void setOficio(Oficios oficio) {this.oficio = oficio;}
 
     public Direccion getDireccion() { return direccion; }
     public void setDireccion(Direccion direccion) { this.direccion = direccion; }
@@ -33,6 +37,10 @@ public class Empleado extends Persona{
     public DisponibilidadEmpleado getEstado() { return estado; }
     public double getReputacion() { return reputacion; }
     public List<Calificacion> getCalificaciones() { return calificaciones; }
+
+
+
+    // utilizaciones del usuario
 
     //Metodo para verificar disponibilidad
     public boolean estaDisponible(LocalDate fechaDeseada) {
@@ -62,6 +70,8 @@ public class Empleado extends Persona{
             }
         }
     }
+
+    // utilizaciones del empleado
 
     //Metodo para actualizar las calificaciones
     private void actualizarReputacion() {
@@ -105,12 +115,17 @@ public class Empleado extends Persona{
         System.out.println("Valoración registrada correctamente.");
     }
 
-    public String toString() {
-        return "Empleado: " + getNombre() + " " + getApellido() +
-                " | Estado: " + estado +
-                " | Reputación: " + String.format("%.2f", reputacion) +
-                " | Servicios: " + contrataciones.size();
-    }
 
-    
+    @Override
+    public String toString() {
+        return "Empleado{" +
+                "direccion=" + direccion +
+                ", herramientas=" + herramientas +
+                ", reputacion=" + reputacion +
+                ", contrataciones=" + contrataciones +
+                ", estado=" + estado +
+                ", calificaciones=" + calificaciones +
+                ", oficio=" + oficio +
+                "} " + super.toString();
+    }
 }

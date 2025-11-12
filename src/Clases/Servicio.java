@@ -9,7 +9,7 @@ public class Servicio implements Identificable {
     private static int contadorServicios = 1;
     private final String idServicio;
     private String descripcion;
-    private double precio; // aca hay que usar la interfaz
+    private double precio;
     private LocalDate fecha;
     private String categoria;
     private Cliente cliente;
