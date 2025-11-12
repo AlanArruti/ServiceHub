@@ -3,10 +3,12 @@ package Clases;
 import Enums.DisponibilidadEmpleado;
 import Enums.Oficios;
 import Exceptions.EmpleadoNoDisponibleException;
+import Interfaces.Registrable;
+
 import java.time.LocalDate;
 import java.util.*;
 
-public class Empleado extends Persona{
+public class Empleado extends Persona implements Registrable {
     private Direccion direccion;
     private List<String> herramientas;
     private double reputacion;
@@ -14,6 +16,7 @@ public class Empleado extends Persona{
     private DisponibilidadEmpleado estado;
     private List<Calificacion> calificaciones;
     private Oficios oficio;
+    private List<String> historialAcciones;
 
     public Empleado(String dni ,String nombre, String apellido, String email, String telefono, Oficios oficio) {
         super(dni, nombre, apellido, email, telefono);
@@ -23,7 +26,9 @@ public class Empleado extends Persona{
         this.reputacion = 0.0;
         this.calificaciones = new ArrayList<>();
         this.oficio = oficio;
+        this.historialAcciones = new ArrayList<>();
     }
+
 
     public Oficios getOficio() {return oficio;}
     public void setOficio(Oficios oficio) {this.oficio = oficio;}
@@ -113,6 +118,19 @@ public class Empleado extends Persona{
         calificaciones.add(new Calificacion(cliente, this, puntaje, comentario));
         actualizarReputacion();
         System.out.println("Valoración registrada correctamente.");
+    }
+
+    //Historial de acciones del empleado(Contrataciones, calificaciones)
+    @Override
+    public void registrarAccion(String descripcion) {
+        historialAcciones.add(descripcion);
+    }
+
+    public void mostrarHistorial() {
+        System.out.println("Historial de "+getNombre()+ ":");
+        for (String accion : historialAcciones) {
+            System.out.println(" - "+accion);
+        }
     }
 
 
