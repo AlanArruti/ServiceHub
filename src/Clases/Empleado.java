@@ -30,6 +30,7 @@ public class Empleado extends Persona implements Registrable {
     }
 
 
+    // Getters y Setters
     public Oficios getOficio() {return oficio;}
     public void setOficio(Oficios oficio) {this.oficio = oficio;}
 
