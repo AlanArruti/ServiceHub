@@ -38,7 +38,7 @@ public class GestorOficios {
 
     // ver la disponibilidad del empleado en la fecha que pide el usuario
 
-    public boolean verSiEstaDisponible(String dni, LocalDate fecha) {
+    public boolean verSiEstaDisponible(String dni, LocalDate fecha){
 
         for (Empleado e : empleados.listar()) {
             if (e.getDni().equals(dni)) {
