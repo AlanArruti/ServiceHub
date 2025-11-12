@@ -139,7 +139,7 @@ public class ElegirOficio {
                     dni = sc.next();
                     System.out.println("\n A LA HORA DE INGRESAR LA FECHA UTILICE EL FORMATO (yyyy/mm/dd) ----> Ejemplo: 2025-11-14");
                     fecha = sc.next();
-                    g.verSiEstaDisponibilidad(dni, LocalDate.parse(fecha));
+                    g.verSiEstaDisponible(dni, LocalDate.parse(fecha));
                 }
                 break;
             }
@@ -155,7 +155,7 @@ public class ElegirOficio {
                     dni = sc.next();
                     System.out.println("\n A LA HORA DE INGRESAR LA FECHA UTILICE EL FORMATO (yyyy/mm/dd) ----> Ejemplo: 2025-11-14");
                     fecha = sc.next();
-                    g.verSiEstaDisponibilidad(dni, LocalDate.parse(fecha));
+                    g.verSiEstaDisponible(dni, LocalDate.parse(fecha));
                 }
                 break;
             }
@@ -171,7 +171,7 @@ public class ElegirOficio {
                     dni = sc.next();
                     System.out.println("\n A LA HORA DE INGRESAR LA FECHA UTILICE EL FORMATO (yyyy/mm/dd) ----> Ejemplo: 2025-11-14");
                     fecha = sc.next();
-                    g.verSiEstaDisponibilidad(dni, LocalDate.parse(fecha));
+                    g.verSiEstaDisponible(dni, LocalDate.parse(fecha));
                 }
                 break;
             }
@@ -187,7 +187,7 @@ public class ElegirOficio {
                     dni = sc.next();
                     System.out.println("\n A LA HORA DE INGRESAR LA FECHA UTILICE EL FORMATO (yyyy/mm/dd) ----> Ejemplo: 2025-11-14");
                     fecha = sc.next();
-                    g.verSiEstaDisponibilidad(dni, LocalDate.parse(fecha));
+                    g.verSiEstaDisponible(dni, LocalDate.parse(fecha));
                 }
                 break;
             }
@@ -203,7 +203,7 @@ public class ElegirOficio {
                     dni = sc.next();
                     System.out.println("\n A LA HORA DE INGRESAR LA FECHA UTILICE EL FORMATO (yyyy/mm/dd) ----> Ejemplo: 2025-11-14");
                     fecha = sc.next();
-                    g.verSiEstaDisponibilidad(dni, LocalDate.parse(fecha));
+                    g.verSiEstaDisponible(dni, LocalDate.parse(fecha));
                 }
                 break;
             }
@@ -219,7 +219,7 @@ public class ElegirOficio {
                     dni = sc.next();
                     System.out.println("\n A LA HORA DE INGRESAR LA FECHA UTILICE EL FORMATO (yyyy/mm/dd) ----> Ejemplo: 2025-11-14");
                     fecha = sc.next();
-                    g.verSiEstaDisponibilidad(dni, LocalDate.parse(fecha));
+                    g.verSiEstaDisponible(dni, LocalDate.parse(fecha));
                 }
                 break;
             }
