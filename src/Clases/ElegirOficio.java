@@ -1,13 +1,14 @@
 package Clases;
 
 import Enums.Oficios;
+import Exceptions.OficioNoDisponibleException;
 
 import java.time.LocalDate;
 import java.util.Scanner;
 
 public class ElegirOficio {
 
-    public Oficios elegirOficio()
+    public Oficios elegirOficio() throws OficioNoDisponibleException
     {
         Scanner sc = new Scanner(System.in);
         char seguir = 's';
@@ -64,6 +65,7 @@ public class ElegirOficio {
             sc.nextLine();
             seguir = sc.next().charAt(0);
         }
+        throw new OficioNoDisponibleException("No se seleccionó ningún oficio válido antes de salir del menú.");
     }
 
 
