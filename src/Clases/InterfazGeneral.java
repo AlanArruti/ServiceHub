@@ -4,28 +4,58 @@ import java.util.Scanner;
 
 public class InterfazGeneral {
 
-    public void interfazBinaria()
-    {
+    private GestorOficios gestor;
+    private InterfazCliente interCliente;
+    private InterfazEmpleado interEmpleado;
+
+    public InterfazGeneral(GestorOficios gestor) {
+        this.gestor = gestor;
+        this.interCliente = new InterfazCliente();
+        this.interEmpleado = new InterfazEmpleado();
+    }
+
+    public void iniciar() {
         Scanner sc = new Scanner(System.in);
         char seguir = 's';
-        int opcion;
-        InterfazCliente interCliente = new InterfazCliente();
-        InterfazEmpleado interEmpleado = new InterfazEmpleado();
+        while (seguir == 's') {
+            System.out.println("\n--- SERVICE HUB ---");
+            System.out.println("1 - Registrar cliente");
+            System.out.println("2 - Registrar empleado");
+            System.out.println("3 - Iniciar sesion cliente");
+            System.out.println("4 - Iniciar sesion empleado");
+            System.out.println("5 - Salir");
+            System.out.print("Opcion: ");
+            int opcion = sc.nextInt();
+            sc.nextLine();
 
-        while (seguir == 's')
-        {
-            System.out.println("¿Como desea registrarse?");
-            System.out.println("1 - Cliente. \n2 - Empleado. ");
-            opcion = sc.nextInt();
+            switch (opcion) {
+                case 1:
+                    interCliente.registrarCliente(gestor);
+                    break;
+                case 2:
+                    interEmpleado.registrarEmpleado(gestor);
+                    break;
+                case 3:
+                    Cliente cliente = interCliente.iniciarSesion(gestor);
+                    interCliente.menuCliente(cliente, gestor);
+                    break;
+                case 4:
+                    Empleado empleado = interEmpleado.iniciarSesion(gestor);
+                    interEmpleado.menuEmpleado(empleado, gestor);
+                    break;
+                case 5:
+                    seguir = 'n';
+                    break;
+                default:
+                    System.out.println("Opcion invalida.");
+            }
 
-            switch (opcion)
-            {
-                case 1:{
-                    // Cliente cliente1 = interCliente.crearUsuario();
-                   // interCliente.verInfoOficio(cliente1);
-                }
+            if (seguir == 's') {
+                System.out.print("Volver al menu principal? (s/n): ");
+                seguir = sc.nextLine().toLowerCase().charAt(0);
             }
         }
-
+        gestor.guardarTodo();
+        System.out.println("Gracias por usar ServiceHub.");
     }
 }

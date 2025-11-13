@@ -128,6 +128,22 @@ public class InterfazCliente {
         }
     }
 
+    public Cliente iniciarSesion(GestorOficios gestor) {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("\n--- LOGIN CLIENTE ---");
+        System.out.print("DNI: ");
+        String dni = sc.nextLine();
+        System.out.print("Password: ");
+        String password = sc.nextLine();
+
+        try {
+            return gestor.iniciarSesionCliente(dni, password);
+        } catch (PersonaNoEncontradaException e) {
+            System.out.println("ERROR: " + e.getMessage());
+            return null;
+        }
+    }
+
 
     public void menuCliente(Cliente cliente, GestorOficios gestor) {
         if (cliente == null) {
