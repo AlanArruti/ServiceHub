@@ -1,7 +1,9 @@
 package Clases;
 
 public class Direccion {
-    private String direccion;
+    private String ciudad;
+    private String calle;
+    private int numero;
 
     public Direccion(String direccion) {
         this.direccion = direccion;

@@ -7,6 +7,39 @@ import java.util.Scanner;
 
 public class InterfazCliente {
 
+    public void cargarDireccion(){
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("Ingrese la ciudad: ");
+        String ciudad = sc.nextLine();
+        System.out.println("Ingrese la calle: ");
+        String calle = sc.nextLine();
+        System.out.println("Ingrese el numero de la calle: ");
+        int numero = sc.nextInt();
+
+    }
+
+    public void crearUsuario(){
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("Ingrese el dni del usuario: ");
+        String dni = sc.nextLine();
+        System.out.println("Ingrese el nombre del usuario: ");
+        String nombre = sc.nextLine();
+        System.out.println("Ingrese el apellido del usuario: ");
+        String apellido = sc.nextLine();
+        System.out.println("Ingrese el email del usuario: ");
+        String email = sc.nextLine();
+        System.out.println("Ingrese el telefono del usuario: ");
+        String telefono = sc.nextLine();
+        System.out.println("Ingrese el direccion del usuario: ");
+
+
+
+
+
+    }
+
     public Oficios elegirOficio()
     {
         Scanner sc = new Scanner(System.in);
