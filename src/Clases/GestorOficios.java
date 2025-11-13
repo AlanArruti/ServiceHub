@@ -75,20 +75,25 @@ public class GestorOficios {
         }
 
         if (empleadoEncontrado == null) {
-            throw new PersonaNoEncontradaException("No se encontró empleado con DNI: " + dniEmpleado);
+            throw new PersonaNoEncontradaException(
+                    "No se encontró empleado con DNI: " + dniEmpleado
+            );
         }
 
-        // Intentar asignar servicio al empleado
+        // Intentar asignar servicio
         empleadoEncontrado.contratarServicio(servicio, fecha);
 
-        // Registrar acción interna del empleado
-        empleadoEncontrado.registrarAccion("Contratado para: " +
-                servicio.getDescripcion() + " (" + servicio.getIdServicio() + ") en " + fecha);
+        // Registrar acción interna
+        empleadoEncontrado.registrarAccion(
+                "Contratado para: " + servicio.getDescripcion() +
+                        " (" + servicio.getIdServicio() + ") en fecha " + fecha
+        );
 
         // Guardar contratación global
         contrataciones.add(servicio);
 
-        System.out.println("Contratación registrada con éxito para el empleado: " + empleadoEncontrado.getNombre());
+        System.out.println("Contratación registrada con éxito para el empleado: "
+                + empleadoEncontrado.getNombre());
     }
 
 

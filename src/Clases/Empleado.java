@@ -4,6 +4,7 @@ import Enums.DisponibilidadEmpleado;
 import Enums.Oficios;
 import Exceptions.EmpleadoNoDisponibleException;
 import Interfaces.Registrable;
+
 import java.time.LocalDate;
 import java.util.*;
 
@@ -11,20 +12,20 @@ public class Empleado extends Persona implements Registrable {
     private Direccion direccion;
     private List<String> herramientas;
     private double reputacion;
-    private Map<LocalDate, Contrataciones> contrataciones = new HashMap<>();
+    private Map<LocalDate, Contrataciones> contrataciones;
     private DisponibilidadEmpleado estado;
     private List<Calificacion> calificaciones;
     private Oficios oficio;
     private List<String> historialAcciones;
 
-    public Empleado(String dni ,String nombre, String apellido, String email, String telefono, Oficios oficio) {
+    public Empleado(String dni, String nombre, String apellido, String email, String telefono, Oficios oficio) {
         super(dni, nombre, apellido, email, telefono);
+        this.oficio = oficio;
         this.estado = DisponibilidadEmpleado.DISPONIBLE;
         this.herramientas = new ArrayList<>();
         this.contrataciones = new HashMap<>();
         this.reputacion = 0.0;
         this.calificaciones = new ArrayList<>();
-        this.oficio = oficio;
         this.historialAcciones = new ArrayList<>();
     }
 
@@ -50,17 +51,6 @@ public class Empleado extends Persona implements Registrable {
     //Metodo para verificar disponibilidad
     public boolean estaDisponible(LocalDate fechaDeseada) {
         return !contrataciones.containsKey(fechaDeseada);
-    }
-
-    //Metodo para contratar Servicio (contrataciones)
-    public void contratarServicio(Contrataciones contrataciones, LocalDate fechaDeseada) throws EmpleadoNoDisponibleException {
-        if (!estaDisponible(fechaDeseada)) {
-            throw new EmpleadoNoDisponibleException(
-                    "El empleado " + getNombre() + " ya tiene un servicio asignado el " + fechaDeseada
-            );
-        }
-        this.contrataciones.put(fechaDeseada, contrataciones);
-        estado = DisponibilidadEmpleado.OCUPADO;
     }
 
     //Metodo para actualizar disponibilidad
@@ -118,6 +108,21 @@ public class Empleado extends Persona implements Registrable {
         calificaciones.add(new Calificacion(cliente, this, puntaje, comentario));
         actualizarReputacion();
         System.out.println("Valoración registrada correctamente.");
+    }
+
+    public void contratarServicio(Contrataciones servicio, LocalDate fechaDeseada) throws EmpleadoNoDisponibleException {
+
+        if (!estaDisponible(fechaDeseada)) {
+            throw new EmpleadoNoDisponibleException(
+                    "El empleado " + getNombre() + " ya tiene un servicio asignado el " + fechaDeseada
+            );
+        }
+
+        contrataciones.put(fechaDeseada, servicio);
+        estado = DisponibilidadEmpleado.OCUPADO;
+
+        registrarAccion("Contratado para servicio '" + servicio.getDescripcion()
+                + "' (" + servicio.getIdServicio() + ") para la fecha " + fechaDeseada);
     }
 
     public void registrarAccion(String descripcion) {
