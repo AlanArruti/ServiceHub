@@ -19,7 +19,7 @@ public class Contrataciones implements Identificable {
         this.descripcion = descripcion;
         this.oficio = oficio;
         this.cliente = cliente;
-        this.fecha = LocalDate.now();
+        this.fecha = fecha;
         this.empleado = empleado;
     }
 
@@ -59,11 +59,6 @@ public class Contrataciones implements Identificable {
         return "SRV" + contadorServicios++;
     }
 
-    // implementacion de Identificable
-    public String getIdentificador() {
-        return idServicio;
-    }
-
     private void actualizarContador(String idExistente) {
         if (idExistente != null && idExistente.startsWith("SRV")) {
             try {
@@ -75,6 +70,11 @@ public class Contrataciones implements Identificable {
                 // dejo el contador como esta
             }
         }
+    }
+
+    // implementacion de Identificable
+    public String getIdentificador() {
+        return idServicio;
     }
 
     // Hashcode/equals para el funcionamiento del contains
