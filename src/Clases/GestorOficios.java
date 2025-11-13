@@ -61,8 +61,7 @@ public class GestorOficios {
         }
     }
 
-    public void contratarEmpleado(String dniEmpleado, Contrataciones servicio, LocalDate fecha)
-            throws PersonaNoEncontradaException, EmpleadoNoDisponibleException {
+    public void contratarEmpleado(String dniEmpleado, Contrataciones servicio, LocalDate fecha) throws PersonaNoEncontradaException, EmpleadoNoDisponibleException {
 
         Empleado empleadoEncontrado = null;
 
