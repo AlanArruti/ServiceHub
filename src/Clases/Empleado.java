@@ -3,6 +3,7 @@ package Clases;
 import Enums.DisponibilidadEmpleado;
 import Enums.Oficios;
 import Exceptions.EmpleadoNoDisponibleException;
+import Interfaces.Registrable;
 
 import java.time.LocalDate;
 import java.util.*;

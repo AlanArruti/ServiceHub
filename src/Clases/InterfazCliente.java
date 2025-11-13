@@ -7,7 +7,8 @@ import java.util.Scanner;
 
 public class InterfazCliente {
 
-    public void cargarDireccion(){
+    public Direccion cargarDireccion(){
+        Direccion direccion = new Direccion();
         Scanner sc = new Scanner(System.in);
 
         System.out.println("Ingrese la ciudad: ");
@@ -16,10 +17,11 @@ public class InterfazCliente {
         String calle = sc.nextLine();
         System.out.println("Ingrese el numero de la calle: ");
         int numero = sc.nextInt();
+        return direccion;
 
     }
 
-    public void crearUsuario(){
+    public Cliente crearUsuario(){
         Scanner sc = new Scanner(System.in);
 
         System.out.println("Ingrese el dni del usuario: ");
@@ -33,10 +35,10 @@ public class InterfazCliente {
         System.out.println("Ingrese el telefono del usuario: ");
         String telefono = sc.nextLine();
         System.out.println("Ingrese el direccion del usuario: ");
-
-
-
-
+        Direccion direccion = cargarDireccion();
+        
+        Cliente cliente1 = new Cliente(dni, nombre, apellido, email, telefono, direccion);
+        return cliente1;
 
     }
 
