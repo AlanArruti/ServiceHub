@@ -30,13 +30,6 @@ public class GestorOficios {
     public List<Cliente> getClientes() {
         return clientes;
     }
-    public void registrarEmpleado(Empleado e) {
-        empleados.agregar(e);
-    }
-    public void registrarCliente(Cliente c) {
-        clientes.add(c);
-    }
-
 
     public Cliente buscarClienteEnLista(String dni) throws PersonaNoEncontradaException{
         for (Cliente cliente : clientes) {
@@ -60,25 +53,33 @@ public class GestorOficios {
     }
 
     // ver la disponibilidad del empleado en la fecha que pide el usuario
-    public boolean verSiEstaDisponible(String dni, LocalDate fecha) {
+    public boolean verSiEstaDisponible(String dni, LocalDate fecha) throws PersonaNoEncontradaException {
         Empleado empleado = buscarEmpleadoEnLista(dni);
         return empleado != null && empleado.estaDisponible(fecha);
     }
 
     public void registrarEmpleado(Empleado empleado) {
         if (empleado == null) return;
-        if (buscarEmpleadoEnLista(empleado.getDni()) != null) {
-            System.out.println("El DNI ya está registrado como empleado.");
-            return;
+        try {
+            if (buscarEmpleadoEnLista(empleado.getDni()) != null) {
+                System.out.println("El DNI ya está registrado como empleado.");
+                return;
+            }
+        } catch (PersonaNoEncontradaException e) {
+            throw new RuntimeException(e);
         }
         empleados.agregar(empleado);
     }
 
     public void registrarCliente(Cliente cliente) {
         if (cliente == null) return;
-        if (buscarClienteEnLista(cliente.getDni()) != null) {
-            System.out.println("El DNI ya está registrado como cliente.");
-            return;
+        try {
+            if (buscarClienteEnLista(cliente.getDni()) != null) {
+                System.out.println("El DNI ya está registrado como cliente.");
+                return;
+            }
+        } catch (PersonaNoEncontradaException e) {
+            throw new RuntimeException(e);
         }
         clientes.add(cliente);
     }
