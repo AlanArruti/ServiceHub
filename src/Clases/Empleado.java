@@ -120,10 +120,6 @@ public class Empleado extends Persona implements Registrable {
         actualizarReputacion();
         System.out.println("Valoración registrada correctamente.");
     }
-<<<<<<< HEAD
-
-=======
->>>>>>> 9c14e5207d8c28f16c9b13ee987d3346fa11bcc9
 
     //Registrar accion del empleado
     @Override
