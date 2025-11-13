@@ -3,6 +3,7 @@ package Clases;
 import Exceptions.EmpleadoNoDisponibleException;
 import Exceptions.OficioNoDisponibleException;
 import Exceptions.PersonaNoEncontradaException;
+import Exceptions.FechaInvalidaException;
 import ManejoJSON.JSONUtiles;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -94,7 +95,7 @@ public class GestorOficios {
                 return;
             }
         } catch (PersonaNoEncontradaException e) {
-            throw new RuntimeException(e);
+            // No existe: se puede registrar
         }
         empleados.agregar(empleado);
     }
@@ -107,7 +108,7 @@ public class GestorOficios {
                 return;
             }
         } catch (PersonaNoEncontradaException e) {
-            throw new RuntimeException(e);
+            // No existe: se puede registrar
         }
         clientes.agregar(cliente);
     }
@@ -147,7 +148,14 @@ public class GestorOficios {
             return null;
         }
 
-        Oficio oficioEncontrado = buscarOficioPorNombre(nombre);
+        Oficio oficioEncontrado;
+        try {
+            oficioEncontrado = buscarOficioPorNombre(nombre);
+        } catch (OficioNoDisponibleException e) {
+            Oficio nuevoOficio = new Oficio(nombre.trim());
+            oficios.agregar(nuevoOficio);
+            return nuevoOficio;
+        }
 
         // Si no lo encuentro, lo creo y lo guardo
         if (oficioEncontrado == null) {
@@ -165,13 +173,16 @@ public class GestorOficios {
     public void contratarEmpleado(Empleado empleado, Contrataciones servicio, LocalDate fecha) throws EmpleadoNoDisponibleException {
         if (empleado == null || servicio == null || fecha == null) return;
 
+        if (fecha.isBefore(LocalDate.now())) {
+            throw new FechaInvalidaException("La fecha no puede ser anterior a hoy.");
+        }
+
         if (!empleado.estaDisponible(fecha)){
             throw new EmpleadoNoDisponibleException("El empleado no está disponible ese día.");
         }
         servicio.setEmpleado(empleado);
         servicio.setFecha(fecha);
         empleado.contratarServicio(servicio, fecha);
-        empleado.registrarAccion("Contratado para: " + servicio.getDescripcion() + " (" + servicio.getIdServicio() + ") en fecha " + fecha);
 
         contrataciones.agregar(servicio);
     }

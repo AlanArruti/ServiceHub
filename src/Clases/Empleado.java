@@ -131,7 +131,7 @@ public class Empleado extends Persona implements Registrable {
         contrataciones.put(fechaDeseada, servicio);
         estado = DisponibilidadEmpleado.OCUPADO;
 
-        registrarAccion("Contratado para servicio '" + servicio.getDescripcion() + "' (" + servicio.getIdServicio() + ") para la fecha " + fechaDeseada);
+        registrarAccion("Contratación " + servicio.getIdServicio() + ": '" + servicio.getDescripcion() + "' – Fecha " + fechaDeseada);
     }
 
     public void cargarContratacionGuardada(Contrataciones servicio, LocalDate fecha) {

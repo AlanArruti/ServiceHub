@@ -2,6 +2,8 @@ package Clases;
 
 import Exceptions.EmpleadoNoDisponibleException;
 import Exceptions.PersonaNoEncontradaException;
+import Exceptions.NumeroInvalidoException;
+import Exceptions.FechaInvalidaException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -9,15 +11,20 @@ import java.util.Scanner;
 
 public class InterfazCliente {
 
-    private Direccion cargarDireccion(Scanner sc) {
+    private Direccion cargarDireccion(Scanner sc) throws NumeroInvalidoException {
         System.out.println("\n--- DIRECCION ---");
         System.out.print("Ciudad: ");
         String ciudad = sc.nextLine();
         System.out.print("Calle: ");
         String calle = sc.nextLine();
         System.out.print("Numero: ");
-        int numero = sc.nextInt();
-        sc.nextLine();
+        String numeroTexto = sc.nextLine();
+        int numero;
+        try {
+            numero = Integer.parseInt(numeroTexto.trim());
+        } catch (NumberFormatException e) {
+            throw new NumeroInvalidoException("El número de la dirección es inválido.");
+        }
         return new Direccion(ciudad, calle, numero);
     }
 
@@ -38,6 +45,15 @@ public class InterfazCliente {
         System.out.println("\n--- REGISTRO CLIENTE ---");
         System.out.print("DNI: ");
         String dni = sc.nextLine();
+        try {
+            // Si ya existe, no continuar
+            if (gestor.buscarClienteEnLista(dni) != null) {
+                System.out.println("El DNI ya está registrado como cliente.");
+                return null;
+            }
+        } catch (PersonaNoEncontradaException e) {
+            // No existe: continuar con el registro
+        }
         System.out.print("Nombre: ");
         String nombre = sc.nextLine();
         System.out.print("Apellido: ");
@@ -48,7 +64,13 @@ public class InterfazCliente {
         String telefono = sc.nextLine();
         System.out.print("Password: ");
         String password = sc.nextLine();
-        Direccion direccion = cargarDireccion(sc);
+        Direccion direccion;
+        try {
+            direccion = cargarDireccion(sc);
+        } catch (NumeroInvalidoException e) {
+            System.out.println("ERROR: " + e.getMessage());
+            return null;
+        }
 
         Cliente cliente = new Cliente(dni, nombre, apellido, email, telefono, password, direccion);
         gestor.registrarCliente(cliente);
@@ -111,7 +133,7 @@ public class InterfazCliente {
         try {
             gestor.contratarEmpleado(empleadoSeleccionado, contratacion, fecha);
             System.out.println("Servicio contratado con exito.");
-        } catch (EmpleadoNoDisponibleException e) {
+        } catch (FechaInvalidaException | EmpleadoNoDisponibleException e) {
             System.out.println("ERROR: " + e.getMessage());
         }
     }
