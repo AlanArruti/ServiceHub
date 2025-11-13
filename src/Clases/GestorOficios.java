@@ -99,49 +99,9 @@ public class GestorOficios {
         return empleado;
     }
 
-    // muestra los empleados por oficio segun el que pida el usuario
-    // no anda mas hay q acomodarlo
-    public void mostrarEmpleadoXcategoria(String categoria) {
-        for (Empleado e : empleados.listar()) {
-            if (e.getOficio().name().equalsIgnoreCase(categoria.trim())) {
-                System.out.println(e);
-            }
-        }
-    }
-
-
-
-    // hace falta que se le mande el cliente porque contrataciones tiene como variable el cliente
-    public void contratarEmpleado(String dniEmpleado, Contrataciones servicio, LocalDate fecha)
-            throws PersonaNoEncontradaException, EmpleadoNoDisponibleException {
-
-        Empleado empleadoEncontrado = null;
-
-        // Buscar empleado por DNI
-        for (Empleado e : empleados.listar()) {
-            if (e.getDni().equalsIgnoreCase(dniEmpleado)) {
-                empleadoEncontrado = e;
-                break;
-            }
-        }
-
-        if (empleadoEncontrado == null) {
-            throw new PersonaNoEncontradaException("No se encontró empleado con DNI: " + dniEmpleado);
-        }
-
-        // Intentar asignar servicio
-        empleadoEncontrado.contratarServicio(servicio, fecha);
-
-        // Registrar acción interna
-        empleadoEncontrado.registrarAccion("Contratado para: " + servicio.getDescripcion() + " (" + servicio.getIdServicio() + ") en fecha " + fecha);
-
-        // Guardar contratación global
-        contrataciones.add(servicio);
-
-        System.out.println("Contratación registrada con éxito para el empleado: " + empleadoEncontrado.getNombre());
-    }
 
     public void mostrarOficios() {
+
         List<Oficio> lista = oficios.listar();
         if (lista.isEmpty()) {
             System.out.println("No hay oficios cargados.");
@@ -151,6 +111,41 @@ public class GestorOficios {
         for (Oficio oficio : lista) {
             System.out.println("- " + oficio.getNombre());
         }
+    }
+
+    public Oficio obtenerOcrearOficio(String nombre) {
+
+        if (nombre == null  nombre.trim().isEmpty()) {
+            return null;
+        }
+
+        Oficio oficioEncontrado = buscarOficioPorNombre(nombre);
+
+        // Si no lo encuentro, lo creo y lo guardo
+        if (oficioEncontrado == null) {
+            Oficio nuevoOficio = new Oficio(nombre.trim());
+            oficios.agregar(nuevoOficio);
+            return nuevoOficio;
+        }
+        else {
+            // Si ya existe, devuelvo el que encontré
+            return oficioEncontrado;
+        }
+    }
+
+
+    public void contratarEmpleado(Empleado empleado, Contrataciones servicio, LocalDate fecha) throws EmpleadoNoDisponibleException {
+        if (empleado == null || servicio == null || fecha == null) return;
+
+        if (!empleado.estaDisponible(fecha)){
+            throw new EmpleadoNoDisponibleException("El empleado no está disponible ese día.");
+        }
+        servicio.setEmpleado(empleado);
+        servicio.setFecha(fecha);
+        empleado.contratarServicio(servicio, fecha);
+        empleado.registrarAccion("Contratado para: " + servicio.getDescripcion() + " (" + servicio.getIdServicio() + ") en fecha " + fecha);
+
+        contrataciones.add(servicio);
     }
 
 
