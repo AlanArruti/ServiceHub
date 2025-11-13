@@ -33,12 +33,12 @@ public class GestorOficios {
         return clientes;
     }
 
-    public List<Empleado> getEmpleados() {
-        return empleados.listar();
+    public Repositorio<Empleado> getEmpleados() {
+        return empleados;
     }
 
-    public List<Oficio> getOficios() {
-        return oficios.listar();
+    public Repositorio<Oficio> getOficios() {
+        return oficios;
     }
 
     public Cliente buscarClienteEnLista(String dni) throws PersonaNoEncontradaException{
@@ -125,7 +125,7 @@ public class GestorOficios {
 
     public Oficio obtenerOcrearOficio(String nombre) {
 
-        if (nombre == null  nombre.trim().isEmpty()) {
+        if (nombre == null || nombre.trim().isEmpty()) {
             return null;
         }
 
@@ -158,7 +158,7 @@ public class GestorOficios {
         contrataciones.agregar(servicio);
     }
 
-    
+
 
 
 
