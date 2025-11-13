@@ -10,29 +10,39 @@ import java.util.List;
 
 public class GestorOficios {
     private Repositorio<Empleado> empleados;
-    private List<Cliente> clientes;
-    private List<Contrataciones> contrataciones;
+    private Repositorio<Cliente> clientes;
+    private Repositorio<Contrataciones> contrataciones;
     private Repositorio<Oficio> oficios;
 
     // Nuevos nombres de archivo (sin carpeta)
-    private String archivoOficios = "oficios.json";
-    private String archivoClientes = "clientes.json";
-    private String archivoEmpleados = "empleados.json";
-    private String archivoContrataciones = "contrataciones.json";
+    private static final String CARPETA_DATOS = "datos";
+    private static final String ARCHIVO_OFICIOS = CARPETA_DATOS + "oficios.json";
+    private static final String ARCHIVO_CLIENTES = CARPETA_DATOS + "clientes.json";
+    private static final String ARCHIVO_EMPLEADOS = CARPETA_DATOS + "empleados.json";
+    private static final String ARCHIVO_CONTRATACIONES = CARPETA_DATOS + "contrataciones.json";
 
     public GestorOficios() {
         empleados = new Repositorio<>();
-        clientes = new ArrayList<>();
-        contrataciones = new ArrayList<>();
+        clientes = new Repositorio<>();
+        contrataciones = new Repositorio<>();
         oficios = new Repositorio<>();
     }
 
-    public List<Cliente> getClientes() {
+
+    public Repositorio<Cliente> getClientes() {
         return clientes;
     }
 
+    public List<Empleado> getEmpleados() {
+        return empleados.listar();
+    }
+
+    public List<Oficio> getOficios() {
+        return oficios.listar();
+    }
+
     public Cliente buscarClienteEnLista(String dni) throws PersonaNoEncontradaException{
-        for (Cliente cliente : clientes) {
+        for (Cliente cliente : clientes.listar()) {
             if (cliente.getDni().equalsIgnoreCase(dni)) return cliente;
         }
         throw new PersonaNoEncontradaException("El DNI no se encuentra registrado como cliente.");
@@ -81,7 +91,7 @@ public class GestorOficios {
         } catch (PersonaNoEncontradaException e) {
             throw new RuntimeException(e);
         }
-        clientes.add(cliente);
+        clientes.agregar(cliente);
     }
 
 
@@ -145,8 +155,10 @@ public class GestorOficios {
         empleado.contratarServicio(servicio, fecha);
         empleado.registrarAccion("Contratado para: " + servicio.getDescripcion() + " (" + servicio.getIdServicio() + ") en fecha " + fecha);
 
-        contrataciones.add(servicio);
+        contrataciones.agregar(servicio);
     }
+
+    
 
 
 
