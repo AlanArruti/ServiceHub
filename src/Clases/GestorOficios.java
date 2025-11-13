@@ -80,7 +80,7 @@ public class GestorOficios {
         }
     }
 
-    
+
 
     // hace falta que se le mande el cliente porque contrataciones tiene como variable el cliente
     public void contratarEmpleado(String dniEmpleado, Contrataciones servicio, LocalDate fecha)
