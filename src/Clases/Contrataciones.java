@@ -1,6 +1,5 @@
 package Clases;
 
-import Enums.Oficios;
 import Interfaces.Identificable;
 
 import java.time.LocalDate;
