@@ -14,7 +14,7 @@ public class Contrataciones implements Identificable {
     private Cliente cliente;
     private Empleado empleado;
 
-    public Contrataciones(String descripcion, Oficio oficio, Cliente cliente, Empleado empleado) {
+    public Contrataciones(String descripcion, Oficio oficio, Cliente cliente, LocalDate empleado) {
         this.idServicio = generarId();
         this.descripcion = descripcion;
         this.oficio = oficio;

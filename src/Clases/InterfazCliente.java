@@ -30,7 +30,7 @@ public class InterfazCliente {
     }
 
     private void verOficios(GestorOficios gestor) {
-        //gestor.mostrarOficios();
+        gestor.mostrarOficios();
     }
 
     public Cliente registrarCliente(GestorOficios gestor) {
@@ -76,15 +76,14 @@ public class InterfazCliente {
 
         System.out.println("Empleados disponibles:");
         for (Empleado empleado : disponibles) {
-            System.out.println("- " + empleado.getNombre() + " " + empleado.getApellido() +
-                    " | DNI: " + empleado.getDni());
+            System.out.println("- " + empleado.getNombre() + " " + empleado.getApellido() + " | DNI: " + empleado.getDni());
         }
 
         System.out.print("Ingrese el DNI del empleado elegido: ");
         String dniEmpleado = sc.nextLine();
         Empleado empleadoSeleccionado;
         try {
-            empleadoSeleccionado = gestor.buscarEmpleadoPorDni(dniEmpleado);
+            empleadoSeleccionado = gestor.buscarEmpleadoEnLista(dniEmpleado);
         } catch (PersonaNoEncontradaException e) {
             System.out.println("ERROR: " + e.getMessage());
             return;
@@ -118,7 +117,7 @@ public class InterfazCliente {
     }
 
     private void mostrarContratacionesCliente(Cliente cliente, GestorOficios gestor) {
-        List<Contrataciones> lista = gestor.obtenerContratacionesDeCliente(cliente);
+        List<Contrataciones> lista = gestor.obtenerContratacionesDeCliente(cliente).listar();
         if (lista.isEmpty()) {
             System.out.println("No hay contrataciones registradas.");
             return;
@@ -134,8 +133,10 @@ public class InterfazCliente {
         if (cliente == null) {
             return;
         }
+
         Scanner sc = new Scanner(System.in);
         char seguir = 's';
+
         while (seguir == 's') {
             System.out.println("\n--- MENU CLIENTE ---");
             System.out.println("1 - Ver oficios");
@@ -147,20 +148,26 @@ public class InterfazCliente {
             sc.nextLine();
 
             switch (opcion) {
-                case 1:
+                case 1:{
                     verOficios(gestor);
                     break;
-                case 2:
+                }
+                case 2:{
                     contratarServicio(cliente, gestor);
                     break;
-                case 3:
+                }
+                case 3:{
                     mostrarContratacionesCliente(cliente, gestor);
                     break;
-                case 4:
+                }
+                case 4:{
                     seguir = 'n';
                     break;
-                default:
+                }
+                default:{
                     System.out.println("Opcion invalida.");
+                }
+
             }
 
             if (seguir == 's') {

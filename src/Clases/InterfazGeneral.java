@@ -21,7 +21,7 @@ public class InterfazGeneral {
             switch (opcion)
             {
                 case 1:{
-                    Cliente cliente1 = interCliente.crearUsuario();
+                    // Cliente cliente1 = interCliente.crearUsuario();
                    // interCliente.verInfoOficio(cliente1);
                 }
             }
