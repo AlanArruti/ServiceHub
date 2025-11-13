@@ -1,6 +1,7 @@
 package Clases;
 
 import Enums.Oficios;
+import Exceptions.PersonaNoEncontradaException;
 
 import java.time.LocalDate;
 import java.util.Scanner;
@@ -10,6 +11,7 @@ public class InterfazCliente {
     public Direccion cargarDireccion(){
         Scanner sc = new Scanner(System.in);
 
+        System.out.println("\n---DATOS DIRECCION---\n");
         System.out.println("Ingrese la ciudad: ");
         String ciudad = sc.nextLine();
         System.out.println("Ingrese la calle: ");
@@ -23,7 +25,9 @@ public class InterfazCliente {
 
     public Cliente crearUsuario(){
         Scanner sc = new Scanner(System.in);
+        GestorOficios g  = new GestorOficios();
 
+        System.out.println("---DATOS USUARIO---\n");
         System.out.println("Ingrese el dni del usuario: ");
         String dni = sc.nextLine();
         System.out.println("Ingrese el nombre del usuario: ");
@@ -38,6 +42,7 @@ public class InterfazCliente {
         Direccion direccion = cargarDireccion();
 
         Cliente cliente1 = new Cliente(dni, nombre, apellido, email, telefono, direccion);
+        g.registrarCliente(cliente1);
         return cliente1;
 
     }
@@ -102,7 +107,7 @@ public class InterfazCliente {
     }
 
 
-    public void verInfoOficio()
+    public void verInfoOficio(Cliente cliente)
     {
         GestorOficios g = new GestorOficios();
 
@@ -126,7 +131,14 @@ public class InterfazCliente {
                     {
                         System.out.println("Ingrese el DNI y la fecha de contratacion del Plomero para ver su disponibilidad. ");
                         dni = sc.next();
-                        // aca hay que tirar exception de si no existe el dni
+                        try
+                        {
+                            g.buscarEmpleado(dni);
+                        }
+                        catch (PersonaNoEncontradaException e)
+                        {
+                            e.getMessage();
+                        }
 
                         System.out.println("\n A LA HORA DE INGRESAR LA FECHA UTILICE EL FORMATO (yyyy/mm/dd) ----> Ejemplo: 2025-11-14");
                         fecha = sc.next();
@@ -135,6 +147,7 @@ public class InterfazCliente {
 
                         if (dispo == true)
                         {
+                            // PARA CONTRATAR HAY QUE MANDAR EL CLIENTE 
                             // viene el metodo de contratacion
                             // es un quilombo con el servicio 
                         }

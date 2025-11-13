@@ -61,6 +61,16 @@ public class GestorOficios {
         }
     }
 
+    public boolean buscarEmpleado(String dni) throws PersonaNoEncontradaException {
+        for (Empleado e : empleados.listar()) {
+            if (e.getDni().equals(dni)) {
+                return true;
+            }
+        }
+        throw new PersonaNoEncontradaException("El DNI no se encuentra registrado como empleado.");
+    }
+
+    // hace falta que se le mande el cliente porque contrataciones tiene como variable el cliente
     public void contratarEmpleado(String dniEmpleado, Contrataciones servicio, LocalDate fecha)
             throws PersonaNoEncontradaException, EmpleadoNoDisponibleException {
 
@@ -75,25 +85,19 @@ public class GestorOficios {
         }
 
         if (empleadoEncontrado == null) {
-            throw new PersonaNoEncontradaException(
-                    "No se encontró empleado con DNI: " + dniEmpleado
-            );
+            throw new PersonaNoEncontradaException("No se encontró empleado con DNI: " + dniEmpleado);
         }
 
         // Intentar asignar servicio
         empleadoEncontrado.contratarServicio(servicio, fecha);
 
         // Registrar acción interna
-        empleadoEncontrado.registrarAccion(
-                "Contratado para: " + servicio.getDescripcion() +
-                        " (" + servicio.getIdServicio() + ") en fecha " + fecha
-        );
+        empleadoEncontrado.registrarAccion("Contratado para: " + servicio.getDescripcion() + " (" + servicio.getIdServicio() + ") en fecha " + fecha);
 
         // Guardar contratación global
         contrataciones.add(servicio);
 
-        System.out.println("Contratación registrada con éxito para el empleado: "
-                + empleadoEncontrado.getNombre());
+        System.out.println("Contratación registrada con éxito para el empleado: " + empleadoEncontrado.getNombre());
     }
 
 
