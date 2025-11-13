@@ -1,6 +1,7 @@
 package Clases;
 
 import Exceptions.EmpleadoNoDisponibleException;
+import Exceptions.OficioNoDisponibleException;
 import Exceptions.PersonaNoEncontradaException;
 
 import java.time.LocalDate;
@@ -11,37 +12,54 @@ public class GestorOficios {
     private Repositorio<Empleado> empleados;
     private List<Cliente> clientes;
     private List<Contrataciones> contrataciones;
+    private Repositorio<Oficio> oficios;
 
+    // Nuevos nombres de archivo (sin carpeta)
+    private String archivoOficios = "oficios.json";
+    private String archivoClientes = "clientes.json";
+    private String archivoEmpleados = "empleados.json";
+    private String archivoContrataciones = "contrataciones.json";
 
     public GestorOficios() {
         empleados = new Repositorio<>();
         clientes = new ArrayList<>();
         contrataciones = new ArrayList<>();
+        oficios = new Repositorio<>();
     }
 
     public List<Cliente> getClientes() {
         return clientes;
     }
-
     public void registrarEmpleado(Empleado e) {
         empleados.agregar(e);
     }
-
     public void registrarCliente(Cliente c) {
         clientes.add(c);
     }
 
-    // muestra los empleados por oficio segun el que pida el usuario
-    public void mostrarEmpleadoXcategoria(String categoria) {
-        for (Empleado e : empleados.listar()) {
-            if (e.getOficio().name().equalsIgnoreCase(categoria.trim())) {
-                System.out.println(e);
-            }
+
+    public Cliente buscarClienteEnLista(String dni) throws PersonaNoEncontradaException{
+        for (Cliente cliente : clientes) {
+            if (cliente.getDni().equalsIgnoreCase(dni)) return cliente;
         }
+        throw new PersonaNoEncontradaException("El DNI no se encuentra registrado como cliente.");
+    }
+
+    public Empleado buscarEmpleadoEnLista(String dni) throws PersonaNoEncontradaException {
+        for (Empleado empleado : empleados.listar()) {
+            if (empleado.getDni().equalsIgnoreCase(dni)) return empleado;
+        }
+        throw new PersonaNoEncontradaException("El DNI no se encuentra registrado como empleado.");
+    }
+
+    public Oficio buscarOficioPorNombre(String nombre) throws OficioNoDisponibleException {
+        for (Oficio oficio : oficios.listar()) {
+            if (oficio.coincideConNombre(nombre)) return oficio;
+        }
+        throw new OficioNoDisponibleException("El oficio que busca no se encuentra disponible.");
     }
 
     // ver la disponibilidad del empleado en la fecha que pide el usuario
-
     public boolean verSiEstaDisponible(String dni, LocalDate fecha){
 
         for (Empleado e : empleados.listar()) {
@@ -52,36 +70,17 @@ public class GestorOficios {
         return false;
     }
 
-    public void mostrarEmpleados() {
+    // muestra los empleados por oficio segun el que pida el usuario
+    // no anda mas hay q acomodarlo
+    public void mostrarEmpleadoXcategoria(String categoria) {
         for (Empleado e : empleados.listar()) {
-            System.out.println(e);
-        }
-    }
-
-    public void mostrarClientes() {
-        for (Cliente c : clientes) {
-            System.out.println(c);
-        }
-    }
-
-    public boolean buscarEmpleado(String dni) throws PersonaNoEncontradaException {
-        for (Empleado e : empleados.listar()) {
-            if (e.getDni().equals(dni)) {
-                return true;
+            if (e.getOficio().name().equalsIgnoreCase(categoria.trim())) {
+                System.out.println(e);
             }
         }
-        throw new PersonaNoEncontradaException("El DNI no se encuentra registrado como empleado.");
     }
 
-
-    public Cliente buscarClientePorDni(String dni) throws PersonaNoEncontradaException {
-        for (Cliente c : clientes) {
-            if (c.getDni().equalsIgnoreCase(dni)) {
-                return c;
-            }
-        }
-        throw new PersonaNoEncontradaException("No se encontró cliente con DNI: " + dni);
-    }
+    
 
     // hace falta que se le mande el cliente porque contrataciones tiene como variable el cliente
     public void contratarEmpleado(String dniEmpleado, Contrataciones servicio, LocalDate fecha)
