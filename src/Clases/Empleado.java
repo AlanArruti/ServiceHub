@@ -120,18 +120,18 @@ public class Empleado extends Persona implements Registrable {
         System.out.println("Valoración registrada correctamente.");
     }
 
-    //Registrar accion del empleado
-    @Override
     public void registrarAccion(String descripcion) {
-        historialAcciones.add(descripcion);
+        historialAcciones.add(LocalDate.now() + ": " + descripcion);
     }
 
     public void mostrarHistorial() {
-        System.out.println("Historial de "+getNombre()+ ":");
+        System.out.println("Historial de acciones de: " + getNombre());
         for (String accion : historialAcciones) {
-            System.out.println(" - "+accion);
+            System.out.println(" - " + accion);
         }
     }
+    
+
 
     @Override
     public String toString() {
