@@ -1,5 +1,8 @@
 package Clases;
 
+import Exceptions.EmpleadoNoDisponibleException;
+import Exceptions.PersonaNoEncontradaException;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,8 +31,8 @@ public class GestorOficios {
     // muestra los empleados por oficio segun el que pida el usuario
     public void mostrarEmpleadoXcategoria(String categoria) {
         for (Empleado e : empleados.listar()) {
-            if (e.getOficio().equals(categoria)) {
-                System.out.println(e.toString());
+            if (e.getOficio().name().equalsIgnoreCase(categoria)) {
+                System.out.println(e);
             }
         }
     }
@@ -57,4 +60,37 @@ public class GestorOficios {
             System.out.println(c);
         }
     }
+
+    public void contratarEmpleado(String dniEmpleado, Contrataciones servicio, LocalDate fecha)
+            throws PersonaNoEncontradaException, EmpleadoNoDisponibleException {
+
+        Empleado empleadoEncontrado = null;
+
+        // Buscar empleado por DNI
+        for (Empleado e : empleados.listar()) {
+            if (e.getDni().equalsIgnoreCase(dniEmpleado)) {
+                empleadoEncontrado = e;
+                break;
+            }
+        }
+
+        if (empleadoEncontrado == null) {
+            throw new PersonaNoEncontradaException("No se encontró empleado con DNI: " + dniEmpleado);
+        }
+
+        // Intentar asignar servicio al empleado
+        empleadoEncontrado.contratarServicio(servicio, fecha);
+
+        // Registrar acción interna del empleado
+        empleadoEncontrado.registrarAccion("Contratado para: " +
+                servicio.getDescripcion() + " (" + servicio.getIdServicio() + ") en " + fecha);
+
+        // Guardar contratación global
+        contrataciones.add(servicio);
+
+        System.out.println("Contratación registrada con éxito para el empleado: " + empleadoEncontrado.getNombre());
+    }
+
+
+
 }
