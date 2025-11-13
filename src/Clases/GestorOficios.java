@@ -98,6 +98,7 @@ public class GestorOficios {
             // No existe: se puede registrar
         }
         empleados.agregar(empleado);
+        guardarEmpleados();
     }
 
     public void registrarCliente(Cliente cliente) {
@@ -111,6 +112,7 @@ public class GestorOficios {
             // No existe: se puede registrar
         }
         clientes.agregar(cliente);
+        guardarClientes();
     }
 
 
@@ -154,6 +156,7 @@ public class GestorOficios {
         } catch (OficioNoDisponibleException e) {
             Oficio nuevoOficio = new Oficio(nombre.trim());
             oficios.agregar(nuevoOficio);
+            guardarOficios();
             return nuevoOficio;
         }
 
@@ -185,6 +188,8 @@ public class GestorOficios {
         empleado.contratarServicio(servicio, fecha);
 
         contrataciones.agregar(servicio);
+        guardarContrataciones();
+        guardarEmpleados();
     }
 
     public List<Contrataciones> obtenerContratacionesDeCliente(Cliente cliente) {
