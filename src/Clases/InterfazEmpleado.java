@@ -92,7 +92,7 @@ public class InterfazEmpleado {
     }
 
     private void mostrarAgenda(Empleado empleado, GestorOficios gestor) {
-        List<Contrataciones> lista = gestor.obtenerContratacionesDeEmpleado(empleado).listar();
+        List<Contrataciones> lista = gestor.obtenerContratacionesDeEmpleado(empleado);
         if (lista.isEmpty()) {
             System.out.println("No tiene servicios asignados.");
             return;

@@ -125,16 +125,18 @@ public class Empleado extends Persona implements Registrable {
     public void contratarServicio(Contrataciones servicio, LocalDate fechaDeseada) throws EmpleadoNoDisponibleException {
 
         if (!estaDisponible(fechaDeseada)) {
-            throw new EmpleadoNoDisponibleException(
-                    "El empleado " + getNombre() + " ya tiene un servicio asignado el " + fechaDeseada
-            );
+            throw new EmpleadoNoDisponibleException("El empleado " + getNombre() + " ya tiene un servicio asignado el " + fechaDeseada);
         }
 
         contrataciones.put(fechaDeseada, servicio);
         estado = DisponibilidadEmpleado.OCUPADO;
 
-        registrarAccion("Contratado para servicio '" + servicio.getDescripcion()
-                + "' (" + servicio.getIdServicio() + ") para la fecha " + fechaDeseada);
+        registrarAccion("Contratado para servicio '" + servicio.getDescripcion() + "' (" + servicio.getIdServicio() + ") para la fecha " + fechaDeseada);
+    }
+
+    public void cargarContratacionGuardada(Contrataciones servicio, LocalDate fecha) {
+        contrataciones.put(fecha, servicio);
+        actualizarDisponibilidad();
     }
 
     public void registrarAccion(String descripcion) {
@@ -147,19 +149,18 @@ public class Empleado extends Persona implements Registrable {
             System.out.println(" - " + accion);
         }
     }
-    
 
 
     @Override
     public String toString() {
         return "Empleado{" +
                 "direccion=" + direccion +
-                ", herramientas=" + herramientas +
                 ", reputacion=" + reputacion +
                 ", contrataciones=" + contrataciones +
                 ", estado=" + estado +
                 ", calificaciones=" + calificaciones +
                 ", oficio=" + oficio +
-                "} " + super.toString();
+                ", historialAcciones=" + historialAcciones +
+                '}';
     }
 }

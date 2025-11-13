@@ -117,7 +117,7 @@ public class InterfazCliente {
     }
 
     private void mostrarContratacionesCliente(Cliente cliente, GestorOficios gestor) {
-        List<Contrataciones> lista = gestor.obtenerContratacionesDeCliente(cliente).listar();
+        List<Contrataciones> lista = gestor.obtenerContratacionesDeCliente(cliente);
         if (lista.isEmpty()) {
             System.out.println("No hay contrataciones registradas.");
             return;

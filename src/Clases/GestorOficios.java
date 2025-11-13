@@ -3,6 +3,9 @@ package Clases;
 import Exceptions.EmpleadoNoDisponibleException;
 import Exceptions.OficioNoDisponibleException;
 import Exceptions.PersonaNoEncontradaException;
+import ManejoJSON.JSONUtiles;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -62,6 +65,20 @@ public class GestorOficios {
         }
         throw new OficioNoDisponibleException("El oficio que busca no se encuentra disponible.");
     }
+
+    private Oficio buscarOficioPorId(String id) {
+        if (id == null || id.isEmpty()) {
+            return null;
+        }
+        for (Oficio oficio : oficios.listar()) {
+            if (oficio.getId().equalsIgnoreCase(id)) {
+                return oficio;
+            }
+        }
+        return null;
+    }
+
+
 
     // ver la disponibilidad del empleado en la fecha que pide el usuario
     public boolean verSiEstaDisponible(String dni, LocalDate fecha) throws PersonaNoEncontradaException {
@@ -159,6 +176,49 @@ public class GestorOficios {
         contrataciones.agregar(servicio);
     }
 
+    public List<Contrataciones> obtenerContratacionesDeCliente(Cliente cliente) {
+        List<Contrataciones> resultado = new ArrayList<>();
+        if (cliente == null) {
+            return resultado;
+        }
+        for (Contrataciones contratacion : contrataciones.listar()) {
+            if (contratacion.getCliente() != null &&
+                    contratacion.getCliente().getDni().equalsIgnoreCase(cliente.getDni())) {
+                resultado.add(contratacion);
+            }
+        }
+        return resultado;
+    }
+
+    public List<Contrataciones> obtenerContratacionesDeEmpleado(Empleado empleado) {
+        List<Contrataciones> resultado = new ArrayList<>();
+        if (empleado == null) {
+            return resultado;
+        }
+        for (Contrataciones contratacion : contrataciones.listar()) {
+            if (contratacion.getEmpleado() != null &&
+                    contratacion.getEmpleado().getDni().equalsIgnoreCase(empleado.getDni())) {
+                resultado.add(contratacion);
+            }
+        }
+        return resultado;
+    }
+    public Contrataciones crearContratacion(Cliente cliente, Oficio oficio, String descripcion, LocalDate fecha) {
+        return new Contrataciones(descripcion, oficio, cliente, fecha);
+    }
+    public List<Empleado> obtenerEmpleadosPorOficio(Oficio oficio) {
+        List<Empleado> resultado = new ArrayList<>();
+        if (oficio == null) {
+            return resultado;
+        }
+        for (Empleado empleado : empleados.listar()) {
+            if (empleado.getOficio() != null && empleado.getOficio().equals(oficio)) {
+                resultado.add(empleado);
+            }
+        }
+        return resultado;
+    }
+
     public void guardarOficios() {
         JSONArray array = new JSONArray();
         for (Oficio oficio : oficios.listar()) {
@@ -167,12 +227,12 @@ public class GestorOficios {
             objeto.put("nombre", oficio.getNombre());
             array.put(objeto);
         }
-        JSONUtiles.cargarJSON(array, archivoOficios);
+        JSONUtiles.cargarJSON(array, ARCHIVO_OFICIOS);
     }
 
     public void guardarClientes() {
         JSONArray array = new JSONArray();
-        for (Cliente cliente : clientes) {
+        for (Cliente cliente : clientes.listar()) {
             JSONObject objeto = new JSONObject();
             objeto.put("dni", cliente.getDni());
             objeto.put("nombre", cliente.getNombre());
@@ -183,7 +243,7 @@ public class GestorOficios {
             objeto.put("direccion", convertirDireccionAJson(cliente.getDireccion()));
             array.put(objeto);
         }
-        JSONUtiles.cargarJSON(array, archivoClientes);
+        JSONUtiles.cargarJSON(array, ARCHIVO_CLIENTES);
     }
 
     public void guardarEmpleados() {
@@ -203,12 +263,12 @@ public class GestorOficios {
             objeto.put("direccion", convertirDireccionAJson(empleado.getDireccion()));
             array.put(objeto);
         }
-        JSONUtiles.cargarJSON(array, archivoEmpleados);
+        JSONUtiles.cargarJSON(array, ARCHIVO_EMPLEADOS);
     }
 
     public void guardarContrataciones() {
         JSONArray array = new JSONArray();
-        for (Contrataciones contratacion : contrataciones) {
+        for (Contrataciones contratacion : contrataciones.listar()) {
             JSONObject objeto = new JSONObject();
             objeto.put("id", contratacion.getIdServicio());
             objeto.put("descripcion", contratacion.getDescripcion());
@@ -225,12 +285,12 @@ public class GestorOficios {
             }
             array.put(objeto);
         }
-        JSONUtiles.cargarJSON(array, archivoContrataciones);
+        JSONUtiles.cargarJSON(array, ARCHIVO_CONTRATACIONES);
     }
 
     
     private void cargarOficios() {
-        JSONArray array = JSONUtiles.leerArreglo(archivoOficios);
+        JSONArray array = JSONUtiles.leerArreglo(ARCHIVO_OFICIOS);
         for (int i = 0; i < array.length(); i++) {
             JSONObject objeto = array.getJSONObject(i);
             String id = objeto.optString("id");
@@ -243,7 +303,7 @@ public class GestorOficios {
     }
 
     private void cargarClientes() {
-        JSONArray array = JSONUtiles.leerArreglo(archivoClientes);
+        JSONArray array = JSONUtiles.leerArreglo(ARCHIVO_CLIENTES);
         for (int i = 0; i < array.length(); i++) {
             JSONObject objeto = array.getJSONObject(i);
             String dni = objeto.optString("dni");
@@ -254,12 +314,12 @@ public class GestorOficios {
             String password = objeto.optString("password");
             Direccion direccion = crearDireccionDesdeJson(objeto.optJSONObject("direccion"));
             Cliente cliente = new Cliente(dni, nombre, apellido, email, telefono, password, direccion);
-            clientes.add(cliente);
+            clientes.agregar(cliente);
         }
     }
 
     private void cargarEmpleados() {
-        JSONArray array = JSONUtiles.leerArreglo(archivoEmpleados);
+        JSONArray array = JSONUtiles.leerArreglo(ARCHIVO_OFICIOS);
         for (int i = 0; i < array.length(); i++) {
             JSONObject objeto = array.getJSONObject(i);
             String dni = objeto.optString("dni");
@@ -283,7 +343,7 @@ public class GestorOficios {
     }
 
     private void cargarContrataciones() {
-        JSONArray array = JSONUtiles.leerArreglo(archivoContrataciones);
+        JSONArray array = JSONUtiles.leerArreglo(ARCHIVO_CONTRATACIONES);
         for (int i = 0; i < array.length(); i++) {
             JSONObject objeto = array.getJSONObject(i);
             String id = objeto.optString("id");
@@ -302,13 +362,23 @@ public class GestorOficios {
 
             if (fechaTexto == null || fechaTexto.isEmpty()) continue;
 
-            Cliente cliente = buscarCliente(clienteDni);
-            Empleado empleado = buscarEmpleadoEnLista(empleadoDni);
+            Cliente cliente = null;
+            try {
+                cliente = buscarClienteEnLista(clienteDni);
+            } catch (PersonaNoEncontradaException e) {
+                throw new RuntimeException(e);
+            }
+            Empleado empleado = null;
+            try {
+                empleado = buscarEmpleadoEnLista(empleadoDni);
+            } catch (PersonaNoEncontradaException e) {
+                throw new RuntimeException(e);
+            }
             LocalDate fecha = LocalDate.parse(fechaTexto);
 
-            Contrataciones contratacion = new Contrataciones(id, descripcion, oficio, cliente, fecha);
+            Contrataciones contratacion = new Contrataciones(descripcion, oficio, cliente, fecha);
             contratacion.setEmpleado(empleado);
-            contrataciones.add(contratacion);
+            contrataciones.agregar(contratacion);
 
             if (empleado != null) {
                 empleado.cargarContratacionGuardada(contratacion, fecha);
