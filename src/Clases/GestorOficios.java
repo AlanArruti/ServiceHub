@@ -7,6 +7,7 @@ import Exceptions.PersonaNoEncontradaException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class GestorOficios {
     private Repositorio<Empleado> empleados;
@@ -156,6 +157,211 @@ public class GestorOficios {
         empleado.registrarAccion("Contratado para: " + servicio.getDescripcion() + " (" + servicio.getIdServicio() + ") en fecha " + fecha);
 
         contrataciones.agregar(servicio);
+    }
+
+    public void guardarOficios() {
+        JSONArray array = new JSONArray();
+        for (Oficio oficio : oficios.listar()) {
+            JSONObject objeto = new JSONObject();
+            objeto.put("id", oficio.getId());
+            objeto.put("nombre", oficio.getNombre());
+            array.put(objeto);
+        }
+        JSONUtiles.cargarJSON(array, archivoOficios);
+    }
+
+    public void guardarClientes() {
+        JSONArray array = new JSONArray();
+        for (Cliente cliente : clientes) {
+            JSONObject objeto = new JSONObject();
+            objeto.put("dni", cliente.getDni());
+            objeto.put("nombre", cliente.getNombre());
+            objeto.put("apellido", cliente.getApellido());
+            objeto.put("email", cliente.getEmail());
+            objeto.put("telefono", cliente.getTelefono());
+            objeto.put("password", cliente.getPassword());
+            objeto.put("direccion", convertirDireccionAJson(cliente.getDireccion()));
+            array.put(objeto);
+        }
+        JSONUtiles.cargarJSON(array, archivoClientes);
+    }
+
+    public void guardarEmpleados() {
+        JSONArray array = new JSONArray();
+        for (Empleado empleado : empleados.listar()) {
+            JSONObject objeto = new JSONObject();
+            objeto.put("dni", empleado.getDni());
+            objeto.put("nombre", empleado.getNombre());
+            objeto.put("apellido", empleado.getApellido());
+            objeto.put("email", empleado.getEmail());
+            objeto.put("telefono", empleado.getTelefono());
+            objeto.put("password", empleado.getPassword());
+            if (empleado.getOficio() != null) {
+                objeto.put("oficioId", empleado.getOficio().getId());
+                objeto.put("oficioNombre", empleado.getOficio().getNombre());
+            }
+            objeto.put("direccion", convertirDireccionAJson(empleado.getDireccion()));
+            array.put(objeto);
+        }
+        JSONUtiles.cargarJSON(array, archivoEmpleados);
+    }
+
+    public void guardarContrataciones() {
+        JSONArray array = new JSONArray();
+        for (Contrataciones contratacion : contrataciones) {
+            JSONObject objeto = new JSONObject();
+            objeto.put("id", contratacion.getIdServicio());
+            objeto.put("descripcion", contratacion.getDescripcion());
+            objeto.put("fecha", contratacion.getFecha().toString());
+            if (contratacion.getOficio() != null) {
+                objeto.put("oficioId", contratacion.getOficio().getId());
+                objeto.put("oficioNombre", contratacion.getOficio().getNombre());
+            }
+            if (contratacion.getCliente() != null) {
+                objeto.put("clienteDni", contratacion.getCliente().getDni());
+            }
+            if (contratacion.getEmpleado() != null) {
+                objeto.put("empleadoDni", contratacion.getEmpleado().getDni());
+            }
+            array.put(objeto);
+        }
+        JSONUtiles.cargarJSON(array, archivoContrataciones);
+    }
+
+    
+    private void cargarOficios() {
+        JSONArray array = JSONUtiles.leerArreglo(archivoOficios);
+        for (int i = 0; i < array.length(); i++) {
+            JSONObject objeto = array.getJSONObject(i);
+            String id = objeto.optString("id");
+            String nombre = objeto.optString("nombre");
+            if (nombre != null && !nombre.isEmpty()) {
+                Oficio oficio = new Oficio(id, nombre);
+                oficios.agregar(oficio);
+            }
+        }
+    }
+
+    private void cargarClientes() {
+        JSONArray array = JSONUtiles.leerArreglo(archivoClientes);
+        for (int i = 0; i < array.length(); i++) {
+            JSONObject objeto = array.getJSONObject(i);
+            String dni = objeto.optString("dni");
+            String nombre = objeto.optString("nombre");
+            String apellido = objeto.optString("apellido");
+            String email = objeto.optString("email");
+            String telefono = objeto.optString("telefono");
+            String password = objeto.optString("password");
+            Direccion direccion = crearDireccionDesdeJson(objeto.optJSONObject("direccion"));
+            Cliente cliente = new Cliente(dni, nombre, apellido, email, telefono, password, direccion);
+            clientes.add(cliente);
+        }
+    }
+
+    private void cargarEmpleados() {
+        JSONArray array = JSONUtiles.leerArreglo(archivoEmpleados);
+        for (int i = 0; i < array.length(); i++) {
+            JSONObject objeto = array.getJSONObject(i);
+            String dni = objeto.optString("dni");
+            String nombre = objeto.optString("nombre");
+            String apellido = objeto.optString("apellido");
+            String email = objeto.optString("email");
+            String telefono = objeto.optString("telefono");
+            String password = objeto.optString("password");
+            String oficioId = objeto.optString("oficioId");
+            String oficioNombre = objeto.optString("oficioNombre");
+            Direccion direccion = crearDireccionDesdeJson(objeto.optJSONObject("direccion"));
+            Oficio oficio = buscarOficioPorId(oficioId);
+            if (oficio == null && oficioNombre != null && !oficioNombre.isEmpty()) {
+                oficio = new Oficio(oficioId, oficioNombre);
+                oficios.agregar(oficio);
+            }
+            Empleado empleado = new Empleado(dni, nombre, apellido, email, telefono, password, oficio);
+            empleado.setDireccion(direccion);
+            empleados.agregar(empleado);
+        }
+    }
+
+    private void cargarContrataciones() {
+        JSONArray array = JSONUtiles.leerArreglo(archivoContrataciones);
+        for (int i = 0; i < array.length(); i++) {
+            JSONObject objeto = array.getJSONObject(i);
+            String id = objeto.optString("id");
+            String descripcion = objeto.optString("descripcion");
+            String fechaTexto = objeto.optString("fecha");
+            String oficioId = objeto.optString("oficioId");
+            String oficioNombre = objeto.optString("oficioNombre");
+            String clienteDni = objeto.optString("clienteDni");
+            String empleadoDni = objeto.optString("empleadoDni");
+
+            Oficio oficio = buscarOficioPorId(oficioId);
+            if (oficio == null && oficioNombre != null && !oficioNombre.isEmpty()) {
+                oficio = new Oficio(oficioId, oficioNombre);
+                oficios.agregar(oficio);
+            }
+
+            if (fechaTexto == null || fechaTexto.isEmpty()) continue;
+
+            Cliente cliente = buscarCliente(clienteDni);
+            Empleado empleado = buscarEmpleadoEnLista(empleadoDni);
+            LocalDate fecha = LocalDate.parse(fechaTexto);
+
+            Contrataciones contratacion = new Contrataciones(id, descripcion, oficio, cliente, fecha);
+            contratacion.setEmpleado(empleado);
+            contrataciones.add(contratacion);
+
+            if (empleado != null) {
+                empleado.cargarContratacionGuardada(contratacion, fecha);
+            }
+        }
+    }
+
+    private JSONObject convertirDireccionAJson(Direccion direccion) {
+        if (direccion == null) return null;
+        JSONObject objeto = new JSONObject();
+        objeto.put("ciudad", direccion.getCiudad());
+        objeto.put("calle", direccion.getCalle());
+        objeto.put("numero", direccion.getNumero());
+        return objeto;
+    }
+
+    private Direccion crearDireccionDesdeJson(JSONObject objeto) {
+        if (objeto == null) return null;
+        String ciudad = objeto.optString("ciudad");
+        String calle = objeto.optString("calle");
+        int numero = objeto.optInt("numero");
+        return new Direccion(ciudad, calle, numero);
+    }
+
+    //carga y guardado de datos
+    public void cargarDatos() {
+        cargarOficios();
+        cargarClientes();
+        cargarEmpleados();
+        cargarContrataciones();
+    }
+
+    public void guardarTodo() {
+        guardarOficios();
+        guardarClientes();
+        guardarEmpleados();
+        guardarContrataciones();
+    }
+
+    public Cliente iniciarSesion(GestorOficios gestor) {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("\n--- LOGIN CLIENTE ---");
+        System.out.print("DNI: ");
+        String dni = sc.nextLine();
+        System.out.print("Password: ");
+        String password = sc.nextLine();
+
+        try {
+            return gestor.iniciarSesionCliente(dni, password);
+        } catch (PersonaNoEncontradaException e) {
+            System.out.println("ERROR: " + e.getMessage());
+            return null;
+        }
     }
 
 
