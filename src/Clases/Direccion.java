@@ -1,24 +1,34 @@
 package Clases;
 
 public class Direccion {
-    private String direccion;
+    private String ciudad;
+    private String calle;
+    private int numero;
 
-    public Direccion(String direccion) {
-        this.direccion = direccion;
+    public Direccion(String ciudad, String calle, int numero) {
+        this.ciudad = ciudad;
+        this.calle = calle;
+        this.numero = numero;
     }
 
-    public String getDireccion() {
-        return direccion;
+    public String getCiudad() {
+        return ciudad;
     }
 
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
+    public String getCalle() {
+        return calle;
+    }
+
+    public int getNumero() {
+        return numero;
     }
 
     @Override
     public String toString() {
         return "Direccion{" +
-                "direccion='" + direccion + '\'' +
+                "ciudad='" + ciudad + '\'' +
+                ", calle='" + calle + '\'' +
+                ", numero=" + numero +
                 '}';
     }
 }
