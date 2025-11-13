@@ -10,10 +10,10 @@ public class Contrataciones implements Identificable {
     private final String idServicio;
     private String descripcion;
     private LocalDate fecha;
-    private Oficios oficio;
+    private Oficio oficio;
     private Cliente cliente;
 
-    public Contrataciones(String descripcion, Oficios oficio, Cliente cliente) {
+    public Contrataciones(String descripcion, Oficio oficio, Cliente cliente) {
         this.idServicio = generarId();
         this.descripcion = descripcion;
         this.oficio = oficio;
@@ -26,9 +26,9 @@ public class Contrataciones implements Identificable {
 
     public String getDescripcion() { return descripcion; }
 
-    public Oficios getOficio() {return oficio;}
+    public Oficio getOficio() {return oficio;}
 
-    public void setOficio(Oficios oficio) {this.oficio = oficio;}
+    public void setOficio(Oficio oficio) {this.oficio = oficio;}
 
     public LocalDate getFecha() { return fecha; }
 
@@ -64,7 +64,6 @@ public class Contrataciones implements Identificable {
                 "idServicio='" + idServicio + '\'' +
                 ", descripcion='" + descripcion + '\'' +
                 ", fecha=" + fecha +
-                ", categoria='" + categoria + '\'' +
                 ", cliente=" + cliente +
                 '}';
     }
