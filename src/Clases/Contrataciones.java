@@ -1,5 +1,6 @@
 package Clases;
 
+import Enums.Oficios;
 import Interfaces.Identificable;
 
 import java.time.LocalDate;
@@ -9,16 +10,14 @@ public class Contrataciones implements Identificable {
     private static int contadorServicios = 1;
     private final String idServicio;
     private String descripcion;
-    private double precio;
     private LocalDate fecha;
-    private String categoria;
+    private Oficios oficio;
     private Cliente cliente;
 
-    public Contrataciones(String descripcion, double precio, String categoria, Cliente cliente) {
+    public Contrataciones(String descripcion, Oficios oficio, Cliente cliente) {
         this.idServicio = generarId();
         this.descripcion = descripcion;
-        this.precio = precio;
-        this.categoria = categoria;
+        this.oficio = oficio;
         this.cliente = cliente;
         this.fecha = LocalDate.now();
     }
@@ -28,9 +27,9 @@ public class Contrataciones implements Identificable {
 
     public String getDescripcion() { return descripcion; }
 
-    public double getPrecio() { return precio; }
+    public Oficios getOficio() {return oficio;}
 
-    public String getCategoria() { return categoria; }
+    public void setOficio(Oficios oficio) {this.oficio = oficio;}
 
     public LocalDate getFecha() { return fecha; }
 

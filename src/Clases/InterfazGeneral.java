@@ -11,6 +11,7 @@ public class InterfazGeneral {
         int opcion;
         InterfazCliente interCliente = new InterfazCliente();
         InterfazEmpleado interEmpleado = new InterfazEmpleado();
+        GestorOficios g1 = new GestorOficios();
 
         while (seguir == 's')
         {
@@ -21,8 +22,9 @@ public class InterfazGeneral {
             switch (opcion)
             {
                 case 1:{
+
                     Cliente cliente1 = interCliente.crearUsuario();
-                    interCliente.verInfoOficio(cliente1);
+                    interCliente.verInfoOficio(g1);
                 }
             }
         }

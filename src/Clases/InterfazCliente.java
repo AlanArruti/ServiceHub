@@ -86,69 +86,114 @@ public class InterfazCliente {
         - Si no → le doy otra chance
     */
     private void contratarPorOficio(GestorOficios g, Oficios oficio) {
-
         System.out.println("\n¿Desea ver empleados disponibles? (s/n)");
-        char seguir = sc.next().charAt(0);
+
+        char seguirGeneral = sc.next().charAt(0);
         sc.nextLine();
 
-        while (seguir == 's') {
+        if (seguirGeneral != 's') {
+            System.out.println("Volviendo al menú principal...");
+            return;
+        }
 
-            // Mostrar empleados por categoría
-            g.mostrarEmpleadoXcategoria(oficio.name());
+        // Mostrar empleados del oficio seleccionado
+        g.mostrarEmpleadoXcategoria(oficio.name());
 
+        //Selección del empleado
+        String dniEmpleado = "";
+        boolean empleadoValido = false;
+
+        do {
             System.out.println("Ingrese el DNI del empleado a contratar:");
-            String dniEmpleado = sc.nextLine();
+            dniEmpleado = sc.nextLine();
 
+            try {
+                g.buscarEmpleado(dniEmpleado);
+                empleadoValido = true; // si no lanza excepción, existe
+            } catch (PersonaNoEncontradaException e) {
+                System.out.println("ERROR: " + e.getMessage());
+                System.out.println("¿Desea volver a ingresar otro DNI? (s/n)");
+                char seguirEmpleado = sc.next().charAt(0);
+                sc.nextLine();
+                if (seguirEmpleado != 's') return;
+            }
+
+        } while (!empleadoValido);
+
+        // --- Selección del cliente ---
+        Cliente cliente = null;
+        boolean clienteValido = false;
+
+        do {
             System.out.println("Ingrese el DNI del cliente que contrata el servicio:");
             String dniCliente = sc.nextLine();
 
-            // Buscar cliente REAL por DNI
-            Cliente cliente;
             try {
                 cliente = g.buscarClientePorDni(dniCliente);
+                clienteValido = true;
             } catch (PersonaNoEncontradaException e) {
                 System.out.println("ERROR: " + e.getMessage());
-                return;
-            }
-
-            // Fecha del servicio (LA QUE EL CLIENTE QUIERE)
-            System.out.println("Ingrese la fecha del servicio (yyyy-MM-dd):");
-            String fechaStr = sc.nextLine();
-            LocalDate fechaServicio = LocalDate.parse(fechaStr);
-
-            // Ver disponibilidad del empleado
-            boolean disponible = g.verSiEstaDisponible(dniEmpleado, fechaServicio);
-
-            if (disponible) {
-
-                System.out.println("Ingrese descripción del servicio:");
-                String descripcion = sc.nextLine();
-
-                System.out.println("Ingrese el precio del servicio:");
-                double precio = sc.nextDouble();
+                System.out.println("¿Desea volver a ingresar otro DNI? (s/n)");
+                char seguirCliente = sc.next().charAt(0);
                 sc.nextLine();
-
-                Contrataciones servicio = new Contrataciones(descripcion, precio, oficio.name(), cliente);
-
-                // Registrar servicio al empleado con LA FECHA DEL SERVICIO
-                try {
-                    g.contratarEmpleado(dniEmpleado, servicio, fechaServicio);
-                    System.out.println("¡Servicio contratado con éxito!");
-                } catch (PersonaNoEncontradaException | EmpleadoNoDisponibleException e) {
-                    System.out.println("ERROR: " + e.getMessage());
-                }
-
-                return; // ya contrató, salimos del metodo
+                if (seguirCliente != 's') return;
             }
-            else {
-                System.out.println("El empleado no está disponible en esa fecha.");
-                System.out.println("¿Intentar con otra fecha u otro empleado? (s/n)");
-                seguir = sc.next().charAt(0);
+
+        } while (!clienteValido);
+
+        // --- Ingreso y validación de la fecha ---
+        LocalDate fechaServicio = null;
+        boolean fechaValida = false;
+
+        do {
+            try {
+                System.out.println("Ingrese la fecha del servicio (yyyy-MM-dd):");
+                String fechaStr = sc.nextLine();
+                fechaServicio = LocalDate.parse(fechaStr);
+                fechaValida = true;
+            } catch (Exception e) {
+                System.out.println("ERROR: formato de fecha inválido. Intente nuevamente.");
+                System.out.println("¿Desea volver a intentar cargar la fecha? (s/n)");
+                char seguirFecha = sc.next().charAt(0);
                 sc.nextLine();
+                if (seguirFecha != 's') return;
             }
+
+        } while (!fechaValida);
+
+        // --- Verificar disponibilidad ---
+        boolean disponible = g.verSiEstaDisponible(dniEmpleado, fechaServicio);
+
+        if (!disponible) {
+
+            System.out.println("El empleado no está disponible en esa fecha.");
+            System.out.println("¿Desea intentar con otro empleado o fecha? (s/n)");
+            char seguir = sc.next().charAt(0);
+            sc.nextLine();
+
+            if (seguir == 's') {
+                contratarPorOficio(g, oficio); // vuelve a intentar desde cero
+            } else {
+                System.out.println("Volviendo al menú principal...");
+            }
+            return;
         }
 
-        System.out.println("Volviendo al menú principal...");
+        // --- Descripción del servicio ---
+        System.out.println("Ingrese descripción del servicio:");
+        String descripcion = sc.nextLine();
+
+        // Crear y registrar la contratación
+        Contrataciones servicio = new Contrataciones(descripcion, oficio, cliente);
+
+        try {
+            g.contratarEmpleado(dniEmpleado, servicio, fechaServicio);
+            System.out.println("Servicio contratado con exito.");
+        }
+        catch (PersonaNoEncontradaException | EmpleadoNoDisponibleException e)
+        {
+            System.out.println("ERROR: " + e.getMessage());
+        }
     }
 
     // Metodo principal que muestra la info del oficio y llama al metodo genérico
@@ -156,45 +201,46 @@ public class InterfazCliente {
         Oficios oficio = elegirOficio();
 
         switch (oficio){
-            case PLOMERO:
-                System.out.println("Instala, repara y mantiene cañerías.");
+            case PLOMERO:{
+                System.out.println("Instala, repara y mantiene cañerías.\n");
                 contratarPorOficio(g, oficio);
                 break;
-
-            case PINTOR:
-                System.out.println("Pinta paredes, techos y muebles.");
+            }
+            case PINTOR:{
+                System.out.println("Pinta paredes, techos y muebles.\n");
                 contratarPorOficio(g, oficio);
                 break;
-
-            case ELECTRICISTA:
-                System.out.println("Instala y mantiene sistemas eléctricos.");
+            }
+            case ELECTRICISTA:{
+                System.out.println("Instala y mantiene sistemas eléctricos.\n");
                 contratarPorOficio(g, oficio);
                 break;
-
-            case GASISTA:
-                System.out.println("Repara y coloca cañerías de gas.");
+            }
+            case GASISTA: {
+                System.out.println("Repara y coloca cañerías de gas.\n");
                 contratarPorOficio(g, oficio);
                 break;
-
-            case ALBAÑIL:
-                System.out.println("Construcción y refacciones.");
+            }
+            case ALBAÑIL:{
+                System.out.println("Construcción y refacciones.\n");
                 contratarPorOficio(g, oficio);
                 break;
-
-            case CARPINTERO:
-                System.out.println("Trabajos en madera.");
+            }
+            case CARPINTERO:{
+                System.out.println("Trabajos en madera.\n");
                 contratarPorOficio(g, oficio);
                 break;
-
-            case HERRERO:
-                System.out.println("Trabajos en metal.");
+            }
+            case HERRERO:{
+                System.out.println("Trabajos en metal.\n");
                 contratarPorOficio(g, oficio);
                 break;
-
-            case JARDINERO:
-                System.out.println("Mantenimiento de jardines.");
+            }
+            case JARDINERO:{
+                System.out.println("Mantenimiento de jardines.\n");
                 contratarPorOficio(g, oficio);
                 break;
+            }
         }
     }
 }
