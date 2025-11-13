@@ -1,5 +1,7 @@
 package Clases;
 
+import Exceptions.PersonaNoEncontradaException;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +46,15 @@ public class GestorOficios {
             }
         }
         return false;
+    }
+
+    public boolean buscarEmpleado(String dni) throws PersonaNoEncontradaException {
+        for (Empleado e : empleados.listar()) {
+            if (e.getDni().equals(dni)) {
+                return true;
+            }
+        }
+        throw new PersonaNoEncontradaException("El DNI no se encuentra registrado como empleado.");
     }
 
     public void mostrarEmpleados() {
