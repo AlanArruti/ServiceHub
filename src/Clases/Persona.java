@@ -10,14 +10,16 @@ public abstract class Persona implements Identificable {
     private String apellido;
     private String email;
     private String telefono;
+    private String password;
 
-    public Persona(String dni ,String nombre, String apellido, String email, String telefono) {
+    public Persona(String dni ,String nombre, String apellido, String email, String telefono, String password) {
         this.id = contador++;
         this.dni = dni;
         this.nombre = nombre;
         this.apellido = apellido;
         this.email = email;
         this.telefono = telefono;
+        this.password = password;
     }
 
     //Getters y setters
@@ -55,6 +57,17 @@ public abstract class Persona implements Identificable {
 
     public void setTelefono(String telefono) {
         this.telefono = telefono;
+    }
+
+    public String getPassword() {return password;}
+
+    public void setPassword(String password) {this.password = password;}
+
+    public boolean validarPassword(String passwordIngresada) {
+        if (passwordIngresada == null) {
+            return false;
+        }
+        return password.equals(passwordIngresada);
     }
 
     public String getIdentificador() {
