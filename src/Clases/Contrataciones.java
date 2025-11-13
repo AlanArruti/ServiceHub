@@ -9,15 +9,13 @@ public class Contrataciones implements Identificable {
     private static int contadorServicios = 1;
     private final String idServicio;
     private String descripcion;
-    private double precio;
     private LocalDate fecha;
     private String categoria;
     private Cliente cliente;
 
-    public Contrataciones(String descripcion, double precio, String categoria, Cliente cliente) {
+    public Contrataciones(String descripcion, String categoria, Cliente cliente) {
         this.idServicio = generarId();
         this.descripcion = descripcion;
-        this.precio = precio;
         this.categoria = categoria;
         this.cliente = cliente;
         this.fecha = LocalDate.now();
@@ -28,7 +26,7 @@ public class Contrataciones implements Identificable {
 
     public String getDescripcion() { return descripcion; }
 
-    public double getPrecio() { return precio; }
+
 
     public String getCategoria() { return categoria; }
 
@@ -62,13 +60,12 @@ public class Contrataciones implements Identificable {
 
     @Override
     public String toString() {
-        return "Servicio{" +
-                "ID='" + idServicio + '\'' +
+        return "Contrataciones{" +
+                "idServicio='" + idServicio + '\'' +
                 ", descripcion='" + descripcion + '\'' +
+                ", fecha=" + fecha +
                 ", categoria='" + categoria + '\'' +
-                ", precio=" + precio +
-                ",  fecha=" + fecha +
-                ", cliente=" + (cliente != null ? cliente.getNombre() : "Sin asignar") +
+                ", cliente=" + cliente +
                 '}';
     }
 }

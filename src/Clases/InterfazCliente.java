@@ -12,16 +12,20 @@ public class InterfazCliente {
     private Scanner sc = new Scanner(System.in);
 
     // Carga básica de la dirección del usuario
-    // (lo uso para cuando creo un nuevo cliente)
+
     public Direccion cargarDireccion(){
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("\n---DATOS DIRECCION---\n");
         System.out.println("Ingrese la ciudad: ");
         String ciudad = sc.nextLine();
         System.out.println("Ingrese la calle: ");
         String calle = sc.nextLine();
         System.out.println("Ingrese el numero de la calle: ");
         int numero = sc.nextInt();
-        sc.nextLine(); // limpio buffer
-        return new Direccion(ciudad, calle, numero);
+        Direccion direccion1 = new Direccion(ciudad,calle,numero);
+        return direccion1;
+
     }
 
     // Metodo que arma un Cliente completo pidiendo todos los datos por consola
@@ -65,8 +69,7 @@ public class InterfazCliente {
                 case 6: return Oficios.CARPINTERO;
                 case 7: return Oficios.HERRERO;
                 case 8: return Oficios.JARDINERO;
-                default:
-                    System.out.println("Opción inválida.");
+                default: System.out.println("Opción inválida.");
             }
 
             System.out.println("¿Desea volver a intentar? (s/n)");
@@ -82,8 +85,8 @@ public class InterfazCliente {
         - Pido DNI
         - Pido fecha
         - Verifico disponibilidad
-        - Si está libre → creo la Contratación y la registro
-        - Si no → le doy otra chance
+        - Si está libre creo la Contratación y la registro
+        - Si no le doy otra chance
     */
     private void contratarPorOficio(GestorOficios g, Oficios oficio){
 
@@ -109,17 +112,11 @@ public class InterfazCliente {
                 System.out.println("Ingrese descripción del servicio:");
                 String descripcion = sc.nextLine();
 
-                System.out.println("Ingrese el precio:");
-                double precio = sc.nextDouble();
-                sc.nextLine();
-
-                // Por ahora tomo el primer cliente registrado en el sistema
-                // (esto se puede mejorar pero funciona para el TP)
-                Cliente cliente = g.getClientes().get(0);
+                
 
                 // Armo el servicio
                 Contrataciones servicio = new Contrataciones(
-                        descripcion, precio, oficio.name(), cliente
+                        descripcion, oficio.name(), cliente
                 );
 
                 // Intento contratar al empleado
@@ -145,45 +142,46 @@ public class InterfazCliente {
         Oficios oficio = elegirOficio();
 
         switch (oficio){
-            case PLOMERO:
+            case PLOMERO:{
                 System.out.println("Instala, repara y mantiene cañerías.");
                 contratarPorOficio(g, oficio);
                 break;
-
-            case PINTOR:
+            }
+            case PINTOR:{
                 System.out.println("Pinta paredes, techos y muebles.");
                 contratarPorOficio(g, oficio);
                 break;
-
-            case ELECTRICISTA:
+            }
+            case ELECTRICISTA:{
                 System.out.println("Instala y mantiene sistemas eléctricos.");
                 contratarPorOficio(g, oficio);
                 break;
-
-            case GASISTA:
+            }
+            case GASISTA:{
                 System.out.println("Repara y coloca cañerías de gas.");
                 contratarPorOficio(g, oficio);
                 break;
-
-            case ALBAÑIL:
+            }
+            case ALBAÑIL:{
                 System.out.println("Construcción y refacciones.");
                 contratarPorOficio(g, oficio);
                 break;
-
-            case CARPINTERO:
+            }
+            case CARPINTERO:{
                 System.out.println("Trabajos en madera.");
                 contratarPorOficio(g, oficio);
                 break;
-
-            case HERRERO:
+            }
+            case HERRERO:{
                 System.out.println("Trabajos en metal.");
                 contratarPorOficio(g, oficio);
                 break;
-
-            case JARDINERO:
+            }
+            case JARDINERO:{
                 System.out.println("Mantenimiento de jardines.");
                 contratarPorOficio(g, oficio);
                 break;
+            }
         }
     }
 }
