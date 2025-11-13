@@ -60,14 +60,42 @@ public class GestorOficios {
     }
 
     // ver la disponibilidad del empleado en la fecha que pide el usuario
-    public boolean verSiEstaDisponible(String dni, LocalDate fecha){
+    public boolean verSiEstaDisponible(String dni, LocalDate fecha) {
+        Empleado empleado = buscarEmpleadoEnLista(dni);
+        return empleado != null && empleado.estaDisponible(fecha);
+    }
 
-        for (Empleado e : empleados.listar()) {
-            if (e.getDni().equals(dni)) {
-                return e.estaDisponible(fecha); // la funcion devuelve true
-            }
+    public void registrarEmpleado(Empleado empleado) {
+        if (empleado == null) return;
+        if (buscarEmpleadoEnLista(empleado.getDni()) != null) {
+            System.out.println("El DNI ya está registrado como empleado.");
+            return;
         }
-        return false;
+        empleados.agregar(empleado);
+    }
+
+    public void registrarCliente(Cliente cliente) {
+        if (cliente == null) return;
+        if (buscarClienteEnLista(cliente.getDni()) != null) {
+            System.out.println("El DNI ya está registrado como cliente.");
+            return;
+        }
+        clientes.add(cliente);
+    }
+
+
+    public Cliente iniciarSesionCliente(String dni, String password) throws PersonaNoEncontradaException {
+        Cliente cliente = buscarClienteEnLista(dni);
+        if (!cliente.validarPassword(password))
+            throw new PersonaNoEncontradaException("Contraseña incorrecta para el cliente.");
+        return cliente;
+    }
+
+    public Empleado iniciarSesionEmpleado(String dni, String password) throws PersonaNoEncontradaException {
+        Empleado empleado = buscarEmpleadoEnLista(dni);
+        if (!empleado.validarPassword(password))
+            throw new PersonaNoEncontradaException("Contraseña incorrecta para el empleado.");
+        return empleado;
     }
 
     // muestra los empleados por oficio segun el que pida el usuario
