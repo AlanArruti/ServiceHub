@@ -9,19 +9,17 @@ import java.util.*;
 
 public class Empleado extends Persona implements Registrable {
     private Direccion direccion;
-    private List<String> herramientas;
     private double reputacion;
     private Map<LocalDate, Contrataciones> contrataciones;
     private DisponibilidadEmpleado estado;
     private List<Calificacion> calificaciones;
-    private Oficios oficio;
+    private Oficio oficio;
     private List<String> historialAcciones;
 
-    public Empleado(String dni, String nombre, String apellido, String email, String telefono, Oficios oficio) {
-        super(dni, nombre, apellido, email, telefono);
+    public Empleado(String dni, String nombre, String apellido, String email, String telefono, String password, Oficio oficio) {
+        super(dni, nombre, apellido, email, telefono, password);
         this.oficio = oficio;
         this.estado = DisponibilidadEmpleado.DISPONIBLE;
-        this.herramientas = new ArrayList<>();
         this.contrataciones = new HashMap<>();
         this.reputacion = 0.0;
         this.calificaciones = new ArrayList<>();
@@ -30,14 +28,15 @@ public class Empleado extends Persona implements Registrable {
 
 
     // Getters y Setters
-    public Oficios getOficio() {return oficio;}
-    public void setOficio(Oficios oficio) {this.oficio = oficio;}
+    public Oficio getOficio() {
+        return oficio;
+    }
+    public void setOficio(Oficio oficio) {
+        this.oficio = oficio;
+    }
 
     public Direccion getDireccion() { return direccion; }
     public void setDireccion(Direccion direccion) { this.direccion = direccion; }
-
-    public List<String> getHerramientas() { return herramientas; }
-    public void setHerramientas(List<String> herramientas) { this.herramientas = herramientas; }
 
     public DisponibilidadEmpleado getEstado() { return estado; }
     public double getReputacion() { return reputacion; }

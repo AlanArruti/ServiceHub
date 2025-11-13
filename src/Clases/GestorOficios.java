@@ -141,6 +141,18 @@ public class GestorOficios {
         System.out.println("Contratación registrada con éxito para el empleado: " + empleadoEncontrado.getNombre());
     }
 
+    public void mostrarOficios() {
+        List<Oficio> lista = oficios.listar();
+        if (lista.isEmpty()) {
+            System.out.println("No hay oficios cargados.");
+            return;
+        }
+        System.out.println("OFICIOS DISPONIBLES:");
+        for (Oficio oficio : lista) {
+            System.out.println("- " + oficio.getNombre());
+        }
+    }
+
 
 
 }
