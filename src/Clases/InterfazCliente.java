@@ -9,10 +9,7 @@ import java.util.Scanner;
 
 public class InterfazCliente {
 
-    private Scanner sc = new Scanner(System.in);
-
     // Carga básica de la dirección del usuario
-
     public Direccion cargarDireccion(){
         Scanner sc = new Scanner(System.in);
 
@@ -30,6 +27,8 @@ public class InterfazCliente {
 
     // Metodo que arma un Cliente completo pidiendo todos los datos por consola
     public Cliente crearUsuario(){
+        Scanner sc = new Scanner(System.in);
+
         System.out.println("Ingrese el dni del usuario: ");
         String dni = sc.nextLine();
         System.out.println("Ingrese el nombre del usuario: ");
@@ -49,6 +48,8 @@ public class InterfazCliente {
     // Menú para elegir oficio. Devuelve el enum.
     // Si el usuario mete mal el número, le doy otra oportunidad.
     public Oficios elegirOficio(){
+
+        Scanner sc = new Scanner(System.in);
         char seguir = 's';
         int opcion;
 
@@ -88,13 +89,14 @@ public class InterfazCliente {
         - Si está libre creo la Contratación y la registro
         - Si no le doy otra chance
     */
-    private void contratarPorOficio(GestorOficios g, Oficios oficio){
+    private void contratarPorOficio(GestorOficios g, Oficios oficio) {
+        Scanner sc = new Scanner(System.in);
 
         System.out.println("\n¿Desea ver empleados disponibles? (s/n)");
         char seguir = sc.next().charAt(0);
         sc.nextLine();
 
-        while (seguir == 's'){
+        while (seguir == 's') {
             g.mostrarEmpleadoXcategoria(oficio.name());
 
             System.out.println("Ingrese DNI del empleado:");
@@ -102,42 +104,72 @@ public class InterfazCliente {
 
             System.out.println("Ingrese la fecha (yyyy-MM-dd):");
             String fechaStr = sc.nextLine();
-            LocalDate fecha = LocalDate.parse(fechaStr);
 
-            // Consulto al gestor si el empleado está libre ese día
+            LocalDate fecha;
+            try {
+                fecha = LocalDate.parse(fechaStr);
+            } catch (Exception e) {
+                System.out.println("Formato de fecha inválido. Use yyyy-MM-dd.");
+                return;
+            }
+
             boolean disponible = g.verSiEstaDisponible(dni, fecha);
 
-            if (disponible){
-                // Si está libre, ahora creo la contratación
-                System.out.println("Ingrese descripción del servicio:");
-                String descripcion = sc.nextLine();
+            while (seguir == 's') {
+                if (!disponible) {
+                    System.out.println("No disponible en esa fecha. ¿Intentar otra? (s/n)");
+                    seguir = sc.next().charAt(0);
+                    sc.nextLine();
+                }
+                return;
+            }
 
-                
 
-                // Armo el servicio
-                Contrataciones servicio = new Contrataciones(
-                        descripcion, oficio.name(), cliente
-                );
+            // Si esta disponible sigo con la contratación
+            System.out.println("Ingrese descripción del servicio:");
+            String descripcion = sc.nextLine();
 
-                // Intento contratar al empleado
+            Cliente cliente = null;
+            boolean clienteEncontrado = false;
+
+            // Bucle para volver a pedir DNI si no se encuentra
+            while (!clienteEncontrado) {
+                System.out.println("Ingrese su DNI para guardar la contratación:");
+                String dniUsuario = sc.nextLine();
+
                 try {
-                    g.contratarEmpleado(dni, servicio, fecha);
-                    System.out.println("¡Servicio contratado con éxito!");
-                } catch (PersonaNoEncontradaException | EmpleadoNoDisponibleException e){
-                    System.out.println("ERROR: " + e.getMessage());
+                    cliente = g.buscarClientePorDni(dniUsuario);
+                    clienteEncontrado = true;
+                } catch (PersonaNoEncontradaException e){
+                    e.getMessage();
                 }
 
-                return; // Listo, ya contraté
-            }
-            else {
-                System.out.println("No disponible en esa fecha. ¿Intentar otra? (s/n)");
-                seguir = sc.next().charAt(0);
+
+                System.out.println("Cliente no encontrado. ¿Desea volver a ingresar el DNI? (s/n)");
+                char rta = sc.next().charAt(0);
                 sc.nextLine();
+                if (rta != 's') {
+                    System.out.println("No se puede continuar sin cliente registrado.");
+                    return;
+                }
+
             }
+
+            // Si el cliente existe, armo la contratación
+            Contrataciones servicio = new Contrataciones(descripcion, oficio, cliente);
+
+            try {
+                g.contratarEmpleado(dni, servicio, fecha);
+                System.out.println("Servicio contratado con exito.");
+            } catch (PersonaNoEncontradaException | EmpleadoNoDisponibleException e) {
+                System.out.println("ERROR: " + e.getMessage());
+            }
+
+            return; // Termino despues de contratar
         }
     }
 
-    // Metodo principal que muestra la info del oficio y llama al metodo genérico
+        // Metodo principal que muestra la info del oficio y llama al metodo genérico
     public void verInfoOficio(GestorOficios g){
         Oficios oficio = elegirOficio();
 

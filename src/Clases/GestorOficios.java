@@ -73,6 +73,7 @@ public class GestorOficios {
         throw new PersonaNoEncontradaException("El DNI no se encuentra registrado como empleado.");
     }
 
+
     public Cliente buscarClientePorDni(String dni) throws PersonaNoEncontradaException {
         for (Cliente c : clientes) {
             if (c.getDni().equalsIgnoreCase(dni)) {
