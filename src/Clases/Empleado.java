@@ -3,7 +3,6 @@ package Clases;
 import Enums.DisponibilidadEmpleado;
 import Enums.Oficios;
 import Exceptions.EmpleadoNoDisponibleException;
-import Interfaces.Registrable;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -12,7 +11,7 @@ public class Empleado extends Persona implements Registrable {
     private Direccion direccion;
     private List<String> herramientas;
     private double reputacion;
-    private Map<LocalDate, Servicio> contrataciones = new HashMap<>();
+    private Map<LocalDate, Contrataciones> contrataciones = new HashMap<>();
     private DisponibilidadEmpleado estado;
     private List<Calificacion> calificaciones;
     private Oficios oficio;
@@ -53,14 +52,14 @@ public class Empleado extends Persona implements Registrable {
         return !contrataciones.containsKey(fechaDeseada);
     }
 
-    //Metodo para contratar Servicio
-    public void contratarServicio(Servicio servicio, LocalDate fechaDeseada) throws EmpleadoNoDisponibleException {
+    //Metodo para contratar Servicio (contrataciones)
+    public void contratarServicio(Contrataciones contrataciones, LocalDate fechaDeseada) throws EmpleadoNoDisponibleException {
         if (!estaDisponible(fechaDeseada)) {
             throw new EmpleadoNoDisponibleException(
                     "El empleado " + getNombre() + " ya tiene un servicio asignado el " + fechaDeseada
             );
         }
-        contrataciones.put(fechaDeseada, servicio);
+        this.contrataciones.put(fechaDeseada, contrataciones);
         estado = DisponibilidadEmpleado.OCUPADO;
     }
 
@@ -97,8 +96,8 @@ public class Empleado extends Persona implements Registrable {
         boolean contratoPrevio = false;
 
         //Recorremos todas las contrataciones para verificar si el cliente lo contrató
-        for (Servicio servicio : contrataciones.values()) {
-            if (servicio.getCliente().equals(cliente)) {
+        for (Contrataciones contrataciones : this.contrataciones.values()) {
+            if (contrataciones.getCliente().equals(cliente)) {
                 contratoPrevio = true;
                 break;
             }
@@ -120,19 +119,7 @@ public class Empleado extends Persona implements Registrable {
         actualizarReputacion();
         System.out.println("Valoración registrada correctamente.");
     }
-
-    //Historial de acciones del empleado(Contrataciones, calificaciones)
-    @Override
-    public void registrarAccion(String descripcion) {
-        historialAcciones.add(descripcion);
-    }
-
-    public void mostrarHistorial() {
-        System.out.println("Historial de "+getNombre()+ ":");
-        for (String accion : historialAcciones) {
-            System.out.println(" - "+accion);
-        }
-    }
+    
 
 
     @Override

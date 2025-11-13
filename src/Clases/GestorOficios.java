@@ -1,7 +1,5 @@
 package Clases;
 
-import Exceptions.PersonaNoEncontradaException;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,13 +7,13 @@ import java.util.List;
 public class GestorOficios {
     private Repositorio<Empleado> empleados;
     private List<Cliente> clientes;
-    private List<Servicio> servicios;
+    private List<Contrataciones> contrataciones;
 
 
     public GestorOficios() {
         empleados = new Repositorio<>();
         clientes = new ArrayList<>();
-        servicios = new ArrayList<>();
+        contrataciones = new ArrayList<>();
     }
 
     public void registrarEmpleado(Empleado e) {

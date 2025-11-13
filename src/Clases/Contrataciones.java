@@ -4,7 +4,7 @@ import Interfaces.Identificable;
 
 import java.time.LocalDate;
 
-public class Servicio implements Identificable {
+public class Contrataciones implements Identificable {
 
     private static int contadorServicios = 1;
     private final String idServicio;
@@ -14,7 +14,7 @@ public class Servicio implements Identificable {
     private String categoria;
     private Cliente cliente;
 
-    public Servicio(String descripcion, double precio, String categoria, Cliente cliente) {
+    public Contrataciones(String descripcion, double precio, String categoria, Cliente cliente) {
         this.idServicio = generarId();
         this.descripcion = descripcion;
         this.precio = precio;
@@ -50,8 +50,8 @@ public class Servicio implements Identificable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Servicio)) return false;
-        Servicio s = (Servicio) o;
+        if (!(o instanceof Contrataciones)) return false;
+        Contrataciones s = (Contrataciones) o;
         return idServicio.equals(s.idServicio);
     }
 

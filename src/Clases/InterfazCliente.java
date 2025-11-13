@@ -1,14 +1,13 @@
 package Clases;
 
 import Enums.Oficios;
-import Exceptions.OficioNoDisponibleException;
 
 import java.time.LocalDate;
 import java.util.Scanner;
 
-public class ElegirOficio {
+public class InterfazCliente {
 
-    public Oficios elegirOficio() throws OficioNoDisponibleException
+    public Oficios elegirOficio()
     {
         Scanner sc = new Scanner(System.in);
         char seguir = 's';
@@ -17,7 +16,6 @@ public class ElegirOficio {
 
         while (seguir == 's')
         {
-
             System.out.println("INGRESE EL OFICIO DEL QUE DESEA CONOCER MAS: ");
             System.out.println("1 - PLOMERO. \n 2 - PINTOR. \n 3 - ELECTRICISTA. \n 4 - GASISTA. \n 5 - ALBAÑIL. \n 6 - CARPINTERO. \n 7 - HERRERO. \n 8 - JARDINERO.");
 
@@ -65,13 +63,14 @@ public class ElegirOficio {
             sc.nextLine();
             seguir = sc.next().charAt(0);
         }
-        throw new OficioNoDisponibleException("No se seleccionó ningún oficio válido antes de salir del menú.");
+        return null;
     }
 
 
     public void verInfoOficio()
     {
         GestorOficios g = new GestorOficios();
+
         Scanner sc = new Scanner(System.in);
         Oficios oficio = elegirOficio();
         char seguir = 's';
@@ -86,12 +85,14 @@ public class ElegirOficio {
 
                 while (seguir == 's')
                 {
-                    g.mostrarEmpleadoXcategoria("PLOMERO");
+                    g.mostrarEmpleadoXcategoria("PLOMERO\n");
 
                     while (seguir == 's')
                     {
                         System.out.println("Ingrese el DNI y la fecha de contratacion del Plomero para ver su disponibilidad. ");
                         dni = sc.next();
+                        // aca hay que tirar exception de si no existe el dni
+
                         System.out.println("\n A LA HORA DE INGRESAR LA FECHA UTILICE EL FORMATO (yyyy/mm/dd) ----> Ejemplo: 2025-11-14");
                         fecha = sc.next();
 
