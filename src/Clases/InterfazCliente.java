@@ -85,59 +85,70 @@ public class InterfazCliente {
         - Si está libre → creo la Contratación y la registro
         - Si no → le doy otra chance
     */
-    private void contratarPorOficio(GestorOficios g, Oficios oficio){
+    private void contratarPorOficio(GestorOficios g, Oficios oficio) {
 
         System.out.println("\n¿Desea ver empleados disponibles? (s/n)");
         char seguir = sc.next().charAt(0);
         sc.nextLine();
 
-        while (seguir == 's'){
+        while (seguir == 's') {
+
+            // Mostrar empleados por categoría
             g.mostrarEmpleadoXcategoria(oficio.name());
 
-            System.out.println("Ingrese DNI del empleado:");
-            String dni = sc.nextLine();
+            System.out.println("Ingrese el DNI del empleado a contratar:");
+            String dniEmpleado = sc.nextLine();
 
-            System.out.println("Ingrese la fecha (yyyy-MM-dd):");
+            System.out.println("Ingrese el DNI del cliente que contrata el servicio:");
+            String dniCliente = sc.nextLine();
+
+            // Buscar cliente REAL por DNI
+            Cliente cliente;
+            try {
+                cliente = g.buscarClientePorDni(dniCliente);
+            } catch (PersonaNoEncontradaException e) {
+                System.out.println("ERROR: " + e.getMessage());
+                return;
+            }
+
+            // Fecha del servicio (LA QUE EL CLIENTE QUIERE)
+            System.out.println("Ingrese la fecha del servicio (yyyy-MM-dd):");
             String fechaStr = sc.nextLine();
-            LocalDate fecha = LocalDate.parse(fechaStr);
+            LocalDate fechaServicio = LocalDate.parse(fechaStr);
 
-            // Consulto al gestor si el empleado está libre ese día
-            boolean disponible = g.verSiEstaDisponible(dni, fecha);
+            // Ver disponibilidad del empleado
+            boolean disponible = g.verSiEstaDisponible(dniEmpleado, fechaServicio);
 
-            if (disponible){
-                // Si está libre, ahora creo la contratación
+            if (disponible) {
+
                 System.out.println("Ingrese descripción del servicio:");
                 String descripcion = sc.nextLine();
 
-                System.out.println("Ingrese el precio:");
+                System.out.println("Ingrese el precio del servicio:");
                 double precio = sc.nextDouble();
                 sc.nextLine();
 
-                // Por ahora tomo el primer cliente registrado en el sistema
-                // (esto se puede mejorar pero funciona para el TP)
-                Cliente cliente = g.getClientes().get(0);
+                Contrataciones servicio = new Contrataciones(descripcion, precio, oficio.name(), cliente);
 
-                // Armo el servicio
-                Contrataciones servicio = new Contrataciones(
-                        descripcion, precio, oficio.name(), cliente
-                );
-
-                // Intento contratar al empleado
+                // Registrar servicio al empleado con LA FECHA DEL SERVICIO
                 try {
-                    g.contratarEmpleado(dni, servicio, fecha);
+                    g.contratarEmpleado(dniEmpleado, servicio, fechaServicio);
                     System.out.println("¡Servicio contratado con éxito!");
-                } catch (PersonaNoEncontradaException | EmpleadoNoDisponibleException e){
+                } catch (PersonaNoEncontradaException | EmpleadoNoDisponibleException e) {
                     System.out.println("ERROR: " + e.getMessage());
                 }
 
-                return; // Listo, ya contraté
+                return; // ya contrató, salimos del metodo
             }
             else {
-                System.out.println("No disponible en esa fecha. ¿Intentar otra? (s/n)");
+                System.out.println("El empleado no está disponible en esa fecha.");
+                System.out.println("¿Intentar con otra fecha u otro empleado? (s/n)");
                 seguir = sc.next().charAt(0);
                 sc.nextLine();
             }
         }
+
+        System.out.println("Volviendo al menú principal...");
     }
 
     // Metodo principal que muestra la info del oficio y llama al metodo genérico

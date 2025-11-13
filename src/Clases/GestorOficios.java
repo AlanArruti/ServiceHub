@@ -74,6 +74,15 @@ public class GestorOficios {
         throw new PersonaNoEncontradaException("El DNI no se encuentra registrado como empleado.");
     }
 
+    public Cliente buscarClientePorDni(String dni) throws PersonaNoEncontradaException {
+        for (Cliente c : clientes) {
+            if (c.getDni().equalsIgnoreCase(dni)) {
+                return c;
+            }
+        }
+        throw new PersonaNoEncontradaException("No se encontró cliente con DNI: " + dni);
+    }
+
     // hace falta que se le mande el cliente porque contrataciones tiene como variable el cliente
     public void contratarEmpleado(String dniEmpleado, Contrataciones servicio, LocalDate fecha)
             throws PersonaNoEncontradaException, EmpleadoNoDisponibleException {
