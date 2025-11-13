@@ -30,7 +30,7 @@ public class InterfazCliente {
     }
 
     private void verOficios(GestorOficios gestor) {
-        gestor.mostrarOficios();
+        //gestor.mostrarOficios();
     }
 
     public Cliente registrarCliente(GestorOficios gestor) {
@@ -59,7 +59,7 @@ public class InterfazCliente {
     private void contratarServicio(Cliente cliente, GestorOficios gestor) {
         Scanner sc = new Scanner(System.in);
         System.out.println("\n--- CONTRATAR SERVICIO ---");
-        gestor.mostrarOficios();
+        //gestor.mostrarOficios();
         System.out.print("Ingrese el oficio deseado: ");
         String nombreOficio = sc.nextLine();
         Oficio oficio = gestor.obtenerOcrearOficio(nombreOficio);

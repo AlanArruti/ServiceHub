@@ -12,13 +12,15 @@ public class Contrataciones implements Identificable {
     private LocalDate fecha;
     private Oficio oficio;
     private Cliente cliente;
+    private Empleado empleado;
 
-    public Contrataciones(String descripcion, Oficio oficio, Cliente cliente) {
+    public Contrataciones(String descripcion, Oficio oficio, Cliente cliente, Empleado empleado) {
         this.idServicio = generarId();
         this.descripcion = descripcion;
         this.oficio = oficio;
         this.cliente = cliente;
         this.fecha = LocalDate.now();
+        this.empleado = empleado;
     }
 
     // Getters
@@ -34,6 +36,24 @@ public class Contrataciones implements Identificable {
 
     public Cliente getCliente() { return cliente; }
 
+    public void setCliente(Cliente cliente) {this.cliente = cliente;}
+
+    public void setFecha(LocalDate fecha) {this.fecha = fecha;}
+
+    public void setDescripcion(String descripcion) {this.descripcion = descripcion;}
+
+    public static int getContadorServicios() {return contadorServicios;}
+
+    public static void setContadorServicios(int contadorServicios) {Contrataciones.contadorServicios = contadorServicios;}
+
+    public Empleado getEmpleado() {
+        return empleado;
+    }
+
+    public void setEmpleado(Empleado empleado) {
+        this.empleado = empleado;
+    }
+
     //id autogenerado con srv antes del numero para saber que voy a buscar un servicio
     private String generarId() {
         return "SRV" + contadorServicios++;
@@ -42,6 +62,19 @@ public class Contrataciones implements Identificable {
     // implementacion de Identificable
     public String getIdentificador() {
         return idServicio;
+    }
+
+    private void actualizarContador(String idExistente) {
+        if (idExistente != null && idExistente.startsWith("SRV")) {
+            try {
+                int numero = Integer.parseInt(idExistente.substring(3));
+                if (numero >= contadorServicios) {
+                    contadorServicios = numero + 1;
+                }
+            } catch (NumberFormatException e) {
+                // dejo el contador como esta
+            }
+        }
     }
 
     // Hashcode/equals para el funcionamiento del contains
@@ -64,6 +97,7 @@ public class Contrataciones implements Identificable {
                 "idServicio='" + idServicio + '\'' +
                 ", descripcion='" + descripcion + '\'' +
                 ", fecha=" + fecha +
+                ", oficio=" + oficio +
                 ", cliente=" + cliente +
                 '}';
     }
