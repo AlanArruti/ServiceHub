@@ -1,11 +1,51 @@
 package Clases;
 
 import Enums.Oficios;
+import Exceptions.PersonaNoEncontradaException;
 
 import java.time.LocalDate;
 import java.util.Scanner;
 
 public class InterfazCliente {
+
+<<<<<<< HEAD
+    public void crearUsuario()
+    {
+        System.out.println("");
+=======
+    public void cargarDireccion(){
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("Ingrese la ciudad: ");
+        String ciudad = sc.nextLine();
+        System.out.println("Ingrese la calle: ");
+        String calle = sc.nextLine();
+        System.out.println("Ingrese el numero de la calle: ");
+        int numero = sc.nextInt();
+
+    }
+
+    public void crearUsuario(){
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("Ingrese el dni del usuario: ");
+        String dni = sc.nextLine();
+        System.out.println("Ingrese el nombre del usuario: ");
+        String nombre = sc.nextLine();
+        System.out.println("Ingrese el apellido del usuario: ");
+        String apellido = sc.nextLine();
+        System.out.println("Ingrese el email del usuario: ");
+        String email = sc.nextLine();
+        System.out.println("Ingrese el telefono del usuario: ");
+        String telefono = sc.nextLine();
+        System.out.println("Ingrese el direccion del usuario: ");
+
+
+
+
+
+>>>>>>> 9c14e5207d8c28f16c9b13ee987d3346fa11bcc9
+    }
 
     public Oficios elegirOficio()
     {
@@ -91,7 +131,15 @@ public class InterfazCliente {
                     {
                         System.out.println("Ingrese el DNI y la fecha de contratacion del Plomero para ver su disponibilidad. ");
                         dni = sc.next();
-                        // aca hay que tirar exception de si no existe el dni
+
+                        try
+                        {
+                            g.buscarEmpleado(dni);
+                        }
+                        catch (PersonaNoEncontradaException e)
+                        {
+                            e.getMessage();
+                        }
 
                         System.out.println("\n A LA HORA DE INGRESAR LA FECHA UTILICE EL FORMATO (yyyy/mm/dd) ----> Ejemplo: 2025-11-14");
                         fecha = sc.next();
@@ -105,7 +153,7 @@ public class InterfazCliente {
                         }
                         else
                         {
-                            System.out.println("¿Desea volver a intentarlo con otra fecha? (s/n) ");
+                            System.out.println("¿Desea volver a intentarlo con otra fecha u otro DNI? (s/n) ");
                             seguir = sc.next().charAt(0);
                         }
                     }
