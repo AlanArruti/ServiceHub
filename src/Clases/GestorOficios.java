@@ -158,7 +158,56 @@ public class GestorOficios {
         contrataciones.agregar(servicio);
     }
 
+    public Repositorio<Contrataciones> obtenerContratacionesDeEmpleado(Empleado empleado) {
 
+        Repositorio<Contrataciones> resultado = new Repositorio<>();
+
+        if (empleado == null) {
+            return resultado;  // devuelvo un repositorio vacío
+        }
+
+        // Recorro todas las contrataciones del sistema
+        for (Contrataciones c : contrataciones.listar()) {
+
+            // Si pertenece al empleado, lo agrego al nuevo repositorio
+            if (c.getEmpleado() != null && c.getEmpleado().equals(empleado)) {
+                resultado.agregar(c);
+            }
+        }
+
+        return resultado;
+    }
+
+    public Repositorio<Contrataciones> obtenerContratacionesDeCliente(Cliente cliente) {
+        Repositorio<Contrataciones> resultado = new Repositorio<>();
+        if (cliente == null) {
+            return resultado;
+        }
+        for (Contrataciones contratacion : contrataciones.listar()) {
+            if (contratacion.getCliente() != null &&
+                    contratacion.getCliente().getDni().equalsIgnoreCase(cliente.getDni())) {
+                resultado.agregar(contratacion);
+            }
+        }
+        return resultado;
+    }
+
+    public Contrataciones crearContratacion(Cliente cliente, Oficio oficio, String descripcion, LocalDate fecha) {
+        return new Contrataciones(descripcion, oficio, cliente, fecha);
+    }
+
+    public List<Empleado> obtenerEmpleadosPorOficio(Oficio oficio) {
+        List<Empleado> resultado = new ArrayList<>();
+        if (oficio == null) {
+            return resultado;
+        }
+        for (Empleado empleado : empleados.listar()) {
+            if (empleado.getOficio() != null && empleado.getOficio().equals(oficio)) {
+                resultado.add(empleado);
+            }
+        }
+        return resultado;
+    }
 
 
 
