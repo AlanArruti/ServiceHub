@@ -19,6 +19,10 @@ public class GestorOficios {
         contrataciones = new ArrayList<>();
     }
 
+    public List<Cliente> getClientes() {
+        return clientes;
+    }
+
     public void registrarEmpleado(Empleado e) {
         empleados.agregar(e);
     }
@@ -31,7 +35,7 @@ public class GestorOficios {
     // muestra los empleados por oficio segun el que pida el usuario
     public void mostrarEmpleadoXcategoria(String categoria) {
         for (Empleado e : empleados.listar()) {
-            if (e.getOficio().name().equalsIgnoreCase(categoria)) {
+            if (e.getOficio().name().equalsIgnoreCase(categoria.trim())) {
                 System.out.println(e);
             }
         }

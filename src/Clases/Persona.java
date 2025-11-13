@@ -10,6 +10,7 @@ public abstract class Persona implements Identificable {
     private String apellido;
     private String email;
     private String telefono;
+
     public Persona(String dni ,String nombre, String apellido, String email, String telefono) {
         this.id = contador++;
         this.dni = dni;
