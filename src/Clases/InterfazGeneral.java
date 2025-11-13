@@ -22,7 +22,7 @@ public class InterfazGeneral {
             {
                 case 1:{
                     Cliente cliente1 = interCliente.crearUsuario();
-                    interCliente.verInfoOficio(cliente1);
+                   // interCliente.verInfoOficio(cliente1);
                 }
             }
         }
