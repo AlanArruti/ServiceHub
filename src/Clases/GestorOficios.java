@@ -31,7 +31,6 @@ public class GestorOficios {
         clientes.add(c);
     }
 
-
     // muestra los empleados por oficio segun el que pida el usuario
     public void mostrarEmpleadoXcategoria(String categoria) {
         for (Empleado e : empleados.listar()) {

@@ -87,7 +87,7 @@ public class InterfazCliente {
     */
     private void contratarPorOficio(GestorOficios g, Oficios oficio) {
 
-        System.out.println("\n¿Desea ver empleados disponibles? (s/n)");
+        System.out.println("\nDesea ver empleados disponibles? (s/n)");
         char seguir = sc.next().charAt(0);
         sc.nextLine();
 
@@ -133,7 +133,7 @@ public class InterfazCliente {
                 // Registrar servicio al empleado con LA FECHA DEL SERVICIO
                 try {
                     g.contratarEmpleado(dniEmpleado, servicio, fechaServicio);
-                    System.out.println("¡Servicio contratado con éxito!");
+                    System.out.println("Servicio contratado con exito");
                 } catch (PersonaNoEncontradaException | EmpleadoNoDisponibleException e) {
                     System.out.println("ERROR: " + e.getMessage());
                 }
