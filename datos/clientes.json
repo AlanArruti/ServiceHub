@@ -1,26 +1,13 @@
 [
     {
         "password": "123",
-        "apellido": "arruti",
-        "direccion": {
-            "numero": 2,
-            "ciudad": "loberia",
-            "calle": "tamangueyu"
-        },
-        "telefono": "2262-455202",
-        "nombre": "alan",
-        "dni": "123",
-        "email": "arrutialan@gmail.com"
-    },
-    {
-        "password": "123",
         "apellido": "blandi",
         "direccion": {
             "numero": 1859,
             "ciudad": "mar del plata",
             "calle": "entre rios"
         },
-        "telefono": "223-12345678",
+        "telefono": "223 123-1457",
         "nombre": "iara",
         "dni": "122",
         "email": "iablandli@gmail.com"

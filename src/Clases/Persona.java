@@ -45,6 +45,14 @@ public abstract class Persona implements Identificable {
 
     public String getPassword() {return password;}
 
+    // Setters con alcance de paquete para uso administrativo
+    void setDni(String dni) { this.dni = dni; }
+    void setNombre(String nombre) { this.nombre = nombre; }
+    void setApellido(String apellido) { this.apellido = apellido; }
+    void setEmail(String email) { this.email = email; }
+    void setTelefono(String telefono) { this.telefono = telefono; }
+    void setPassword(String password) { this.password = password; }
+
 
     public boolean validarPassword(String passwordIngresada) {
         if (passwordIngresada == null) {

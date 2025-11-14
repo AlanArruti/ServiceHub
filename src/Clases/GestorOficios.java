@@ -386,13 +386,14 @@ public class GestorOficios {
             try {
                 cliente = buscarClienteEnLista(clienteDni);
             } catch (PersonaNoEncontradaException e) {
-                throw new RuntimeException(e);
+                System.out.println("ADVERTENCIA: Contratacion '" + id + "' referencia un cliente inexistente (DNI: " + clienteDni + "). Se omite.");
+                continue;
             }
             Empleado empleado = null;
             try {
                 empleado = buscarEmpleadoEnLista(empleadoDni);
             } catch (PersonaNoEncontradaException e) {
-                throw new RuntimeException(e);
+                empleado = null; // Puede no estar asignado o no existir; se carga igual
             }
             LocalDate fecha = LocalDate.parse(fechaTexto);
 

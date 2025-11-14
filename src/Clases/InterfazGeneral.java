@@ -7,11 +7,13 @@ public class InterfazGeneral {
     private GestorOficios gestor;
     private InterfazCliente interCliente;
     private InterfazEmpleado interEmpleado;
+    private InterfazAdmin interAdmin;
 
     public InterfazGeneral(GestorOficios gestor) {
         this.gestor = gestor;
         this.interCliente = new InterfazCliente();
         this.interEmpleado = new InterfazEmpleado();
+        this.interAdmin = new InterfazAdmin();
     }
 
     public void iniciar() {
@@ -23,7 +25,8 @@ public class InterfazGeneral {
             System.out.println("2 - Registrar empleado");
             System.out.println("3 - Iniciar sesion cliente");
             System.out.println("4 - Iniciar sesion empleado");
-            System.out.println("5 - Salir");
+            System.out.println("5 - Iniciar sesion administrador");
+            System.out.println("6 - Salir");
             System.out.print("Opcion: ");
             int opcion = sc.nextInt();
             sc.nextLine();
@@ -44,6 +47,13 @@ public class InterfazGeneral {
                     interEmpleado.menuEmpleado(empleado, gestor);
                     break;
                 case 5:
+                    if (interAdmin.iniciarSesionAdmin()) {
+                        interAdmin.menuAdmin(gestor);
+                    } else {
+                        System.out.println("Password de administrador incorrecta.");
+                    }
+                    break;
+                case 6:
                     seguir = 'n';
                     break;
                 default:

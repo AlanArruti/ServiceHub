@@ -4,6 +4,7 @@ import Exceptions.EmpleadoNoDisponibleException;
 import Exceptions.PersonaNoEncontradaException;
 import Exceptions.NumeroInvalidoException;
 import Exceptions.FechaInvalidaException;
+import Exceptions.CampoVacioException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -11,12 +12,14 @@ import java.util.Scanner;
 
 public class InterfazCliente {
 
-    private Direccion cargarDireccion(Scanner sc) throws NumeroInvalidoException {
+    private Direccion cargarDireccion(Scanner sc) throws NumeroInvalidoException, Exceptions.CampoVacioException {
         System.out.println("\n--- DIRECCION ---");
         System.out.print("Ciudad: ");
         String ciudad = sc.nextLine();
+        if (ciudad == null || ciudad.trim().isEmpty()) { throw new Exceptions.CampoVacioException("El campo Ciudad se ingreso vacio."); }
         System.out.print("Calle: ");
         String calle = sc.nextLine();
+        if (calle == null || calle.trim().isEmpty()) { throw new Exceptions.CampoVacioException("El campo Calle se ingreso vacio."); }
         System.out.print("Numero: ");
         String numeroTexto = sc.nextLine();
         int numero;
@@ -64,10 +67,21 @@ public class InterfazCliente {
         String telefono = sc.nextLine();
         System.out.print("Password: ");
         String password = sc.nextLine();
+        try {
+            if (dni == null || dni.trim().isEmpty()) throw new Exceptions.CampoVacioException("El campo DNI se ingreso vacio.");
+            if (nombre == null || nombre.trim().isEmpty()) throw new Exceptions.CampoVacioException("El campo Nombre se ingreso vacio.");
+            if (apellido == null || apellido.trim().isEmpty()) throw new Exceptions.CampoVacioException("El campo Apellido se ingreso vacio.");
+            if (email == null || email.trim().isEmpty()) throw new Exceptions.CampoVacioException("El campo Email se ingreso vacio.");
+            if (telefono == null || telefono.trim().isEmpty()) throw new Exceptions.CampoVacioException("El campo Telefono se ingreso vacio.");
+            if (password == null || password.trim().isEmpty()) throw new Exceptions.CampoVacioException("El campo Password se ingreso vacio.");
+        } catch (Exceptions.CampoVacioException e) {
+            System.out.println("ERROR: " + e.getMessage());
+            return null;
+        }
         Direccion direccion;
         try {
             direccion = cargarDireccion(sc);
-        } catch (NumeroInvalidoException e) {
+        } catch (CampoVacioException | NumeroInvalidoException e) {
             System.out.println("ERROR: " + e.getMessage());
             return null;
         }

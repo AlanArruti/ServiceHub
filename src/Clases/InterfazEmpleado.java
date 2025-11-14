@@ -32,6 +32,17 @@ public class InterfazEmpleado {
         String telefono = sc.nextLine();
         System.out.print("Password: ");
         String password = sc.nextLine();
+        try {
+            if (dni == null || dni.trim().isEmpty()) throw new Exceptions.CampoVacioException("El campo DNI se ingreso vacio.");
+            if (nombre == null || nombre.trim().isEmpty()) throw new Exceptions.CampoVacioException("El campo Nombre se ingreso vacio.");
+            if (apellido == null || apellido.trim().isEmpty()) throw new Exceptions.CampoVacioException("El campo Apellido se ingreso vacio.");
+            if (email == null || email.trim().isEmpty()) throw new Exceptions.CampoVacioException("El campo Email se ingreso vacio.");
+            if (telefono == null || telefono.trim().isEmpty()) throw new Exceptions.CampoVacioException("El campo Telefono se ingreso vacio.");
+            if (password == null || password.trim().isEmpty()) throw new Exceptions.CampoVacioException("El campo Password se ingreso vacio.");
+        } catch (Exceptions.CampoVacioException e) {
+            System.out.println("ERROR: " + e.getMessage());
+            return null;
+        }
 
         System.out.print("Nombre del oficio: ");
         String nombreOficio = sc.nextLine();
@@ -39,7 +50,7 @@ public class InterfazEmpleado {
         Direccion direccion;
         try {
             direccion = cargarDireccion(sc);
-        } catch (NumeroInvalidoException e) {
+        } catch (Exceptions.CampoVacioException | NumeroInvalidoException e) {
             System.out.println("ERROR: " + e.getMessage());
             return null;
         }
@@ -132,19 +143,22 @@ public class InterfazEmpleado {
         System.out.println("Reputacion promedio: " + String.format("%.2f", empleado.getReputacion()));
     }
 
-    private Direccion cargarDireccion(Scanner sc) throws NumeroInvalidoException {
+    private Direccion cargarDireccion(Scanner sc) throws NumeroInvalidoException, Exceptions.CampoVacioException {
         System.out.println("\n--- DIRECCION ---");
         System.out.print("Ciudad: ");
         String ciudad = sc.nextLine();
+        if (ciudad == null || ciudad.trim().isEmpty()) { throw new Exceptions.CampoVacioException("El campo Ciudad se ingreso vacio."); }
         System.out.print("Calle: ");
         String calle = sc.nextLine();
+        if (calle == null || calle.trim().isEmpty()) { throw new Exceptions.CampoVacioException("El campo Calle se ingreso vacio."); }
         System.out.print("Numero: ");
         String numeroTexto = sc.nextLine();
         int numero;
         try {
             numero = Integer.parseInt(numeroTexto.trim());
+            if (numero <= 0) throw new NumberFormatException();
         } catch (NumberFormatException e) {
-            throw new NumeroInvalidoException("El número de la dirección es inválido.");
+            throw new NumeroInvalidoException("El numero de la direccion es invalido.");
         }
         return new Direccion(ciudad, calle, numero);
     }
