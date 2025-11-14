@@ -113,7 +113,7 @@ public class InterfazEmpleado {
 
             if (seguir == 's') {
                 System.out.print("Volver al menu? (s/n): ");
-                seguir = leerContinuar(sc);
+                seguir = sc.nextLine().charAt(0);
             }
         }
     }
@@ -155,6 +155,7 @@ public class InterfazEmpleado {
         String numeroTexto = sc.nextLine();
         int numero;
         try {
+            // pasa el numero de texto a formato entero
             numero = Integer.parseInt(numeroTexto.trim());
             if (numero <= 0) throw new NumberFormatException();
         } catch (NumberFormatException e) {
@@ -163,11 +164,5 @@ public class InterfazEmpleado {
         return new Direccion(ciudad, calle, numero);
     }
 
-    private char leerContinuar(Scanner sc) {
-        String respuesta = sc.nextLine().toLowerCase();
-        if (respuesta.isEmpty()) {
-            return 'n';
-        }
-        return respuesta.charAt(0);
-    }
+
 }
