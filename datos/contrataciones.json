@@ -1,1 +1,9 @@
-[]
+[{
+    "descripcion": "arreglar flores",
+    "fecha": "2025-11-14",
+    "oficioNombre": "Jardineria",
+    "clienteDni": "122",
+    "id": "SRV1",
+    "empleadoDni": "789",
+    "oficioId": "OFI2"
+}]
