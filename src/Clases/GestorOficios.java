@@ -113,7 +113,7 @@ public class GestorOficios {
         guardarClientes();
     }
 
-
+    //Inicio de sesion de clientes y empleados
     public Cliente iniciarSesionCliente(String dni, String password) throws PersonaNoEncontradaException {
         Cliente cliente = buscarClienteEnLista(dni);
         if (!cliente.validarPassword(password))
@@ -170,14 +170,16 @@ public class GestorOficios {
         }
     }
 
-
+    // Contrataciones
     public void contratarEmpleado(Empleado empleado, Contrataciones servicio, LocalDate fecha) throws EmpleadoNoDisponibleException {
         if (empleado == null || servicio == null || fecha == null) return;
 
+        // Tiene que ser una fecha actual o futura
         if (fecha.isBefore(LocalDate.now())) {
             throw new FechaInvalidaException("La fecha no puede ser anterior a hoy.");
         }
 
+        // Verificamos si ya tiene contrataciones activas
         if (!empleado.estaDisponible(fecha)){
             throw new EmpleadoNoDisponibleException("El empleado no está disponible ese día.");
         }
@@ -237,6 +239,8 @@ public class GestorOficios {
         return resultado;
     }
 
+
+    // Pasamos los datos al archivo
     public void guardarOficios() {
         JSONArray array = new JSONArray();
         for (Oficio oficio : oficios.listar()) {
@@ -306,7 +310,7 @@ public class GestorOficios {
         JSONUtiles.cargarJSON(array, ARCHIVO_CONTRATACIONES);
     }
 
-    
+    // Deserializacion
     private void cargarOficios() {
         JSONArray array = JSONUtiles.leerArreglo(ARCHIVO_OFICIOS);
         for (int i = 0; i < array.length(); i++) {
