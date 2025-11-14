@@ -29,21 +29,15 @@ public class Contrataciones implements Identificable {
 
     public Oficio getOficio() { return oficio; }
 
-    public void setOficio(Oficio oficio) { this.oficio = oficio; }
-
     public LocalDate getFecha() { return fecha; }
 
     public Cliente getCliente() { return cliente; }
 
-    public void setCliente(Cliente cliente) { this.cliente = cliente; }
-
     public void setFecha(LocalDate fecha) { this.fecha = fecha; }
-
-    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
 
     public static int getContadorServicios() { return contadorServicios; }
 
-    public static void setContadorServicios(int contadorServicios) { Contrataciones.contadorServicios = contadorServicios; }
+    private static void setContadorServicios(int contadorServicios) { Contrataciones.contadorServicios = contadorServicios; }
 
     public Empleado getEmpleado() { return empleado; }
 

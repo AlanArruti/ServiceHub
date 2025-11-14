@@ -35,27 +35,13 @@ public class Empleado extends Persona implements Registrable {
 
     public double getReputacion() {return reputacion;}
 
-    public void setReputacion(double reputacion) {this.reputacion = reputacion;}
-
     public Map<LocalDate, Contrataciones> getContrataciones() {return contrataciones;}
-
-    public void setContrataciones(Map<LocalDate, Contrataciones> contrataciones) {this.contrataciones = contrataciones;}
 
     public DisponibilidadEmpleado getEstado() {return estado;}
 
-    public void setEstado(DisponibilidadEmpleado estado) {this.estado = estado;}
-
     public List<Calificacion> getCalificaciones() {return calificaciones;}
 
-    public void setCalificaciones(List<Calificacion> calificaciones) {this.calificaciones = calificaciones;}
-
     public Oficio getOficio() {return oficio;}
-
-    public void setOficio(Oficio oficio) {this.oficio = oficio;}
-
-    public List<String> getHistorialAcciones() {return historialAcciones;}
-
-    public void setHistorialAcciones(List<String> historialAcciones) {this.historialAcciones = historialAcciones;}
 
 
     // utilizaciones del usuario
