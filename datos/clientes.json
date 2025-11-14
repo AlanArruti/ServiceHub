@@ -1,0 +1,41 @@
+[
+    {
+        "password": "123",
+        "apellido": "arruti",
+        "direccion": {
+            "numero": 2,
+            "ciudad": "loberia",
+            "calle": "tamangueyu"
+        },
+        "telefono": "2262-455202",
+        "nombre": "alan",
+        "dni": "123",
+        "email": "arrutialan@gmail.com"
+    },
+    {
+        "password": "123",
+        "apellido": "blandi",
+        "direccion": {
+            "numero": 1859,
+            "ciudad": "mar del plata",
+            "calle": "entre rios"
+        },
+        "telefono": "223-12345678",
+        "nombre": "iara",
+        "dni": "122",
+        "email": "iablandli@gmail.com"
+    },
+    {
+        "password": "123",
+        "apellido": "aguirre",
+        "direccion": {
+            "numero": 1223,
+            "ciudad": "canall",
+            "calle": "cordoba"
+        },
+        "telefono": "3463-123456",
+        "nombre": "fran",
+        "dni": "133",
+        "email": "franaguirre@gmail.com"
+    }
+]

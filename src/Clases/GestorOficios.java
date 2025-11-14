@@ -19,8 +19,8 @@ public class GestorOficios {
     private Repositorio<Contrataciones> contrataciones;
     private Repositorio<Oficio> oficios;
 
-    // Nuevos nombres de archivo (sin carpeta)
-    private static final String CARPETA_DATOS = "datos";
+    // Carpeta de datos (con separador)
+    private static final String CARPETA_DATOS = "datos/";
     private static final String ARCHIVO_OFICIOS = CARPETA_DATOS + "oficios.json";
     private static final String ARCHIVO_CLIENTES = CARPETA_DATOS + "clientes.json";
     private static final String ARCHIVO_EMPLEADOS = CARPETA_DATOS + "empleados.json";
@@ -219,6 +219,10 @@ public class GestorOficios {
         }
         return resultado;
     }
+
+    public Contrataciones buscarContratacionPorId(String id) throws PersonaNoEncontradaException {
+        return contrataciones.buscarPorId(id);
+    }
     public Contrataciones crearContratacion(Cliente cliente, Oficio oficio, String descripcion, LocalDate fecha) {
         return new Contrataciones(descripcion, oficio, cliente, fecha);
     }
@@ -335,7 +339,7 @@ public class GestorOficios {
     }
 
     private void cargarEmpleados() {
-        JSONArray array = JSONUtiles.leerArreglo(ARCHIVO_OFICIOS);
+        JSONArray array = JSONUtiles.leerArreglo(ARCHIVO_EMPLEADOS);
         for (int i = 0; i < array.length(); i++) {
             JSONObject objeto = array.getJSONObject(i);
             String dni = objeto.optString("dni");
@@ -426,6 +430,8 @@ public class GestorOficios {
         cargarEmpleados();
         cargarContrataciones();
     }
+
+    
 
     public void guardarTodo() {
         guardarOficios();

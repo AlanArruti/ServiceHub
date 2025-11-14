@@ -1,0 +1,32 @@
+[
+    {
+        "password": "123",
+        "oficioNombre": "Plomero",
+        "apellido": "morales",
+        "direccion": {
+            "numero": 123,
+            "ciudad": "mar del plata",
+            "calle": "jujuy"
+        },
+        "telefono": "223-12345678",
+        "nombre": "juan",
+        "oficioId": "OFI1",
+        "dni": "456",
+        "email": "jmorales@gmail.com"
+    },
+    {
+        "password": "123",
+        "oficioNombre": "Jardinera",
+        "apellido": "gutierrez",
+        "direccion": {
+            "numero": 456,
+            "ciudad": "Chubut",
+            "calle": "La rioja"
+        },
+        "telefono": "2262-124578",
+        "nombre": "Ivana",
+        "oficioId": "OFI2",
+        "dni": "789",
+        "email": "ivgutierrez@gmail.com"
+    }
+]

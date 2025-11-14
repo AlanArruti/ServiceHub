@@ -129,7 +129,7 @@ public class InterfazEmpleado {
         for (Calificacion calificacion : calificaciones) {
             System.out.println(calificacion);
         }
-        System.out.println("Reputacion promedio: " + empleado.getReputacion());
+        System.out.println("Reputacion promedio: " + String.format("%.2f", empleado.getReputacion()));
     }
 
     private Direccion cargarDireccion(Scanner sc) throws NumeroInvalidoException {

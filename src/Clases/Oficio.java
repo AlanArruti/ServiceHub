@@ -24,63 +24,46 @@ public class Oficio implements Identificable {
     }
 
     private void actualizarContador(String idExistente) throws IdInvalidoException {
-        if (idExistente != null && idExistente.startsWith("OFI")) {
-            // Tomo la parte numerica del ID
-            String numeroStr = idExistente.substring(3);
-
-            // Convierto ese número de texto a entero
+        if (idExistente == null || !idExistente.startsWith("OFI")) {
+            return;
+        }
+        String numeroStr = idExistente.substring(3);
+        try {
             int numero = Integer.parseInt(numeroStr);
-
             if (numero >= contador) {
                 contador = numero + 1;
             }
+        } catch (NumberFormatException e) {
+            throw new IdInvalidoException("El ID existente no tiene un formato numérico válido.");
         }
-        throw new IdInvalidoException("El ID existente no tiene un formato numérico válido.");
     }
 
-    public String getId() {
-        return id;
-    }
+    public String getId() { return id; }
 
-    public String getNombre() {
-        return nombre;
-    }
+    public String getNombre() { return nombre; }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
+    public void setNombre(String nombre) { this.nombre = nombre; }
 
     @Override
-    public String getIdentificador() {
-        return id;
-    }
+    public String getIdentificador() { return id; }
 
     public boolean coincideConNombre(String nombreBuscado) {
-        if (nombreBuscado == null) {
-            return false;
-        }
+        if (nombreBuscado == null) return false;
         return nombre.equalsIgnoreCase(nombreBuscado.trim());
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (!(obj instanceof Oficio)) {
-            return false;
-        }
+        if (this == obj) return true;
+        if (!(obj instanceof Oficio)) return false;
         Oficio otro = (Oficio) obj;
         return id.equals(otro.id);
     }
 
     @Override
-    public int hashCode() {
-        return id.hashCode();
-    }
+    public int hashCode() { return id.hashCode(); }
 
     @Override
-    public String toString() {
-        return nombre + " (" + id + ")";
-    }
+    public String toString() { return nombre + " (" + id + ")"; }
 }
+

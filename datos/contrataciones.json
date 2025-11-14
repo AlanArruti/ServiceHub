@@ -1,0 +1,20 @@
+[
+    {
+        "descripcion": "arreglar cañeria",
+        "fecha": "2025-12-05",
+        "oficioNombre": "Plomero",
+        "clienteDni": "123",
+        "id": "SRV1",
+        "empleadoDni": "456",
+        "oficioId": "OFI1"
+    },
+    {
+        "descripcion": "cortar pasto",
+        "fecha": "2025-11-13",
+        "oficioNombre": "Jardinera",
+        "clienteDni": "123",
+        "id": "SRV2",
+        "empleadoDni": "789",
+        "oficioId": "OFI2"
+    }
+]

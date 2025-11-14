@@ -86,15 +86,15 @@ public class Empleado extends Persona implements Registrable {
             reputacion = 0.0;
             return;
         }
-        int suma = 0;
+        double suma = 0.0;
         for (Calificacion v : calificaciones) {
             suma += v.getPuntaje();
         }
-        reputacion = (double) suma / calificaciones.size();
+        reputacion = suma / calificaciones.size();
     }
 
 
-    public void agregarValoracion(Cliente cliente, int puntaje, String comentario) {
+    public void agregarValoracion(Cliente cliente, double puntaje, String comentario) {
         boolean contratoPrevio = false;
 
         //Recorremos todas las contrataciones para verificar si el cliente lo contrató
@@ -111,7 +111,7 @@ public class Empleado extends Persona implements Registrable {
             return;
         }
 
-        if (puntaje < 1 || puntaje > 5) {
+        if (puntaje < 1.0 || puntaje > 5.0) {
             System.out.println("La calificación debe ser entre 1 y 5.");
             return;
         }
@@ -155,7 +155,7 @@ public class Empleado extends Persona implements Registrable {
     public String toString() {
         return "Empleado{" +
                 "direccion=" + direccion +
-                ", reputacion=" + reputacion +
+                ", reputacion=" + String.format("%.2f", reputacion) +
                 ", contrataciones=" + contrataciones +
                 ", estado=" + estado +
                 ", calificaciones=" + calificaciones +

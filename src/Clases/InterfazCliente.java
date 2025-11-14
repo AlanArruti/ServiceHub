@@ -180,7 +180,8 @@ public class InterfazCliente {
             System.out.println("1 - Ver oficios");
             System.out.println("2 - Contratar servicio");
             System.out.println("3 - Ver mis contrataciones");
-            System.out.println("4 - Salir");
+            System.out.println("4 - Calificar servicio");
+            System.out.println("5 - Salir");
             System.out.print("Opcion: ");
             int opcion = sc.nextInt();
             sc.nextLine();
@@ -199,6 +200,10 @@ public class InterfazCliente {
                     break;
                 }
                 case 4:{
+                    calificarServicio(cliente, gestor);
+                    break;
+                }
+                case 5:{
                     seguir = 'n';
                     break;
                 }
@@ -212,6 +217,69 @@ public class InterfazCliente {
                 System.out.print("Volver al menu? (s/n): ");
                 seguir = leerContinuar(sc);
             }
+        }
+    }
+
+    private void calificarServicio(Cliente cliente, GestorOficios gestor) {
+        List<Contrataciones> contratacionesCliente = gestor.obtenerContratacionesDeCliente(cliente);
+        if (contratacionesCliente.isEmpty()) {
+            System.out.println("No hay contrataciones registradas.");
+            return;
+        }
+
+        System.out.println("Contrataciones para calificar:");
+        for (Contrataciones c : contratacionesCliente) {
+            if (c.getEmpleado() != null) {
+                System.out.println("- ID " + c.getIdServicio() + ": '" + c.getDescripcion() + "' – Empleado: " + c.getEmpleado().getNombre() + " " + c.getEmpleado().getApellido() + " – Fecha " + c.getFecha());
+            } else {
+                System.out.println("- ID " + c.getIdServicio() + ": '" + c.getDescripcion() + "' – Empleado: Sin asignar – Fecha " + c.getFecha());
+            }
+        }
+
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Ingrese el ID del servicio a calificar (ej. SRV1): ");
+        String idServicio = sc.nextLine();
+
+        Contrataciones seleccionada;
+        try {
+            seleccionada = gestor.buscarContratacionPorId(idServicio);
+        } catch (Exceptions.PersonaNoEncontradaException e) {
+            System.out.println("ERROR: No se encontró la contratación con ese ID.");
+            return;
+        }
+
+        try {
+            validarContratacionCalificable(cliente, seleccionada);
+        } catch (Exceptions.ServicioNoCalificableException e) {
+            System.out.println("ERROR: " + e.getMessage());
+            return;
+        }
+
+        System.out.print("Puntaje (1-5, permite decimales con coma o punto): ");
+        String puntajeTexto = sc.nextLine();
+        double puntaje;
+        try {
+            String normalizado = puntajeTexto.trim().replace(',', '.');
+            puntaje = Double.parseDouble(normalizado);
+        } catch (NumberFormatException ex) {
+            System.out.println("Puntaje inválido.");
+            return;
+        }
+        System.out.print("Comentario: ");
+        String comentario = sc.nextLine();
+
+        seleccionada.getEmpleado().agregarValoracion(cliente, puntaje, comentario);
+    }
+
+    private void validarContratacionCalificable(Cliente cliente, Contrataciones c) throws Exceptions.ServicioNoCalificableException {
+        if (c == null || c.getCliente() == null || !c.getCliente().getDni().equalsIgnoreCase(cliente.getDni())) {
+            throw new Exceptions.ServicioNoCalificableException("Solo puede calificar sus contrataciones.");
+        }
+        if (c.getEmpleado() == null) {
+            throw new Exceptions.ServicioNoCalificableException("La contratación aún no tiene empleado asignado.");
+        }
+        if (c.getFecha() == null || c.getFecha().isAfter(java.time.LocalDate.now())) {
+            throw new Exceptions.ServicioNoCalificableException("Solo puede calificar contrataciones realizadas (hoy o anteriores).");
         }
     }
 }
