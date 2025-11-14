@@ -26,7 +26,6 @@ public class Empleado extends Persona implements Registrable {
         this.historialAcciones = new ArrayList<>();
     }
 
-
     // Getters y Setters
 
     public Direccion getDireccion() {return direccion;}
@@ -80,6 +79,7 @@ public class Empleado extends Persona implements Registrable {
     }
 
 
+    // metodo para que el cliente puede valorar al empleado
     public void agregarValoracion(Cliente cliente, double puntaje, String comentario) {
         boolean contratoPrevio = false;
 
@@ -108,6 +108,7 @@ public class Empleado extends Persona implements Registrable {
         System.out.println("Valoración registrada correctamente.");
     }
 
+    // metodo para que el usuario pueda contratar a un empleado en una fecha
     public void contratarServicio(Contrataciones servicio, LocalDate fechaDeseada) throws EmpleadoNoDisponibleException {
 
         if (!estaDisponible(fechaDeseada)) {
@@ -125,6 +126,7 @@ public class Empleado extends Persona implements Registrable {
         actualizarDisponibilidad();
     }
 
+    // sirve para las contrataciones
     public void registrarAccion(String descripcion) {
         historialAcciones.add(LocalDate.now() + ": " + descripcion);
     }

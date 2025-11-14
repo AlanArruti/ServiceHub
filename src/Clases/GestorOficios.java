@@ -79,8 +79,6 @@ public class GestorOficios {
         return null;
     }
 
-
-
     // ver la disponibilidad del empleado en la fecha que pide el usuario
     public boolean verSiEstaDisponible(String dni, LocalDate fecha) throws PersonaNoEncontradaException {
         Empleado empleado = buscarEmpleadoEnLista(dni);

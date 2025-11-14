@@ -53,7 +53,7 @@ public abstract class Persona implements Identificable {
     void setTelefono(String telefono) { this.telefono = telefono; }
     void setPassword(String password) { this.password = password; }
 
-
+    // metodo para todas las personas
     public boolean validarPassword(String passwordIngresada) {
         if (passwordIngresada == null) {
             return false;

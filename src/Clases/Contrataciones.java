@@ -48,17 +48,6 @@ public class Contrataciones implements Identificable {
         return "SRV" + contadorServicios++;
     }
 
-    private void actualizarContador(String idExistente) {
-        if (idExistente != null && idExistente.startsWith("SRV")) {
-            try {
-                int numero = Integer.parseInt(idExistente.substring(3));
-                if (numero >= contadorServicios) {
-                    contadorServicios = numero + 1;
-                }
-            } catch (NumberFormatException e) {
-            }
-        }
-    }
 
     // Implementación de Identificable
     public String getIdentificador() { return idServicio; }
