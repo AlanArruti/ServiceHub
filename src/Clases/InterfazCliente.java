@@ -31,14 +31,6 @@ public class InterfazCliente {
         return new Direccion(ciudad, calle, numero);
     }
 
-    private char leerContinuar(Scanner sc) {
-        String respuesta = sc.nextLine().toLowerCase();
-        if (respuesta.isEmpty()) {
-            return 'n';
-        }
-        return respuesta.charAt(0);
-    }
-
     private void verOficios(GestorOficios gestor) {
         gestor.mostrarOficios();
     }
@@ -49,7 +41,7 @@ public class InterfazCliente {
         System.out.print("DNI: ");
         String dni = sc.nextLine();
         try {
-            // Si ya existe, no continuar
+            // Si ya existe, no continua
             if (gestor.buscarClienteEnLista(dni) != null) {
                 System.out.println("El DNI ya está registrado como cliente.");
                 return null;
@@ -67,6 +59,8 @@ public class InterfazCliente {
         String telefono = sc.nextLine();
         System.out.print("Password: ");
         String password = sc.nextLine();
+
+        // validaciones para que los cambios no esten vacios
         try {
             if (dni == null || dni.trim().isEmpty()) throw new Exceptions.CampoVacioException("El campo DNI se ingreso vacio.");
             if (nombre == null || nombre.trim().isEmpty()) throw new Exceptions.CampoVacioException("El campo Nombre se ingreso vacio.");
@@ -94,11 +88,12 @@ public class InterfazCliente {
 
     private void contratarServicio(Cliente cliente, GestorOficios gestor) {
         Scanner sc = new Scanner(System.in);
+
         System.out.println("\n--- CONTRATAR SERVICIO ---");
-        //gestor.mostrarOficios();
         System.out.print("Ingrese el oficio deseado: ");
         String nombreOficio = sc.nextLine();
         Oficio oficio = gestor.obtenerOcrearOficio(nombreOficio);
+
         if (oficio == null) {
             System.out.println("Debe ingresar un oficio valido.");
             return;
@@ -229,7 +224,7 @@ public class InterfazCliente {
 
             if (seguir == 's') {
                 System.out.print("Volver al menu? (s/n): ");
-                seguir = leerContinuar(sc);
+                seguir = sc.next().charAt(0);
             }
         }
     }
@@ -241,6 +236,7 @@ public class InterfazCliente {
             return;
         }
 
+        // no se puede calificar si el servicio todavia no se concreto
         System.out.println("Contrataciones para calificar:");
         for (Contrataciones c : contratacionesCliente) {
             if (c.getEmpleado() != null) {
@@ -250,6 +246,7 @@ public class InterfazCliente {
             }
         }
 
+        // si es la fecha de hoy o de ayer funciona, fechas futuras no
         Scanner sc = new Scanner(System.in);
         System.out.print("Ingrese el ID del servicio a calificar (ej. SRV1): ");
         String idServicio = sc.nextLine();
@@ -285,6 +282,7 @@ public class InterfazCliente {
         seleccionada.getEmpleado().agregarValoracion(cliente, puntaje, comentario);
     }
 
+    // parte de que no se pueda contratar si no se completo el servicio
     private void validarContratacionCalificable(Cliente cliente, Contrataciones c) throws Exceptions.ServicioNoCalificableException {
         if (c == null || c.getCliente() == null || !c.getCliente().getDni().equalsIgnoreCase(cliente.getDni())) {
             throw new Exceptions.ServicioNoCalificableException("Solo puede calificar sus contrataciones.");
