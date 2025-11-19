@@ -3,6 +3,9 @@ package Clases;
 import java.text.Normalizer;
 
 public class Validaciones {
+
+    // Validaciones para q no se rompa mas
+
     public static boolean esDniValido(String dni) {
         if (dni == null) return false;
         String t = dni.trim();

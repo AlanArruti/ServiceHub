@@ -90,7 +90,7 @@ public class GestorOficios {
         if (empleado == null) return;
         try {
             if (buscarEmpleadoEnLista(empleado.getDni()) != null) {
-                System.out.println("El DNI ya estÃ¡ registrado como empleado.");
+                System.out.println("El DNI ya esta registrado como empleado.");
                 return;
             }
         } catch (PersonaNoEncontradaException e) {
@@ -104,7 +104,7 @@ public class GestorOficios {
         if (cliente == null) return;
         try {
             if (buscarClienteEnLista(cliente.getDni()) != null) {
-                System.out.println("El DNI ya estÃ¡ registrado como cliente.");
+                System.out.println("El DNI ya esta registrado como cliente.");
                 return;
             }
         } catch (PersonaNoEncontradaException e) {
@@ -172,7 +172,7 @@ public class GestorOficios {
 
         // Verificamos si ya tiene contrataciones activas
         if (!empleado.estaDisponible(fecha)) {
-            throw new EmpleadoNoDisponibleException("El empleado no estÃ¡ disponible ese dÃ­a.");
+            throw new EmpleadoNoDisponibleException("El empleado no esta disponible ese dia.");
         }
         servicio.setEmpleado(empleado);
         servicio.setFecha(fecha);
@@ -184,22 +184,26 @@ public class GestorOficios {
         guardarEmpleados();
     }
 
-    // Permite que un empleado rechace una contratacion previamente asignada
+    // Permite que un empleado rechace una contratacion
     public void rechazarContratacion(Empleado empleado, Contrataciones servicio) throws TrabajoYaRealizadoException {
         if (empleado == null || servicio == null) return;
+
         // No se pueden rechazar contrataciones en fechas pasadas
         if (servicio.getFecha() != null && servicio.getFecha().isBefore(LocalDate.now())) {
             throw new TrabajoYaRealizadoException("El trabajo ya fue realizado y no puede ser rechazado.");
         }
+
         empleado.rechazarServicio(servicio);
-        // Reflejar en la contratacion que fue rechazada por el empleado
         servicio.setEstado("RECHAZADO");
+
         // Dejar la contratacion sin empleado y registrar una notificacion para el cliente
         servicio.setEmpleado(null);
-        String nombreEmpleado = (empleado.getNombre() == null ? "" : empleado.getNombre()) +
-                " " + (empleado.getApellido() == null ? "" : empleado.getApellido());
-        String msg = "El empleado " + nombreEmpleado.trim() + " rechazo su contratacion (" +
-                servicio.getIdServicio() + ") de '" + servicio.getDescripcion() + "' para la fecha " + servicio.getFecha() + ".";
+
+        // Evita NullPointerException en nombre y apellido
+        String nombreEmpleado = (empleado.getNombre() == null ? "" : empleado.getNombre()) + " " + (empleado.getApellido() == null ? "" : empleado.getApellido());
+
+        String msg = "El empleado " + nombreEmpleado.trim() + " rechazo su contratacion (" + servicio.getIdServicio() + ") de '" + servicio.getDescripcion() + "' para la fecha " + servicio.getFecha() + ".";
+
         servicio.setNotificacion(msg);
         guardarEmpleados();
         guardarContrataciones();
@@ -208,8 +212,10 @@ public class GestorOficios {
     // Cancelar una contratacion por el cliente (ej. precio muy alto)
     public void cancelarContratacionPorCliente(Cliente cliente, Contrataciones servicio) {
         if (cliente == null || servicio == null) return;
+
         if (servicio.getCliente() == null || !servicio.getCliente().getDni().equalsIgnoreCase(cliente.getDni())) return;
         Empleado e = servicio.getEmpleado();
+
         if (e != null) { e.rechazarServicio(servicio); e.registrarAccion("El cliente " + cliente.getNombre() + " cancelo la contratacion " + servicio.getIdServicio()); }
         servicio.setEmpleado(null);
         servicio.setEstado("CANCELADO");
@@ -220,18 +226,20 @@ public class GestorOficios {
     // Asigna un empleado a una contratacion existente (reasignacion), sin duplicar en el repositorio
     public void asignarEmpleadoAContratacion(Empleado empleado, Contrataciones servicio, LocalDate fecha) throws EmpleadoNoDisponibleException {
         if (empleado == null || servicio == null || fecha == null) return;
+
         if (fecha.isBefore(LocalDate.now())) {
-            // Mantener la misma regla de fechas que contratarEmpleado
             throw new FechaInvalidaException("La fecha no puede ser anterior a hoy.");
         }
         if (!empleado.estaDisponible(fecha)) {
             throw new EmpleadoNoDisponibleException("El empleado no esta disponible ese dia.");
         }
+
         servicio.setEmpleado(empleado);
         servicio.setFecha(fecha);
         servicio.setEstado("PENDIENTE");
         empleado.contratarServicio(servicio, fecha);
-        // Limpiar notificacion al cliente por reasignacion exitosa
+
+        // Limpia las notificaciones al cliente por reasignacion exitosa
         servicio.setNotificacion(null);
         guardarContrataciones();
         guardarEmpleados();
@@ -399,11 +407,13 @@ public class GestorOficios {
     // Deserializacion
     private void cargarOficios() {
         JSONArray array = JSONUtiles.leerArreglo(ARCHIVO_OFICIOS);
+
         java.util.Set<String> nombresCargados = new java.util.HashSet<>();
+
         for (int i = 0; i < array.length(); i++) {
             JSONObject objeto = array.getJSONObject(i);
             if (objeto.has("fecha")) {
-                System.out.println("ADVERTENCIA: Se encontrï¿½ un campo 'fecha' en oficios.json. Se ignorarï¿½.");
+                System.out.println("ADVERTENCIA: Se encontro un campo 'fecha' en oficios.json. Se ignorara");
             }
             String id = objeto.optString("id");
             String nombre = objeto.optString("nombre");

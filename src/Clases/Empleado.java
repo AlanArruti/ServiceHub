@@ -84,7 +84,7 @@ public class Empleado extends Persona implements Registrable {
 
     // utilizaciones del empleado
 
-        //Metodo para actualizar las calificaciones
+    //Metodo para actualizar las calificaciones
     private void actualizarReputacion() {
         consolidarCalificaciones();
         if (calificaciones.isEmpty()) {
@@ -101,14 +101,18 @@ public class Empleado extends Persona implements Registrable {
     // Mantiene solo la última calificación por (cliente, idServicio)
     private void consolidarCalificaciones() {
         if (calificaciones == null || calificaciones.isEmpty()) return;
+
         java.util.Map<String, Calificacion> ultimas = new java.util.LinkedHashMap<>();
+
         for (Calificacion c : calificaciones) {
             if (c == null || c.getCliente() == null) continue;
             String dni = c.getCliente().getDni();
             String id = c.getIdServicio();
+
             if (id == null || id.trim().isEmpty()) {
                 continue;
             }
+
             String key = (dni == null ? "" : dni.trim()) + "|" + id.trim();
             Calificacion prev = ultimas.get(key);
             if (prev == null) {
@@ -124,7 +128,9 @@ public class Empleado extends Persona implements Registrable {
         }
         calificaciones.clear();
         calificaciones.addAll(ultimas.values());
-    }// metodo para que el cliente puede valorar al empleado
+    }
+
+    // metodo para que el cliente puede valorar al empleado
     public void agregarValoracion(Cliente cliente, double puntaje, String comentario, String idServicio) {
         boolean contratoPrevio = false;
         for (Contrataciones c : this.contrataciones.values()) {
@@ -138,7 +144,7 @@ public class Empleado extends Persona implements Registrable {
             return;
         }
         if (puntaje < 1.0 || puntaje > 5.0) {
-            System.out.println("La calificación debe ser entre 1 y 5.");
+            System.out.println("La calificacion debe ser entre 1 y 5.");
             return;
         }
         if (idServicio != null && !idServicio.trim().isEmpty()) {
@@ -156,7 +162,7 @@ public class Empleado extends Persona implements Registrable {
         cal.setFecha(LocalDate.now());
         calificaciones.add(cal);
         actualizarReputacion();
-        System.out.println("Valoración registrada correctamente.");
+        System.out.println("Valoracion registrada correctamente.");
     }
     // metodo para que el usuario pueda contratar a un empleado en una fecha
     public void contratarServicio(Contrataciones servicio, LocalDate fechaDeseada) throws EmpleadoNoDisponibleException {
@@ -168,7 +174,7 @@ public class Empleado extends Persona implements Registrable {
         contrataciones.put(fechaDeseada, servicio);
         estado = DisponibilidadEmpleado.OCUPADO;
 
-        registrarAccion("ContrataciÃ³n " + servicio.getIdServicio() + ": '" + servicio.getDescripcion() + "' â€“ Fecha " + fechaDeseada);
+        registrarAccion("Contratacion " + servicio.getIdServicio() + ": '" + servicio.getDescripcion() + "' - Fecha " + fechaDeseada);
     }
 
     public void cargarContratacionGuardada(Contrataciones servicio, LocalDate fecha) {
@@ -180,6 +186,8 @@ public class Empleado extends Persona implements Registrable {
     public void rechazarServicio(Contrataciones servicio) {
         if (servicio == null) return;
         LocalDate encontrada = null;
+
+        // recorro todas las filas del mapa
         for (java.util.Map.Entry<LocalDate, Contrataciones> e : contrataciones.entrySet()) {
             if (e.getValue().equals(servicio)) {
                 encontrada = e.getKey();

@@ -34,7 +34,7 @@ public class Oficio implements Identificable {
                 contador = numero + 1;
             }
         } catch (NumberFormatException e) {
-            throw new IdInvalidoException("El ID existente no tiene un formato numÃ©rico vÃ¡lido.");
+            throw new IdInvalidoException("El ID existente no tiene un formato numerico valido.");
         }
     }
 

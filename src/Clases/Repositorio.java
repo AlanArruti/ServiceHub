@@ -39,7 +39,7 @@ public class Repositorio<T extends Identificable> {
                 return elemento;
             }
         }
-        throw new PersonaNoEncontradaException("No se encontrÃ³ ningÃºn elemento con el ID: " + id);
+        throw new PersonaNoEncontradaException("No se encontro ningun elemento con el ID: " + id);
     }
 
     @Override

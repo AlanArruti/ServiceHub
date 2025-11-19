@@ -15,7 +15,7 @@ public class Contrataciones implements Identificable {
     private Empleado empleado;
     private Double precio;
     private String estado; // PENDIENTE, ACEPTADO, RECHAZADO
-    // Mensaje para notificar al cliente (ej.: rechazo de empleado)
+    // Mensaje para notificar al cliente (ej: rechazo de empleado)
     private String notificacion;
 
     public Contrataciones(String descripcion, Oficio oficio, Cliente cliente, LocalDate fecha) {
@@ -67,7 +67,7 @@ public class Contrataciones implements Identificable {
     }
 
 
-    // ImplementaciÃ³n de Identificable
+    // Implementacion de Identificable
     public String getIdentificador() { return idServicio; }
 
     // Hashcode/equals para el funcionamiento del contains

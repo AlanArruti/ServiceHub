@@ -26,7 +26,7 @@ public class InterfazCliente {
         try {
             numero = Integer.parseInt(numeroTexto.trim());
         } catch (NumberFormatException e) {
-            throw new NumeroInvalidoException("El nÃºmero de la direcciÃ³n es invÃ¡lido.");
+            throw new NumeroInvalidoException("El numero de la direccion es invalido.");
         }
         return new Direccion(ciudad, calle, numero);
     }
@@ -43,7 +43,7 @@ public class InterfazCliente {
         try {
             // Si ya existe, no continua
             if (gestor.buscarClienteEnLista(dni) != null) {
-                System.out.println("El DNI ya estÃ¡ registrado como cliente.");
+                System.out.println("El DNI ya esta registrado como cliente.");
                 return null;
             }
         } catch (PersonaNoEncontradaException e) {
@@ -116,7 +116,7 @@ public class InterfazCliente {
             return;
         }
 
-        // Solicitar fecha primero para listar solo los disponibles ese dÃ­a
+        // Solicitar fecha primero para listar solo los disponibles ese dia
         System.out.print("Ingrese la fecha (yyyy-MM-dd): ");
         String fechaTexto = sc.nextLine();
         LocalDate fecha;
@@ -139,18 +139,18 @@ public class InterfazCliente {
                 disponibles.add(e);
             }
         }
-        // Ordenar por reputaciÃ³n promedio (descendente)
+        // Ordenar por reputacion promedio
         disponibles.sort(java.util.Comparator.comparingDouble(Empleado::getReputacion).reversed());
         if (disponibles.isEmpty()) {
             System.out.println("No hay empleados disponibles para ese oficio en esa fecha.");
             return;
         }
 
-        System.out.println("Empleados disponibles para " + fecha + " (ordenados por reputaciÃ³n):");
+        System.out.println("Empleados disponibles para " + fecha + " (ordenados por reputacion):");
         for (Empleado empleado : disponibles) {
             System.out.println("- " + empleado.getNombre() + " " + empleado.getApellido() +
                     " | DNI: " + empleado.getDni() +
-                    " | ReputaciÃ³n: " + String.format("%.2f", empleado.getReputacion()));
+                    " | Reputacion: " + String.format("%.2f", empleado.getReputacion()));
         }
 
         System.out.print("Ingrese el DNI del empleado elegido: ");
@@ -323,7 +323,7 @@ public class InterfazCliente {
         }
         System.out.println("\n--- CONTRATACIONES PENDIENTES ---");
         if (pendientes.isEmpty()) {
-            System.out.println("No tiene contrataciones pendientes de asignaciÃ³n.");
+            System.out.println("No tiene contrataciones pendientes de asignacion.");
             return;
         }
         for (Contrataciones c : pendientes) {
@@ -418,54 +418,6 @@ public class InterfazCliente {
         System.out.println("Contratacion cancelada.");
     }
 
-    private void cancelarContratacionPorPrecio(Cliente cliente, GestorOficios gestor) {
-        List<Contrataciones> mias = gestor.obtenerContratacionesDeCliente(cliente);
-        if (mias.isEmpty()) {
-            System.out.println("No hay contrataciones registradas.");
-            return;
-        }
-        Scanner sc = new Scanner(System.in);
-        System.out.print("Ingrese el precio mÃ¡ximo aceptable: ");
-        String ptxt = sc.nextLine();
-        double tope;
-        try { tope = Double.parseDouble(ptxt.trim().replace(',', '.')); } catch (Exception e) { System.out.println("Precio invÃ¡lido."); return; }
-
-        java.util.List<Contrataciones> candidatas = new java.util.ArrayList<>();
-        for (Contrataciones c : mias) {
-            if (c.getPrecio() != null && c.getPrecio() > tope && "ACEPTADO".equalsIgnoreCase(c.getEstado())) {
-                candidatas.add(c);
-            }
-        }
-        if (candidatas.isEmpty()) {
-            System.out.println("No hay contrataciones aceptadas con precio mayor a " + String.format("$%.2f", tope) + ".");
-            return;
-        }
-        System.out.println("\n--- CANCELAR POR PRECIO ---");
-        for (Contrataciones c : candidatas) {
-            System.out.println("- ID " + c.getIdServicio() + " | Fecha " + c.getFecha() + " | '" + c.getDescripcion() +
-                    "' | Precio: " + String.format("$%.2f", c.getPrecio()));
-        }
-        System.out.print("Ingrese el ID a cancelar: ");
-        String id = sc.nextLine();
-        Contrataciones seleccionada;
-        try {
-            seleccionada = gestor.buscarContratacionPorId(id);
-        } catch (Exceptions.PersonaNoEncontradaException e) {
-            System.out.println("ERROR: No se encuentra una contratacion con ese ID.");
-            return;
-        }
-        if (seleccionada == null || seleccionada.getCliente() == null ||
-                !seleccionada.getCliente().getDni().equalsIgnoreCase(cliente.getDni())) {
-            System.out.println("La contratacion indicada no pertenece a usted.");
-            return;
-        }
-        if (seleccionada.getPrecio() == null || !"ACEPTADO".equalsIgnoreCase(seleccionada.getEstado()) || seleccionada.getPrecio() <= tope) {
-            System.out.println("La contratacion no cumple condiciones para cancelacion por precio.");
-            return;
-        }
-        gestor.cancelarContratacionPorCliente(cliente, seleccionada);
-        System.out.println("Contratacion cancelada.");
-    }
 
     private void modificarDatosCliente(Cliente cliente, GestorOficios gestor) {
         if (cliente == null) return;
@@ -725,7 +677,7 @@ public class InterfazCliente {
             throw new Exceptions.ServicioNoCalificableException("Solo puede calificar sus contrataciones.");
         }
         if (c.getEmpleado() == null) {
-            throw new Exceptions.ServicioNoCalificableException("La contrataciÃ³n aÃºn no tiene empleado asignado.");
+            throw new Exceptions.ServicioNoCalificableException("La contratacion no tiene empleado asignado.");
         }
         if (c.getFecha() == null || c.getFecha().isAfter(java.time.LocalDate.now())) {
             throw new Exceptions.ServicioNoCalificableException("Solo puede calificar contrataciones realizadas (hoy o anteriores).");

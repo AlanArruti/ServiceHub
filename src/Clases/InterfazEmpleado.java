@@ -16,7 +16,7 @@ public class InterfazEmpleado {
         try {
             // Si ya existe, no continuar
             if (gestor.buscarEmpleadoEnLista(dni) != null) {
-                System.out.println("El DNI ya estÃ¡ registrado como Empleado.");
+                System.out.println("El DNI ya esta registrado como Empleado.");
                 return null;
             }
         } catch (PersonaNoEncontradaException e) {
@@ -388,7 +388,7 @@ public class InterfazEmpleado {
         try {
             seleccionada = gestor.buscarContratacionPorId(id);
         } catch (Exceptions.PersonaNoEncontradaException e) {
-            System.out.println("ERROR: No se encontrÃ³ una contrataciÃ³n con ese ID.");
+            System.out.println("ERROR: No se encontro una contratacion con ese ID.");
             return;
         }
         if (seleccionada.getEmpleado() == null || !seleccionada.getEmpleado().getDni().equalsIgnoreCase(empleado.getDni())) {
@@ -432,7 +432,7 @@ public class InterfazEmpleado {
         try {
             seleccionada = gestor.buscarContratacionPorId(id);
         } catch (Exceptions.PersonaNoEncontradaException e) {
-            System.out.println("ERROR: No se encontrÃ³ una contrataciÃ³n con ese ID.");
+            System.out.println("ERROR: No se encontro una contratacion con ese ID.");
             return;
         }
         if (seleccionada.getEmpleado() == null || !seleccionada.getEmpleado().getDni().equalsIgnoreCase(empleado.getDni())) {
@@ -442,7 +442,7 @@ public class InterfazEmpleado {
         System.out.print("Ingrese el precio (use coma o punto para decimales): ");
         String ptxt = sc.nextLine();
         double precio;
-        try { precio = Double.parseDouble(ptxt.trim().replace(',', '.')); } catch (Exception e) { System.out.println("Precio invÃ¡lido."); return; }
+        try { precio = Double.parseDouble(ptxt.trim().replace(',', '.')); } catch (Exception e) { System.out.println("Precio invalido."); return; }
         if (precio <= 0) { System.out.println("El precio debe ser mayor a 0."); return; }
         gestor.aceptarContratacion(empleado, seleccionada, precio);
         empleado.registrarAccion("Acepto contratacion " + seleccionada.getIdServicio() + " con precio " + String.format("%.2f", precio));
