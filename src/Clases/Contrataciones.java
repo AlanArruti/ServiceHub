@@ -13,6 +13,10 @@ public class Contrataciones implements Identificable {
     private Oficio oficio;
     private Cliente cliente;
     private Empleado empleado;
+    private Double precio;
+    private String estado; // PENDIENTE, ACEPTADO, RECHAZADO
+    // Mensaje para notificar al cliente (ej.: rechazo de empleado)
+    private String notificacion;
 
     public Contrataciones(String descripcion, Oficio oficio, Cliente cliente, LocalDate fecha) {
         this.idServicio = generarId();
@@ -20,6 +24,8 @@ public class Contrataciones implements Identificable {
         this.oficio = oficio;
         this.cliente = cliente;
         this.fecha = fecha;
+        this.precio = null;
+        this.estado = "PENDIENTE";
     }
 
     // Getters y Setters
@@ -43,13 +49,25 @@ public class Contrataciones implements Identificable {
 
     public void setEmpleado(Empleado empleado) { this.empleado = empleado; }
 
+    public Double getPrecio() { return precio; }
+
+    public void setPrecio(Double precio) { this.precio = precio; }
+
+    public String getEstado() { return estado; }
+
+    public void setEstado(String estado) { this.estado = estado; }
+
+    public String getNotificacion() { return notificacion; }
+
+    public void setNotificacion(String notificacion) { this.notificacion = notificacion; }
+
 
     private String generarId() {
         return "SRV" + contadorServicios++;
     }
 
 
-    // Implementación de Identificable
+    // ImplementaciÃ³n de Identificable
     public String getIdentificador() { return idServicio; }
 
     // Hashcode/equals para el funcionamiento del contains
@@ -72,7 +90,8 @@ public class Contrataciones implements Identificable {
                 ", fecha=" + fecha +
                 ", oficio=" + oficio +
                 ", cliente=" + cliente +
+                ", estado=" + estado +
+                ", precio=" + precio +
                 '}';
     }
 }
-

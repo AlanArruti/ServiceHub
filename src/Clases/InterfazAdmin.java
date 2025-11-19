@@ -49,11 +49,7 @@ public class InterfazAdmin {
                     System.out.println("Opcion invalida.");
             }
 
-            if (seguir == 's') {
-                System.out.print("Volver al menu admin? (s/n): ");
-                String r = sc.nextLine();
-                if (!r.isEmpty()) seguir = Character.toLowerCase(r.charAt(0));
-            }
+            // No preguntar; permanecer hasta elegir 'Salir'
         }
     }
 
@@ -159,12 +155,20 @@ public class InterfazAdmin {
                 case 1:
                     System.out.print("Nuevo nombre: ");
                     String nn = sc.nextLine();
+                    if (!Validaciones.esNombreApellidoValido(nn)) {
+                        System.out.println("Nombre invalido. Debe contener solo letras y espacios.");
+                        break;
+                    }
                     System.out.println("Nombre: " + p.getNombre() + " -> " + nn);
                     if (confirmar(sc)) p.setNombre(nn);
                     break;
                 case 2:
                     System.out.print("Nuevo apellido: ");
                     String na = sc.nextLine();
+                    if (!Validaciones.esNombreApellidoValido(na)) {
+                        System.out.println("Apellido invalido. Debe contener solo letras y espacios.");
+                        break;
+                    }
                     System.out.println("Apellido: " + p.getApellido() + " -> " + na);
                     if (confirmar(sc)) p.setApellido(na);
                     break;
@@ -177,6 +181,10 @@ public class InterfazAdmin {
                 case 4:
                     System.out.print("Nuevo email: ");
                     String ne = sc.nextLine();
+                    if (!Validaciones.esEmailValido(ne)) {
+                        System.out.println("Email invalido. Debe contener exactamente un '@'.");
+                        break;
+                    }
                     System.out.println("Email: " + p.getEmail() + " -> " + ne);
                     if (confirmar(sc)) p.setEmail(ne);
                     break;
@@ -189,6 +197,10 @@ public class InterfazAdmin {
                 case 6:
                     System.out.print("Nuevo DNI: ");
                     String nd = sc.nextLine();
+                    if (!Validaciones.esDniValido(nd)) {
+                        System.out.println("DNI invalido. Debe contener solo numeros.");
+                        break;
+                    }
                     if (!validarDniDisponible(gestor, p, nd, esCliente)) {
                         System.out.println("DNI ya registrado. Operacion cancelada.");
                         break;
@@ -281,3 +293,4 @@ public class InterfazAdmin {
         try { return Integer.parseInt(sc.nextLine()); } catch (Exception e) { return -1; }
     }
 }
+

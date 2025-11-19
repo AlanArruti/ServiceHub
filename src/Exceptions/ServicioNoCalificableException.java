@@ -5,4 +5,3 @@ public class ServicioNoCalificableException extends Exception {
         super(message);
     }
 }
-

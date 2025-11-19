@@ -28,8 +28,8 @@ public class InterfazGeneral {
             System.out.println("5 - Iniciar sesion administrador");
             System.out.println("6 - Salir");
             System.out.print("Opcion: ");
-            int opcion = sc.nextInt();
-            sc.nextLine();
+            int opcion;
+            try { opcion = Integer.parseInt(sc.nextLine().trim()); } catch (Exception e) { opcion = -1; }
 
             switch (opcion) {
                 case 1:
@@ -60,10 +60,7 @@ public class InterfazGeneral {
                     System.out.println("Opcion invalida.");
             }
 
-            if (seguir == 's') {
-                System.out.print("Volver al menu principal? (s/n): ");
-                seguir = sc.nextLine().toLowerCase().charAt(0);
-            }
+            // No preguntar; permanecer en el menu principal hasta elegir "Salir"
         }
         gestor.guardarTodo();
         System.out.println("Gracias por usar ServiceHub.");

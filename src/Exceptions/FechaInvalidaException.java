@@ -5,4 +5,3 @@ public class FechaInvalidaException extends RuntimeException {
         super(message);
     }
 }
-

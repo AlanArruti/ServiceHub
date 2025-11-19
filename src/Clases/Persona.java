@@ -62,7 +62,7 @@ public abstract class Persona implements Identificable {
     }
 
     public String getIdentificador() {
-        return String.valueOf(id); // Devuelve el ID numérico convertido a String
+        return String.valueOf(id); // Devuelve el ID numÃ©rico convertido a String
     }
 
     // Hashcode/equals para el funcionamiento del contains

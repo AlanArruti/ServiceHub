@@ -1,15 +1,42 @@
-[{
-    "password": "123",
-    "oficioNombre": "Jardineria",
-    "apellido": "gutierrez",
-    "direccion": {
-        "numero": 456,
-        "ciudad": "Chubut",
-        "calle": "La rioja"
+[
+    {
+        "password": "123",
+        "oficios": [
+            {
+                "id": "OFI2",
+                "nombre": "Jardineria"
+            },
+            {
+                "id": "OFI1",
+                "nombre": "Plomero"
+            }
+        ],
+        "apellido": "Gomez",
+        "direccion": {
+            "numero": 100,
+            "ciudad": "MDQ",
+            "calle": "Rivadavia"
+        },
+        "telefono": "2262-111111",
+        "nombre": "Luis",
+        "dni": "2001",
+        "email": "luis.gomez@example.com"
     },
-    "telefono": "2262-124578",
-    "nombre": "Ivana",
-    "oficioId": "OFI2",
-    "dni": "789",
-    "email": "ivgutierrez@gmail.com"
-}]
+    {
+        "password": "123",
+        "oficios": [{
+            "id": "OFI2",
+            "nombre": "Jardineria"
+        }],
+        "apellido": "Lopez",
+        "direccion": {
+            "numero": 200,
+            "ciudad": "MDQ",
+            "calle": "San Martin"
+        },
+        "telefono": "2262-222222",
+        "nombre": "Maria",
+        "dni": "2002",
+        "email": "maria.lopez@example.com"
+    }
+]

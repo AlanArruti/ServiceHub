@@ -26,7 +26,7 @@ public class InterfazCliente {
         try {
             numero = Integer.parseInt(numeroTexto.trim());
         } catch (NumberFormatException e) {
-            throw new NumeroInvalidoException("El número de la dirección es inválido.");
+            throw new NumeroInvalidoException("El nÃºmero de la direcciÃ³n es invÃ¡lido.");
         }
         return new Direccion(ciudad, calle, numero);
     }
@@ -43,7 +43,7 @@ public class InterfazCliente {
         try {
             // Si ya existe, no continua
             if (gestor.buscarClienteEnLista(dni) != null) {
-                System.out.println("El DNI ya está registrado como cliente.");
+                System.out.println("El DNI ya estÃ¡ registrado como cliente.");
                 return null;
             }
         } catch (PersonaNoEncontradaException e) {
@@ -70,6 +70,23 @@ public class InterfazCliente {
             if (password == null || password.trim().isEmpty()) throw new Exceptions.CampoVacioException("El campo Password se ingreso vacio.");
         } catch (Exceptions.CampoVacioException e) {
             System.out.println("ERROR: " + e.getMessage());
+            return null;
+        }
+        // Validaciones de formato
+        if (!Validaciones.esDniValido(dni)) {
+            System.out.println("ERROR: El DNI debe contener solo numeros.");
+            return null;
+        }
+        if (!Validaciones.esNombreApellidoValido(nombre)) {
+            System.out.println("ERROR: El Nombre solo puede contener letras y espacios.");
+            return null;
+        }
+        if (!Validaciones.esNombreApellidoValido(apellido)) {
+            System.out.println("ERROR: El Apellido solo puede contener letras y espacios.");
+            return null;
+        }
+        if (!Validaciones.esEmailValido(email)) {
+            System.out.println("ERROR: El Email es invalido; debe contener exactamente un '@'.");
             return null;
         }
         Direccion direccion;
@@ -99,15 +116,41 @@ public class InterfazCliente {
             return;
         }
 
-        List<Empleado> disponibles = gestor.obtenerEmpleadosPorOficio(oficio);
-        if (disponibles.isEmpty()) {
-            System.out.println("No hay empleados registrados para ese oficio.");
+        // Solicitar fecha primero para listar solo los disponibles ese dÃ­a
+        System.out.print("Ingrese la fecha (yyyy-MM-dd): ");
+        String fechaTexto = sc.nextLine();
+        LocalDate fecha;
+        try {
+            fecha = LocalDate.parse(fechaTexto);
+        } catch (Exception e) {
+            System.out.println("Formato de fecha invalido.");
             return;
         }
 
-        System.out.println("Empleados disponibles:");
+        // Obtener candidatos por oficio y filtrar por disponibilidad en la fecha
+        List<Empleado> candidatos = gestor.obtenerEmpleadosPorOficio(oficio);
+        if (candidatos.isEmpty()) {
+            System.out.println("No hay empleados registrados para ese oficio.");
+            return;
+        }
+        java.util.List<Empleado> disponibles = new java.util.ArrayList<>();
+        for (Empleado e : candidatos) {
+            if (e.estaDisponible(fecha)) {
+                disponibles.add(e);
+            }
+        }
+        // Ordenar por reputaciÃ³n promedio (descendente)
+        disponibles.sort(java.util.Comparator.comparingDouble(Empleado::getReputacion).reversed());
+        if (disponibles.isEmpty()) {
+            System.out.println("No hay empleados disponibles para ese oficio en esa fecha.");
+            return;
+        }
+
+        System.out.println("Empleados disponibles para " + fecha + " (ordenados por reputaciÃ³n):");
         for (Empleado empleado : disponibles) {
-            System.out.println("- " + empleado.getNombre() + " " + empleado.getApellido() + " | DNI: " + empleado.getDni());
+            System.out.println("- " + empleado.getNombre() + " " + empleado.getApellido() +
+                    " | DNI: " + empleado.getDni() +
+                    " | ReputaciÃ³n: " + String.format("%.2f", empleado.getReputacion()));
         }
 
         System.out.print("Ingrese el DNI del empleado elegido: ");
@@ -120,15 +163,13 @@ public class InterfazCliente {
             return;
         }
 
-        System.out.print("Ingrese la fecha (yyyy-MM-dd): ");
-        String fechaTexto = sc.nextLine();
-        LocalDate fecha;
-        try {
-            fecha = LocalDate.parse(fechaTexto);
-        } catch (Exception e) {
-            System.out.println("Formato de fecha invalido.");
+        // Validar que pertenezca al oficio elegido
+        if (!empleadoSeleccionado.tieneOficio(oficio)) {
+            System.out.println("El empleado seleccionado no corresponde al oficio elegido.");
             return;
         }
+
+        
 
         if (!empleadoSeleccionado.estaDisponible(fecha)) {
             System.out.println("El empleado no esta disponible ese dia.");
@@ -137,8 +178,17 @@ public class InterfazCliente {
 
         System.out.print("Descripcion del servicio: ");
         String descripcion = sc.nextLine();
+        if (!Validaciones.esDescripcionValida(descripcion)) {
+            System.out.println("Descripcion invalida. Debe ingresar algun detalle del servicio.");
+            return;
+        }
+        String descNorm = Validaciones.normalizarDescripcion(descripcion);
 
-        Contrataciones contratacion = gestor.crearContratacion(cliente, oficio, descripcion, fecha);
+        Contrataciones contratacion = gestor.crearContratacion(cliente, oficio, descNorm, fecha);
+        if (contratacion == null) {
+            System.out.println("No se pudo crear la contratacion con la descripcion ingresada.");
+            return;
+        }
         try {
             gestor.contratarEmpleado(empleadoSeleccionado, contratacion, fecha);
             System.out.println("Servicio contratado con exito.");
@@ -154,8 +204,19 @@ public class InterfazCliente {
             return;
         }
         System.out.println("\n--- MIS CONTRATACIONES ---");
-        for (Contrataciones contratacion : lista) {
-            System.out.println(contratacion);
+        for (Contrataciones c : lista) {
+            String oficioTxt = (c.getOficio()==null)?"(sin oficio)":c.getOficio().getNombre();
+            String empTxt = (c.getEmpleado()==null)?"Sin asignar":(c.getEmpleado().getNombre()+" "+c.getEmpleado().getApellido());
+            String estado = c.getEstado() == null ? "(sin estado)" : c.getEstado();
+            String precio = c.getPrecio() == null ? "(sin precio)" : String.format("$%.2f", c.getPrecio());
+            System.out.println("- ID " + c.getIdServicio() + " | Fecha " + c.getFecha() + " | '" + c.getDescripcion() +
+                    "' | Oficio: " + oficioTxt + " | Empleado: " + empTxt + " | Estado: " + estado + " | Precio: " + precio);
+            if (c.getNotificacion() != null && !c.getNotificacion().trim().isEmpty()) {
+                java.time.LocalDate hoy = java.time.LocalDate.now();
+                if (c.getFecha() != null && !c.getFecha().isBefore(hoy)) {
+                    System.out.println("  Aviso: " + c.getNotificacion());
+                }
+            }
         }
     }
 
@@ -189,11 +250,15 @@ public class InterfazCliente {
             System.out.println("1 - Ver oficios");
             System.out.println("2 - Contratar servicio");
             System.out.println("3 - Ver mis contrataciones");
-            System.out.println("4 - Calificar servicio");
-            System.out.println("5 - Salir");
+            System.out.println("4 - Reasignar contratacion");
+            System.out.println("5 - Ver contrataciones pendientes");
+            System.out.println("6 - Modificar mis datos");
+            System.out.println("7 - Calificar servicio");
+            System.out.println("8 - Ver contrataciones futuras");
+            System.out.println("9 - Cancelar contratacion futura por ID");
+            System.out.println("10 - Salir");
             System.out.print("Opcion: ");
-            int opcion = sc.nextInt();
-            sc.nextLine();
+            int opcion = leerEntero(sc);
 
             switch (opcion) {
                 case 1:{
@@ -209,10 +274,30 @@ public class InterfazCliente {
                     break;
                 }
                 case 4:{
-                    calificarServicio(cliente, gestor);
+                    reasignarContratacion(cliente, gestor);
                     break;
                 }
                 case 5:{
+                    verPendientesYReasignar(cliente, gestor);
+                    break;
+                }
+                case 6:{
+                    modificarDatosCliente(cliente, gestor);
+                    break;
+                }
+                case 7:{
+                    calificarServicio(cliente, gestor);
+                    break;
+                }
+                case 8:{
+                    verContratacionesFuturas(cliente, gestor);
+                    break;
+                }
+                case 9:{
+                    cancelarContratacionFuturaPorId(cliente, gestor);
+                    break;
+                }
+                case 10:{
                     seguir = 'n';
                     break;
                 }
@@ -222,10 +307,362 @@ public class InterfazCliente {
 
             }
 
-            if (seguir == 's') {
-                System.out.print("Volver al menu? (s/n): ");
-                seguir = sc.next().charAt(0);
+            // No preguntar; permanecer hasta elegir 'Salir'
+        }
+    }
+
+    private int leerEntero(Scanner sc) {
+        try { return Integer.parseInt(sc.nextLine().trim()); } catch (Exception e) { return -1; }
+    }
+
+    private void verPendientesYReasignar(Cliente cliente, GestorOficios gestor) {
+        List<Contrataciones> mias = gestor.obtenerContratacionesDeCliente(cliente);
+        java.util.List<Contrataciones> pendientes = new java.util.ArrayList<>();
+        for (Contrataciones c : mias) {
+            if (c.getEmpleado() == null) pendientes.add(c);
+        }
+        System.out.println("\n--- CONTRATACIONES PENDIENTES ---");
+        if (pendientes.isEmpty()) {
+            System.out.println("No tiene contrataciones pendientes de asignaciÃ³n.");
+            return;
+        }
+        for (Contrataciones c : pendientes) {
+            String nombreOficio = (c.getOficio() == null) ? "(sin oficio)" : c.getOficio().getNombre();
+            String estado = c.getEstado() == null ? "(sin estado)" : c.getEstado();
+            String precio = c.getPrecio() == null ? "(sin precio)" : String.format("$%.2f", c.getPrecio());
+            System.out.println("- ID " + c.getIdServicio() + " | Fecha " + c.getFecha() + " | '" + c.getDescripcion() + "' | Oficio: " + nombreOficio);
+            System.out.println("  Estado: " + estado + " | Precio: " + precio);
+            if (c.getNotificacion() != null && !c.getNotificacion().trim().isEmpty()) {
+                System.out.println("  Aviso: " + c.getNotificacion());
             }
+        }
+        System.out.print("¿Desea reasignar alguna ahora? (s/n): ");
+        String r = new java.util.Scanner(System.in).nextLine();
+        if (!r.isEmpty() && Character.toLowerCase(r.charAt(0)) == 's') {
+            reasignarContratacion(cliente, gestor);
+        }
+    }
+
+    private void verContratacionesFuturas(Cliente cliente, GestorOficios gestor) {
+        List<Contrataciones> mias = gestor.obtenerContratacionesDeCliente(cliente);
+        if (mias.isEmpty()) {
+            System.out.println("No hay contrataciones registradas.");
+            return;
+        }
+        java.time.LocalDate hoy = java.time.LocalDate.now();
+        java.util.List<Contrataciones> futuras = new java.util.ArrayList<>();
+        for (Contrataciones c : mias) {
+            if (c.getFecha() != null && c.getFecha().isAfter(hoy)) {
+                String estado = c.getEstado();
+                if (estado == null || (!"CANCELADO".equalsIgnoreCase(estado) && !"RECHAZADO".equalsIgnoreCase(estado))) {
+                    futuras.add(c);
+                }
+            }
+        }
+        if (futuras.isEmpty()) {
+            System.out.println("No hay contrataciones futuras.");
+            return;
+        }
+        System.out.println("\n--- MIS CONTRATACIONES FUTURAS ---");
+        for (Contrataciones c : futuras) {
+            String precio = c.getPrecio() == null ? "(sin precio)" : String.format("$%.2f", c.getPrecio());
+            System.out.println("- ID " + c.getIdServicio() + " | Fecha " + c.getFecha() + " | '" + c.getDescripcion() + "' | Precio: " + precio);
+        }
+    }
+
+    private void cancelarContratacionFuturaPorId(Cliente cliente, GestorOficios gestor) {
+        List<Contrataciones> mias = gestor.obtenerContratacionesDeCliente(cliente);
+        if (mias.isEmpty()) {
+            System.out.println("No hay contrataciones registradas.");
+            return;
+        }
+        java.time.LocalDate hoy = java.time.LocalDate.now();
+        java.util.List<Contrataciones> futuras = new java.util.ArrayList<>();
+        for (Contrataciones c : mias) {
+            if (c.getFecha() != null && c.getFecha().isAfter(hoy)) {
+                String estado = c.getEstado();
+                if (estado == null || (!"CANCELADO".equalsIgnoreCase(estado) && !"RECHAZADO".equalsIgnoreCase(estado))) {
+                    futuras.add(c);
+                }
+            }
+        }
+        if (futuras.isEmpty()) {
+            System.out.println("No hay contrataciones futuras para cancelar.");
+            return;
+        }
+        System.out.println("\n--- MIS CONTRATACIONES FUTURAS ---");
+        for (Contrataciones c : futuras) {
+            String precio = c.getPrecio() == null ? "(sin precio)" : String.format("$%.2f", c.getPrecio());
+            System.out.println("- ID " + c.getIdServicio() + " | Fecha " + c.getFecha() + " | '" + c.getDescripcion() + "' | Precio: " + precio);
+        }
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Ingrese el ID a cancelar: ");
+        String id = sc.nextLine();
+        Contrataciones seleccionada;
+        try {
+            seleccionada = gestor.buscarContratacionPorId(id);
+        } catch (Exceptions.PersonaNoEncontradaException e) {
+            System.out.println("ERROR: No se encontro una contratacion con ese ID.");
+            return;
+        }
+        if (seleccionada == null || seleccionada.getCliente() == null ||
+                !seleccionada.getCliente().getDni().equalsIgnoreCase(cliente.getDni())) {
+            System.out.println("La contratacion indicada no pertenece a usted.");
+            return;
+        }
+        if (seleccionada.getFecha() == null || !seleccionada.getFecha().isAfter(java.time.LocalDate.now())) {
+            System.out.println("Solo puede cancelar contrataciones futuras.");
+            return;
+        }
+        gestor.cancelarContratacionPorCliente(cliente, seleccionada);
+        System.out.println("Contratacion cancelada.");
+    }
+
+    private void cancelarContratacionPorPrecio(Cliente cliente, GestorOficios gestor) {
+        List<Contrataciones> mias = gestor.obtenerContratacionesDeCliente(cliente);
+        if (mias.isEmpty()) {
+            System.out.println("No hay contrataciones registradas.");
+            return;
+        }
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Ingrese el precio mÃ¡ximo aceptable: ");
+        String ptxt = sc.nextLine();
+        double tope;
+        try { tope = Double.parseDouble(ptxt.trim().replace(',', '.')); } catch (Exception e) { System.out.println("Precio invÃ¡lido."); return; }
+
+        java.util.List<Contrataciones> candidatas = new java.util.ArrayList<>();
+        for (Contrataciones c : mias) {
+            if (c.getPrecio() != null && c.getPrecio() > tope && "ACEPTADO".equalsIgnoreCase(c.getEstado())) {
+                candidatas.add(c);
+            }
+        }
+        if (candidatas.isEmpty()) {
+            System.out.println("No hay contrataciones aceptadas con precio mayor a " + String.format("$%.2f", tope) + ".");
+            return;
+        }
+        System.out.println("\n--- CANCELAR POR PRECIO ---");
+        for (Contrataciones c : candidatas) {
+            System.out.println("- ID " + c.getIdServicio() + " | Fecha " + c.getFecha() + " | '" + c.getDescripcion() +
+                    "' | Precio: " + String.format("$%.2f", c.getPrecio()));
+        }
+        System.out.print("Ingrese el ID a cancelar: ");
+        String id = sc.nextLine();
+        Contrataciones seleccionada;
+        try {
+            seleccionada = gestor.buscarContratacionPorId(id);
+        } catch (Exceptions.PersonaNoEncontradaException e) {
+            System.out.println("ERROR: No se encuentra una contratacion con ese ID.");
+            return;
+        }
+        if (seleccionada == null || seleccionada.getCliente() == null ||
+                !seleccionada.getCliente().getDni().equalsIgnoreCase(cliente.getDni())) {
+            System.out.println("La contratacion indicada no pertenece a usted.");
+            return;
+        }
+        if (seleccionada.getPrecio() == null || !"ACEPTADO".equalsIgnoreCase(seleccionada.getEstado()) || seleccionada.getPrecio() <= tope) {
+            System.out.println("La contratacion no cumple condiciones para cancelacion por precio.");
+            return;
+        }
+        gestor.cancelarContratacionPorCliente(cliente, seleccionada);
+        System.out.println("Contratacion cancelada.");
+    }
+
+    private void modificarDatosCliente(Cliente cliente, GestorOficios gestor) {
+        if (cliente == null) return;
+        Scanner sc = new Scanner(System.in);
+        boolean loop = true;
+        while (loop) {
+            System.out.println("\n--- MODIFICAR MIS DATOS (CLIENTE) ---");
+            System.out.println("1 - Nombre");
+            System.out.println("2 - Apellido");
+            System.out.println("3 - Telefono");
+            System.out.println("4 - Email");
+            System.out.println("5 - DNI");
+            System.out.println("6 - Direccion");
+            System.out.println("7 - Volver");
+            System.out.print("Opcion: ");
+            int op = -1; try { op = Integer.parseInt(sc.nextLine()); } catch (Exception ignore) {}
+            switch (op) {
+                case 1: {
+                    System.out.print("Nuevo nombre: ");
+                    String nn = sc.nextLine();
+                    if (!Validaciones.esNombreApellidoValido(nn)) { System.out.println("Nombre invalido."); break; }
+                    cliente.setNombre(nn);
+                    gestor.guardarClientes();
+                    System.out.println("Nombre actualizado.");
+                    break;
+                }
+                case 2: {
+                    System.out.print("Nuevo apellido: ");
+                    String na = sc.nextLine();
+                    if (!Validaciones.esNombreApellidoValido(na)) { System.out.println("Apellido invalido."); break; }
+                    cliente.setApellido(na);
+                    gestor.guardarClientes();
+                    System.out.println("Apellido actualizado.");
+                    break;
+                }
+                case 3: {
+                    System.out.print("Nuevo telefono: ");
+                    String nt = sc.nextLine();
+                    cliente.setTelefono(nt);
+                    gestor.guardarClientes();
+                    System.out.println("Telefono actualizado.");
+                    break;
+                }
+                case 4: {
+                    System.out.print("Nuevo email: ");
+                    String ne = sc.nextLine();
+                    if (!Validaciones.esEmailValido(ne)) { System.out.println("Email invalido."); break; }
+                    cliente.setEmail(ne);
+                    gestor.guardarClientes();
+                    System.out.println("Email actualizado.");
+                    break;
+                }
+                case 5: {
+                    System.out.print("Nuevo DNI: ");
+                    String nd = sc.nextLine();
+                    if (!Validaciones.esDniValido(nd)) { System.out.println("DNI invalido."); break; }
+                    // validar unico entre clientes
+                    for (Cliente c : gestor.getClientes().listar()) {
+                        if (!c.equals(cliente) && c.getDni().equalsIgnoreCase(nd)) {
+                            System.out.println("DNI ya registrado por otro cliente.");
+                            nd = null; break;
+                        }
+                    }
+                    if (nd == null) break;
+                    cliente.setDni(nd);
+                    gestor.guardarClientes();
+                    System.out.println("DNI actualizado.");
+                    break;
+                }
+                case 6: {
+                    try {
+                        Direccion nueva = cargarDireccion(sc);
+                        cliente.setDireccion(nueva);
+                        gestor.guardarClientes();
+                        System.out.println("Direccion actualizada.");
+                    } catch (Exception e) {
+                        System.out.println("ERROR: " + e.getMessage());
+                    }
+                    break;
+                }
+                case 7: loop = false; break;
+                default: System.out.println("Opcion invalida.");
+            }
+        }
+    }
+
+    private void reasignarContratacion(Cliente cliente, GestorOficios gestor) {
+        // Listar contrataciones del cliente que no tienen empleado asignado
+        List<Contrataciones> mias = gestor.obtenerContratacionesDeCliente(cliente);
+        java.util.List<Contrataciones> pendientes = new java.util.ArrayList<>();
+        for (Contrataciones c : mias) {
+            if (c.getEmpleado() == null) {
+                pendientes.add(c);
+            }
+        }
+        if (pendientes.isEmpty()) {
+            System.out.println("No tiene contrataciones pendientes de asignacion.");
+            return;
+        }
+
+        System.out.println("\n--- CONTRATACIONES PENDIENTES ---");
+        for (Contrataciones c : pendientes) {
+            String nombreOficio = (c.getOficio() == null) ? "(sin oficio)" : c.getOficio().getNombre();
+            System.out.println("- ID " + c.getIdServicio() + " | Fecha " + c.getFecha() + " | '" + c.getDescripcion() + "' | Oficio: " + nombreOficio);
+        }
+
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Ingrese el ID de la contratacion a reasignar: ");
+        String id = sc.nextLine();
+        Contrataciones seleccionada;
+        try {
+            seleccionada = gestor.buscarContratacionPorId(id);
+        } catch (Exceptions.PersonaNoEncontradaException e) {
+            System.out.println("ERROR: No se encontro una contratacion con ese ID.");
+            return;
+        }
+
+        if (seleccionada.getCliente() == null || !seleccionada.getCliente().getDni().equalsIgnoreCase(cliente.getDni())) {
+            System.out.println("La contratacion indicada no pertenece a usted.");
+            return;
+        }
+        if (seleccionada.getEmpleado() != null) {
+            System.out.println("La contratacion ya tiene un empleado asignado.");
+            return;
+        }
+
+        // Validar que el ID ingresado corresponda a una pendiente listada
+        boolean esPendienteListado = false;
+        for (Contrataciones c : pendientes) {
+            if (c.getIdServicio().equalsIgnoreCase(id)) { esPendienteListado = true; break; }
+        }
+        if (!esPendienteListado) {
+            System.out.println("El ID ingresado no corresponde a una contratacion pendiente listada.");
+            return;
+        }
+
+        java.time.LocalDate fecha = seleccionada.getFecha();
+        Oficio oficio = seleccionada.getOficio();
+        if (oficio == null) {
+            System.out.println("La contratacion no tiene un oficio definido.");
+            return;
+        }
+
+        // Buscar empleados del oficio disponibles en esa fecha
+        List<Empleado> candidatos = gestor.obtenerEmpleadosPorOficio(oficio);
+        java.util.List<Empleado> disponibles = new java.util.ArrayList<>();
+        for (Empleado e : candidatos) {
+            if (e.estaDisponible(fecha)) {
+                disponibles.add(e);
+            }
+        }
+        if (disponibles.isEmpty()) {
+            System.out.println("No hay empleados disponibles para ese oficio en la fecha indicada.");
+            return;
+        }
+        // Ordenar por reputaciÃ³n descendente
+        disponibles.sort(java.util.Comparator.comparingDouble(Empleado::getReputacion).reversed());
+
+        System.out.println("Empleados disponibles para " + fecha + " (ordenados por reputacion):");
+        for (Empleado e : disponibles) {
+            System.out.println("- " + e.getNombre() + " " + e.getApellido() + " | DNI: " + e.getDni() + " | Reputacion: " + String.format("%.2f", e.getReputacion()));
+        }
+
+        System.out.print("Ingrese el DNI del empleado elegido: ");
+        String dniEmpleado = sc.nextLine();
+        Empleado elegido;
+        try {
+            elegido = gestor.buscarEmpleadoEnLista(dniEmpleado);
+        } catch (Exceptions.PersonaNoEncontradaException e) {
+            System.out.println("ERROR: " + e.getMessage());
+            return;
+        }
+        if (!elegido.tieneOficio(oficio)) {
+            System.out.println("El empleado no corresponde al oficio de la contratacion.");
+            return;
+        }
+        if (!elegido.estaDisponible(fecha)) {
+            System.out.println("El empleado no esta¡ disponible ese dia.");
+            return;
+        }
+
+        // Validar que el DNI elegido pertenezca a la lista mostrada
+        boolean esDeLaLista = false;
+        for (Empleado e : disponibles) {
+            if (e.getDni().equalsIgnoreCase(dniEmpleado)) { esDeLaLista = true; break; }
+        }
+        if (!esDeLaLista) {
+            System.out.println("El DNI ingresado no pertenece a los empleados listados como disponibles.");
+            return;
+        }
+
+        try {
+            // Usar reasignacion que no duplica en repositorio y limpia notificacion
+            gestor.asignarEmpleadoAContratacion(elegido, seleccionada, fecha);
+            System.out.println("Reasignacion realizada con exito.");
+        } catch (FechaInvalidaException | EmpleadoNoDisponibleException ex) {
+            System.out.println("ERROR: " + ex.getMessage());
         }
     }
 
@@ -240,9 +677,9 @@ public class InterfazCliente {
         System.out.println("Contrataciones para calificar:");
         for (Contrataciones c : contratacionesCliente) {
             if (c.getEmpleado() != null) {
-                System.out.println("- ID " + c.getIdServicio() + ": '" + c.getDescripcion() + "' – Empleado: " + c.getEmpleado().getNombre() + " " + c.getEmpleado().getApellido() + " – Fecha " + c.getFecha());
+                System.out.println("- ID " + c.getIdServicio() + ": '" + c.getDescripcion() + "' â€“ Empleado: " + c.getEmpleado().getNombre() + " " + c.getEmpleado().getApellido() + " â€“ Fecha " + c.getFecha() + " | Estado: " + (c.getEstado()==null?"(sin estado)":c.getEstado()) + " | Precio: " + (c.getPrecio()==null?"(sin precio)":String.format("$%.2f", c.getPrecio())));
             } else {
-                System.out.println("- ID " + c.getIdServicio() + ": '" + c.getDescripcion() + "' – Empleado: Sin asignar – Fecha " + c.getFecha());
+                System.out.println("- ID " + c.getIdServicio() + ": '" + c.getDescripcion() + "' â€“ Empleado: Sin asignar â€“ Fecha " + c.getFecha() + " | Estado: " + (c.getEstado()==null?"(sin estado)":c.getEstado()) + " | Precio: " + (c.getPrecio()==null?"(sin precio)":String.format("$%.2f", c.getPrecio())));
             }
         }
 
@@ -255,7 +692,7 @@ public class InterfazCliente {
         try {
             seleccionada = gestor.buscarContratacionPorId(idServicio);
         } catch (Exceptions.PersonaNoEncontradaException e) {
-            System.out.println("ERROR: No se encontró la contratación con ese ID.");
+            System.out.println("ERROR: No se encontro la contratacion con ese ID.");
             return;
         }
 
@@ -273,13 +710,13 @@ public class InterfazCliente {
             String normalizado = puntajeTexto.trim().replace(',', '.');
             puntaje = Double.parseDouble(normalizado);
         } catch (NumberFormatException ex) {
-            System.out.println("Puntaje inválido.");
+            System.out.println("Puntaje invalido.");
             return;
         }
         System.out.print("Comentario: ");
         String comentario = sc.nextLine();
 
-        seleccionada.getEmpleado().agregarValoracion(cliente, puntaje, comentario);
+        seleccionada.getEmpleado().agregarValoracion(cliente, puntaje, comentario, seleccionada.getIdServicio());
     }
 
     // parte de que no se pueda contratar si no se completo el servicio
@@ -288,10 +725,14 @@ public class InterfazCliente {
             throw new Exceptions.ServicioNoCalificableException("Solo puede calificar sus contrataciones.");
         }
         if (c.getEmpleado() == null) {
-            throw new Exceptions.ServicioNoCalificableException("La contratación aún no tiene empleado asignado.");
+            throw new Exceptions.ServicioNoCalificableException("La contrataciÃ³n aÃºn no tiene empleado asignado.");
         }
         if (c.getFecha() == null || c.getFecha().isAfter(java.time.LocalDate.now())) {
             throw new Exceptions.ServicioNoCalificableException("Solo puede calificar contrataciones realizadas (hoy o anteriores).");
         }
     }
 }
+
+
+
+

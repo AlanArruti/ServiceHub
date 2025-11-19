@@ -16,7 +16,7 @@ public class InterfazEmpleado {
         try {
             // Si ya existe, no continuar
             if (gestor.buscarEmpleadoEnLista(dni) != null) {
-                System.out.println("El DNI ya está registrado como Empleado.");
+                System.out.println("El DNI ya estÃ¡ registrado como Empleado.");
                 return null;
             }
         } catch (PersonaNoEncontradaException e) {
@@ -43,10 +43,46 @@ public class InterfazEmpleado {
             System.out.println("ERROR: " + e.getMessage());
             return null;
         }
+        // Validaciones de formato
+        if (!Validaciones.esDniValido(dni)) {
+            System.out.println("ERROR: El DNI debe contener solo numeros.");
+            return null;
+        }
+        if (!Validaciones.esNombreApellidoValido(nombre)) {
+            System.out.println("ERROR: El Nombre solo puede contener letras y espacios.");
+            return null;
+        }
+        if (!Validaciones.esNombreApellidoValido(apellido)) {
+            System.out.println("ERROR: El Apellido solo puede contener letras y espacios.");
+            return null;
+        }
+        if (!Validaciones.esEmailValido(email)) {
+            System.out.println("ERROR: El Email es invalido; debe contener exactamente un '@'.");
+            return null;
+        }
 
-        System.out.print("Nombre del oficio: ");
-        String nombreOficio = sc.nextLine();
-        Oficio oficio = gestor.obtenerOcrearOficio(nombreOficio);
+        System.out.print("Oficios (separados por coma): ");
+        String lineaOficios = sc.nextLine();
+        java.util.Set<String> nombresOficios = new java.util.LinkedHashSet<>();
+        if (lineaOficios != null) {
+            for (String parte : lineaOficios.split(",")) {
+                String t = parte.trim();
+                if (!t.isEmpty()) nombresOficios.add(t);
+            }
+        }
+        if (nombresOficios.isEmpty()) {
+            System.out.println("Debe ingresar al menos un oficio.");
+            return null;
+        }
+        java.util.List<Oficio> oficiosSeleccionados = new java.util.ArrayList<>();
+        for (String nom : nombresOficios) {
+            Oficio o = gestor.obtenerOcrearOficio(nom);
+            if (o != null) oficiosSeleccionados.add(o);
+        }
+        if (oficiosSeleccionados.isEmpty()) {
+            System.out.println("Ningun oficio ingresado es valido.");
+            return null;
+        }
         Direccion direccion;
         try {
             direccion = cargarDireccion(sc);
@@ -55,7 +91,10 @@ public class InterfazEmpleado {
             return null;
         }
 
-        Empleado empleado = new Empleado(dni, nombre, apellido, email, telefono, password, oficio);
+        Empleado empleado = new Empleado(dni, nombre, apellido, email, telefono, password, null);
+        for (Oficio o : oficiosSeleccionados) {
+            empleado.agregarOficio(o);
+        }
         empleado.setDireccion(direccion);
         gestor.registrarEmpleado(empleado);
         System.out.println("Empleado registrado correctamente.");
@@ -89,10 +128,13 @@ public class InterfazEmpleado {
             System.out.println("1 - Ver agenda");
             System.out.println("2 - Ver historial de acciones");
             System.out.println("3 - Ver calificaciones");
-            System.out.println("4 - Salir");
+            System.out.println("4 - Aceptar trabajo y fijar precio");
+            System.out.println("5 - Rechazar trabajo");
+            System.out.println("6 - Gestionar oficios");
+            System.out.println("7 - Modificar mis datos");
+            System.out.println("8 - Salir");
             System.out.print("Opcion: ");
-            int opcion = sc.nextInt();
-            sc.nextLine();
+            int opcion = leerEntero(sc);
 
             switch (opcion) {
                 case 1:
@@ -105,15 +147,22 @@ public class InterfazEmpleado {
                     mostrarCalificaciones(empleado);
                     break;
                 case 4:
+                    aceptarTrabajoFijarPrecio(empleado, gestor);
+                    break;
+                case 5:
+                    rechazarTrabajo(empleado, gestor);
+                    break;
+                case 6:
+                    gestionarOficios(empleado, gestor);
+                    break;
+                case 7:
+                    modificarDatosEmpleado(empleado, gestor);
+                    break;
+                case 8:
                     seguir = 'n';
                     break;
                 default:
                     System.out.println("Opcion invalida.");
-            }
-
-            if (seguir == 's') {
-                System.out.print("Volver al menu? (s/n): ");
-                seguir = sc.nextLine().charAt(0);
             }
         }
     }
@@ -126,7 +175,13 @@ public class InterfazEmpleado {
         }
         System.out.println("\n--- AGENDA ---");
         for (Contrataciones contratacion : lista) {
-            System.out.println(contratacion.getFecha() + " - " + contratacion.getDescripcion());
+            System.out.println(
+                    contratacion.getFecha() + " - " +
+                    contratacion.getDescripcion() +
+                    " | ID: " + contratacion.getIdServicio() +
+                    " | Estado: " + (contratacion.getEstado()==null?"(sin estado)":contratacion.getEstado()) +
+                    " | Precio: " + (contratacion.getPrecio()==null?"(sin precio)":String.format("$%.2f", contratacion.getPrecio()))
+            );
         }
     }
 
@@ -141,6 +196,257 @@ public class InterfazEmpleado {
             System.out.println(calificacion);
         }
         System.out.println("Reputacion promedio: " + String.format("%.2f", empleado.getReputacion()));
+    }
+
+    private int leerEntero(Scanner sc) {
+        try { return Integer.parseInt(sc.nextLine().trim()); } catch (Exception e) { return -1; }
+    }
+
+    private void gestionarOficios(Empleado empleado, GestorOficios gestor) {
+        Scanner sc = new Scanner(System.in);
+        char seguir = 's';
+        while (seguir == 's') {
+            System.out.println("\n--- GESTIONAR OFICIOS ---");
+            System.out.println("Oficios actuales:");
+            if (empleado.getOficios().isEmpty()) {
+                System.out.println("(sin oficios)");
+            } else {
+                for (Oficio o : empleado.getOficios()) {
+                    System.out.println("- " + o.getNombre() + " (" + o.getId() + ")");
+                }
+            }
+            System.out.println("1 - Agregar oficio");
+            System.out.println("2 - Quitar oficio");
+            System.out.println("3 - Volver");
+            System.out.print("Opcion: ");
+            int op = -1; try { op = Integer.parseInt(sc.nextLine()); } catch (Exception ignore) {}
+            switch (op) {
+                case 1: {
+                    System.out.print("Nombre del nuevo oficio: ");
+                    String nombre = sc.nextLine();
+                    Oficio oficio = gestor.obtenerOcrearOficio(nombre);
+                    if (oficio == null) {
+                        System.out.println("Nombre de oficio invalido.");
+                        break;
+                    }
+                    if (empleado.tieneOficio(oficio)) {
+                        System.out.println("Ya posee ese oficio.");
+                        break;
+                    }
+                    empleado.agregarOficio(oficio);
+                    gestor.guardarEmpleados();
+                    System.out.println("Oficio agregado.");
+                    break;
+                }
+                case 2: {
+                    System.out.print("Ingrese el ID del oficio a quitar: ");
+                    String id = sc.nextLine();
+                    Oficio of = null;
+                    for (Oficio o : empleado.getOficios()) { if (o.getId().equalsIgnoreCase(id)) { of = o; break; } }
+                    if (of == null) {
+                        System.out.println("El ID no corresponde a un oficio listado.");
+                        break;
+                    }
+                    if (empleado.quitarOficio(of)) {
+                        gestor.guardarEmpleados();
+                        System.out.println("Oficio quitado.");
+                    } else {
+                        System.out.println("No se pudo quitar el oficio.");
+                    }
+                    break;
+                }
+                case 3: {
+                    seguir = 'n';
+                    break;
+                }
+                default: {
+                    System.out.println("Opcion invalida.");
+                }
+            }
+        }
+    }
+
+    private void modificarDatosEmpleado(Empleado empleado, GestorOficios gestor) {
+        if (empleado == null) return;
+        Scanner sc = new Scanner(System.in);
+        boolean loop = true;
+        while (loop) {
+            System.out.println("\n--- MODIFICAR MIS DATOS (EMPLEADO) ---");
+            System.out.println("1 - Nombre");
+            System.out.println("2 - Apellido");
+            System.out.println("3 - Telefono");
+            System.out.println("4 - Email");
+            System.out.println("5 - DNI");
+            System.out.println("6 - Direccion");
+            System.out.println("7 - Volver");
+            System.out.print("Opcion: ");
+            int op = -1; try { op = Integer.parseInt(sc.nextLine()); } catch (Exception ignore) {}
+            switch (op) {
+                case 1: {
+                    System.out.print("Nuevo nombre: ");
+                    String nn = sc.nextLine();
+                    if (!Validaciones.esNombreApellidoValido(nn)) { System.out.println("Nombre invalido."); break; }
+                    empleado.setNombre(nn);
+                    gestor.guardarEmpleados();
+                    System.out.println("Nombre actualizado.");
+                    break;
+                }
+                case 2: {
+                    System.out.print("Nuevo apellido: ");
+                    String na = sc.nextLine();
+                    if (!Validaciones.esNombreApellidoValido(na)) { System.out.println("Apellido invalido."); break; }
+                    empleado.setApellido(na);
+                    gestor.guardarEmpleados();
+                    System.out.println("Apellido actualizado.");
+                    break;
+                }
+                case 3: {
+                    System.out.print("Nuevo telefono: ");
+                    String nt = sc.nextLine();
+                    empleado.setTelefono(nt);
+                    gestor.guardarEmpleados();
+                    System.out.println("Telefono actualizado.");
+                    break;
+                }
+                case 4: {
+                    System.out.print("Nuevo email: ");
+                    String ne = sc.nextLine();
+                    if (!Validaciones.esEmailValido(ne)) { System.out.println("Email invalido."); break; }
+                    empleado.setEmail(ne);
+                    gestor.guardarEmpleados();
+                    System.out.println("Email actualizado.");
+                    break;
+                }
+                case 5: {
+                    System.out.print("Nuevo DNI: ");
+                    String nd = sc.nextLine();
+                    if (!Validaciones.esDniValido(nd)) { System.out.println("DNI invalido."); break; }
+                    for (Empleado e : gestor.getEmpleados().listar()) {
+                        if (!e.equals(empleado) && e.getDni().equalsIgnoreCase(nd)) {
+                            System.out.println("DNI ya registrado por otro empleado.");
+                            nd = null; break;
+                        }
+                    }
+                    if (nd == null) break;
+                    empleado.setDni(nd);
+                    gestor.guardarEmpleados();
+                    System.out.println("DNI actualizado.");
+                    break;
+                }
+                case 6: {
+                    try {
+                        Direccion nueva = cargarDireccion(sc);
+                        empleado.setDireccion(nueva);
+                        gestor.guardarEmpleados();
+                        System.out.println("Direccion actualizada.");
+                    } catch (Exception e) {
+                        System.out.println("ERROR: " + e.getMessage());
+                    }
+                    break;
+                }
+                case 7: loop = false; break;
+                default: System.out.println("Opcion invalida.");
+            }
+        }
+    }
+
+    private void rechazarTrabajo(Empleado empleado, GestorOficios gestor) {
+        List<Contrataciones> lista = gestor.obtenerContratacionesDeEmpleado(empleado);
+        if (lista.isEmpty()) {
+            System.out.println("No tiene servicios asignados.");
+            return;
+        }
+        // Filtrar solo contrataciones de hoy o futuras
+        java.util.List<Contrataciones> candidatas = new java.util.ArrayList<>();
+        java.time.LocalDate hoy = java.time.LocalDate.now();
+        for (Contrataciones c : lista) {
+            if (c.getFecha() != null && !c.getFecha().isBefore(hoy)) {
+                candidatas.add(c);
+            }
+        }
+        if (candidatas.isEmpty()) {
+            System.out.println("No tiene servicios de hoy o futuros para rechazar.");
+            return;
+        }
+        System.out.println("\n--- RECHAZAR TRABAJO ---");
+        for (Contrataciones c : candidatas) {
+            String clienteStr = (c.getCliente() == null) ? "(sin cliente)" : (c.getCliente().getNombre() + " " + c.getCliente().getApellido() + " (" + c.getCliente().getDni() + ")");
+            System.out.println("- ID " + c.getIdServicio() + " | Fecha " + c.getFecha() + " | '" + c.getDescripcion() + "' | Cliente: " + clienteStr);
+        }
+        System.out.print("Ingrese el ID del servicio a rechazar: ");
+        String id = new java.util.Scanner(System.in).nextLine();
+        // Validar que el ID ingresado este en la lista mostrada
+        boolean pertenece = false;
+        for (Contrataciones c : candidatas) {
+            if (c.getIdServicio().equalsIgnoreCase(id)) { pertenece = true; break; }
+        }
+        if (!pertenece) {
+            System.out.println("El ID ingresado no corresponde a los servicios listados para rechazo.");
+            return;
+        }
+        Contrataciones seleccionada;
+        try {
+            seleccionada = gestor.buscarContratacionPorId(id);
+        } catch (Exceptions.PersonaNoEncontradaException e) {
+            System.out.println("ERROR: No se encontrÃ³ una contrataciÃ³n con ese ID.");
+            return;
+        }
+        if (seleccionada.getEmpleado() == null || !seleccionada.getEmpleado().getDni().equalsIgnoreCase(empleado.getDni())) {
+            System.out.println("El servicio indicado no pertenece a su agenda.");
+            return;
+        }
+        try {
+            gestor.rechazarContratacion(empleado, seleccionada);
+            System.out.println("Trabajo rechazado. La contratacion quedo sin empleado asignado.");
+            System.out.println("Se notificara al cliente de este cambio.");
+        } catch (Exceptions.TrabajoYaRealizadoException ex) {
+            System.out.println("ERROR: " + ex.getMessage());
+        }
+    }
+
+    private void aceptarTrabajoFijarPrecio(Empleado empleado, GestorOficios gestor) {
+        List<Contrataciones> lista = gestor.obtenerContratacionesDeEmpleado(empleado);
+        if (lista.isEmpty()) {
+            System.out.println("No tiene servicios asignados.");
+            return;
+        }
+        java.time.LocalDate hoy = java.time.LocalDate.now();
+        List<Contrataciones> candidatas = new java.util.ArrayList<>();
+        for (Contrataciones c : lista) {
+            if (c.getFecha() != null && !c.getFecha().isBefore(hoy) && (c.getEstado() == null || !"ACEPTADO".equalsIgnoreCase(c.getEstado()))) {
+                candidatas.add(c);
+            }
+        }
+        if (candidatas.isEmpty()) {
+            System.out.println("No hay trabajos pendientes para aceptar.");
+            return;
+        }
+        System.out.println("\n--- ACEPTAR TRABAJO Y FIJAR PRECIO ---");
+        for (Contrataciones c : candidatas) {
+            System.out.println("- ID " + c.getIdServicio() + " | Fecha " + c.getFecha() + " | '" + c.getDescripcion() + "' | Estado: " + c.getEstado());
+        }
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Ingrese el ID del servicio a aceptar: ");
+        String id = sc.nextLine();
+        Contrataciones seleccionada;
+        try {
+            seleccionada = gestor.buscarContratacionPorId(id);
+        } catch (Exceptions.PersonaNoEncontradaException e) {
+            System.out.println("ERROR: No se encontrÃ³ una contrataciÃ³n con ese ID.");
+            return;
+        }
+        if (seleccionada.getEmpleado() == null || !seleccionada.getEmpleado().getDni().equalsIgnoreCase(empleado.getDni())) {
+            System.out.println("El servicio indicado no pertenece a su agenda.");
+            return;
+        }
+        System.out.print("Ingrese el precio (use coma o punto para decimales): ");
+        String ptxt = sc.nextLine();
+        double precio;
+        try { precio = Double.parseDouble(ptxt.trim().replace(',', '.')); } catch (Exception e) { System.out.println("Precio invÃ¡lido."); return; }
+        if (precio <= 0) { System.out.println("El precio debe ser mayor a 0."); return; }
+        gestor.aceptarContratacion(empleado, seleccionada, precio);
+        empleado.registrarAccion("Acepto contratacion " + seleccionada.getIdServicio() + " con precio " + String.format("%.2f", precio));
+        System.out.println("Trabajo aceptado y precio fijado.");
     }
 
     private Direccion cargarDireccion(Scanner sc) throws NumeroInvalidoException, Exceptions.CampoVacioException {

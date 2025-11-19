@@ -1,9 +1,42 @@
-[{
-    "descripcion": "arreglar flores",
-    "fecha": "2025-11-14",
-    "oficioNombre": "Jardineria",
-    "clienteDni": "122",
-    "id": "SRV1",
-    "empleadoDni": "789",
-    "oficioId": "OFI2"
-}]
+[
+    {
+        "descripcion": "corte de pasto en patio delantero",
+        "fecha": "2025-11-19",
+        "estado": "PENDIENTE",
+        "oficioNombre": "Jardineria",
+        "clienteDni": "1001",
+        "id": "SRV1",
+        "empleadoDni": "2001",
+        "oficioId": "OFI2"
+    },
+    {
+        "descripcion": "mantenimiento de jardin y canteros",
+        "fecha": "2025-11-25",
+        "estado": "CANCELADO",
+        "oficioNombre": "Jardineria",
+        "clienteDni": "1001",
+        "id": "SRV2",
+        "oficioId": "OFI2"
+    },
+    {
+        "descripcion": "limpiar cañerias",
+        "fecha": "2025-11-20",
+        "estado": "ACEPTADO",
+        "precio": 25000,
+        "oficioNombre": "Plomero",
+        "clienteDni": "1001",
+        "id": "SRV3",
+        "empleadoDni": "2001",
+        "oficioId": "OFI1"
+    },
+    {
+        "descripcion": "limpiar cuneta",
+        "fecha": "2025-11-25",
+        "estado": "CANCELADO",
+        "precio": 30000,
+        "oficioNombre": "Jardineria",
+        "clienteDni": "1001",
+        "id": "SRV4",
+        "oficioId": "OFI2"
+    }
+]

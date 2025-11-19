@@ -1,28 +1,28 @@
 [
     {
         "password": "123",
-        "apellido": "blandi",
+        "apellido": "Perez",
+        "direccion": {
+            "numero": 123,
+            "ciudad": "mar del plat",
+            "calle": "san juan"
+        },
+        "telefono": "223-555-0001",
+        "nombre": "Ana",
+        "dni": "1001",
+        "email": "ana.perez@example.com"
+    },
+    {
+        "password": "123",
+        "apellido": "arruti",
         "direccion": {
             "numero": 1859,
             "ciudad": "mar del plata",
             "calle": "entre rios"
         },
-        "telefono": "223 123-1457",
-        "nombre": "iara",
-        "dni": "122",
-        "email": "iablandli@gmail.com"
-    },
-    {
-        "password": "123",
-        "apellido": "aguirre",
-        "direccion": {
-            "numero": 1223,
-            "ciudad": "canall",
-            "calle": "cordoba"
-        },
-        "telefono": "3463-123456",
-        "nombre": "fran",
-        "dni": "133",
-        "email": "franaguirre@gmail.com"
+        "telefono": "2262-495202",
+        "nombre": "alan",
+        "dni": "123",
+        "email": "alan@gmail.com"
     }
 ]

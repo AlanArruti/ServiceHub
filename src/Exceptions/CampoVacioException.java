@@ -5,4 +5,3 @@ public class CampoVacioException extends Exception {
         super(message);
     }
 }
-
