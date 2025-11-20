@@ -6,5 +6,13 @@
     {
         "id": "OFI2",
         "nombre": "Jardineria"
+    },
+    {
+        "id": "OFI3",
+        "nombre": "Programador"
+    },
+    {
+        "id": "OFI4",
+        "nombre": "Peluquera"
     }
 ]

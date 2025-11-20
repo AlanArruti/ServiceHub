@@ -629,9 +629,9 @@ public class InterfazCliente {
         System.out.println("Contrataciones para calificar:");
         for (Contrataciones c : contratacionesCliente) {
             if (c.getEmpleado() != null) {
-                System.out.println("- ID " + c.getIdServicio() + ": '" + c.getDescripcion() + "' â€“ Empleado: " + c.getEmpleado().getNombre() + " " + c.getEmpleado().getApellido() + " â€“ Fecha " + c.getFecha() + " | Estado: " + (c.getEstado()==null?"(sin estado)":c.getEstado()) + " | Precio: " + (c.getPrecio()==null?"(sin precio)":String.format("$%.2f", c.getPrecio())));
+                System.out.println("- ID " + c.getIdServicio() + ": '" + c.getDescripcion() + " Empleado: " + c.getEmpleado().getNombre() + " " + c.getEmpleado().getApellido() + "  Fecha " + c.getFecha() + " | Estado: " + (c.getEstado()==null?"(sin estado)":c.getEstado()) + " | Precio: " + (c.getPrecio()==null?"(sin precio)":String.format("$%.2f", c.getPrecio())));
             } else {
-                System.out.println("- ID " + c.getIdServicio() + ": '" + c.getDescripcion() + "' â€“ Empleado: Sin asignar â€“ Fecha " + c.getFecha() + " | Estado: " + (c.getEstado()==null?"(sin estado)":c.getEstado()) + " | Precio: " + (c.getPrecio()==null?"(sin precio)":String.format("$%.2f", c.getPrecio())));
+                System.out.println("- ID " + c.getIdServicio() + ": '" + c.getDescripcion() + "  Empleado: Sin asignar  Fecha " + c.getFecha() + " | Estado: " + (c.getEstado()==null?"(sin estado)":c.getEstado()) + " | Precio: " + (c.getPrecio()==null?"(sin precio)":String.format("$%.2f", c.getPrecio())));
             }
         }
 

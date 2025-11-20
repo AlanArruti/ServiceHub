@@ -19,7 +19,7 @@
         "oficioId": "OFI2"
     },
     {
-        "descripcion": "limpiar cañerias",
+        "descripcion": "limpiar canerias",
         "fecha": "2025-11-20",
         "estado": "ACEPTADO",
         "precio": 25000,
@@ -38,5 +38,16 @@
         "clienteDni": "1001",
         "id": "SRV4",
         "oficioId": "OFI2"
+    },
+    {
+        "descripcion": "corte de puntas",
+        "fecha": "2025-11-20",
+        "estado": "ACEPTADO",
+        "precio": 6,
+        "oficioNombre": "Peluquera",
+        "clienteDni": "1001",
+        "id": "SRV5",
+        "empleadoDni": "47156598",
+        "oficioId": "OFI4"
     }
 ]

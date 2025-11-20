@@ -38,5 +38,28 @@
         "nombre": "Maria",
         "dni": "2002",
         "email": "maria.lopez@example.com"
+    },
+    {
+        "password": "123",
+        "oficios": [
+            {
+                "id": "OFI3",
+                "nombre": "Programador"
+            },
+            {
+                "id": "OFI4",
+                "nombre": "Peluquera"
+            }
+        ],
+        "apellido": "blandi",
+        "direccion": {
+            "numero": 444,
+            "ciudad": "mar del plata",
+            "calle": "belgrano"
+        },
+        "telefono": "223456",
+        "nombre": "iara",
+        "dni": "47156598",
+        "email": "iara@gmail.com"
     }
 ]
