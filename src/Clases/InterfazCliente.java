@@ -672,14 +672,23 @@ public class InterfazCliente {
             return;
         }
 
-        // no se puede calificar si el servicio todavia no se concreto
-        System.out.println("Contrataciones para calificar:");
+        // Mostrar solo contrataciones calificables: con empleado asignado, fecha hoy o pasada y no canceladas/rechazadas
+        java.time.LocalDate hoy = java.time.LocalDate.now();
+        java.util.List<Contrataciones> calificables = new java.util.ArrayList<>();
         for (Contrataciones c : contratacionesCliente) {
-            if (c.getEmpleado() != null) {
-                System.out.println("- ID " + c.getIdServicio() + ": '" + c.getDescripcion() + " Empleado: " + c.getEmpleado().getNombre() + " " + c.getEmpleado().getApellido() + "  Fecha " + c.getFecha() + " | Estado: " + (c.getEstado()==null?"(sin estado)":c.getEstado()) + " | Precio: " + (c.getPrecio()==null?"(sin precio)":String.format("$%.2f", c.getPrecio())));
-            } else {
-                System.out.println("- ID " + c.getIdServicio() + ": '" + c.getDescripcion() + "  Empleado: Sin asignar  Fecha " + c.getFecha() + " | Estado: " + (c.getEstado()==null?"(sin estado)":c.getEstado()) + " | Precio: " + (c.getPrecio()==null?"(sin precio)":String.format("$%.2f", c.getPrecio())));
+            String estado = c.getEstado();
+            boolean activa = (estado == null || (!"CANCELADO".equalsIgnoreCase(estado) && !"RECHAZADO".equalsIgnoreCase(estado)));
+            if (c.getEmpleado() != null && c.getFecha() != null && !c.getFecha().isAfter(hoy) && activa) {
+                calificables.add(c);
             }
+        }
+        if (calificables.isEmpty()) {
+            System.out.println("No tiene contrataciones calificables por el momento.");
+            return;
+        }
+        System.out.println("Contrataciones para calificar:");
+        for (Contrataciones c : calificables) {
+            System.out.println("- ID " + c.getIdServicio() + ": '" + c.getDescripcion() + "' Empleado: " + c.getEmpleado().getNombre() + " " + c.getEmpleado().getApellido() + "  Fecha " + c.getFecha() + " | Estado: " + (c.getEstado()==null?"(sin estado)":c.getEstado()) + " | Precio: " + (c.getPrecio()==null?"(sin precio)":String.format("$%.2f", c.getPrecio())));
         }
 
         // si es la fecha de hoy o de ayer funciona, fechas futuras no
@@ -716,6 +725,8 @@ public class InterfazCliente {
         String comentario = sc.nextLine();
 
         seleccionada.getEmpleado().agregarValoracion(cliente, puntaje, comentario, seleccionada.getIdServicio());
+        // Persistir reputacion y calificaciones
+        gestor.guardarEmpleados();
     }
 
     // parte de que no se pueda contratar si no se completo el servicio

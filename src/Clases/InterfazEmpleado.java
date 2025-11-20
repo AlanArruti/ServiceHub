@@ -231,7 +231,10 @@ public class InterfazEmpleado {
         }
         System.out.println("\n--- CALIFICACIONES ---");
         for (Calificacion calificacion : calificaciones) {
-            System.out.println(calificacion);
+            String nombreCliente = (calificacion.getCliente()==null?"(cliente desconocido)":calificacion.getCliente().getNombre());
+            String idServ = (calificacion.getIdServicio()==null?"":(" | ID: "+calificacion.getIdServicio()));
+            String fechaStr = (calificacion.getFecha()==null?"":(" | "+calificacion.getFecha()));
+            System.out.println("- " + nombreCliente + " -> " + String.format("%.2f", calificacion.getPuntaje()) + "/5 - '" + calificacion.getComentario() + "'" + idServ + fechaStr);
         }
         System.out.println("Reputacion promedio: " + String.format("%.2f", empleado.getReputacion()));
     }
