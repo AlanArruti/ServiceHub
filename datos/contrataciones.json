@@ -49,5 +49,26 @@
         "id": "SRV5",
         "empleadoDni": "47156598",
         "oficioId": "OFI4"
+    },
+    {
+        "descripcion": "degrade",
+        "fecha": "2025-11-20",
+        "estado": "ACEPTADO",
+        "precio": 14000,
+        "oficioNombre": "Peluquera",
+        "clienteDni": "1001",
+        "id": "SRV6",
+        "empleadoDni": "147",
+        "oficioId": "OFI4"
+    },
+    {
+        "descripcion": "pelo",
+        "fecha": "2025-12-20",
+        "estado": "CANCELADO",
+        "precio": 14000,
+        "oficioNombre": "Peluquera",
+        "clienteDni": "1001",
+        "id": "SRV7",
+        "oficioId": "OFI4"
     }
 ]

@@ -61,27 +61,65 @@ public class InterfazEmpleado {
             return null;
         }
 
-        System.out.print("Oficios (separados por coma): ");
-        String lineaOficios = sc.nextLine();
-        java.util.Set<String> nombresOficios = new java.util.LinkedHashSet<>();
-        if (lineaOficios != null) {
-            for (String parte : lineaOficios.split(",")) {
-                String t = parte.trim();
-                if (!t.isEmpty()) nombresOficios.add(t);
-            }
-        }
-        if (nombresOficios.isEmpty()) {
-            System.out.println("Debe ingresar al menos un oficio.");
-            return null;
+        // Seleccion de oficios existente(s) o creacion de uno nuevo si no aparece en la lista
+        java.util.List<Oficio> existentes = gestor.getOficios().listar();
+        // Ordenar por nombre normalizado (ignora acentos y mayusculas)
+        if (existentes != null) {
+            existentes.sort(java.util.Comparator.comparing(o -> Clases.Validaciones.normalizarNombreOficio(o.getNombre()), String.CASE_INSENSITIVE_ORDER));
         }
         java.util.List<Oficio> oficiosSeleccionados = new java.util.ArrayList<>();
-        for (String nom : nombresOficios) {
-            Oficio o = gestor.obtenerOcrearOficio(nom);
-            if (o != null) oficiosSeleccionados.add(o);
+
+        if (!existentes.isEmpty()) {
+            System.out.println("\nOficios disponibles (seleccione por numero):");
+            for (int i = 0; i < existentes.size(); i++) {
+                System.out.println((i + 1) + " - " + existentes.get(i).getNombre());
+            }
+            System.out.println("0 - Crear un oficio nuevo");
+            System.out.print("Ingrese numeros separados por coma (ej: 1,3) o 0 para crear: ");
+            String seleccion = sc.nextLine();
+            if (seleccion != null && !seleccion.trim().isEmpty()) {
+                for (String parte : seleccion.split(",")) {
+                    String t = parte.trim();
+                    if (t.isEmpty()) continue;
+                    if ("0".equals(t)) {
+                        // Crear uno nuevo
+                        System.out.print("Nombre del nuevo oficio: ");
+                        String nombreNuevo = sc.nextLine();
+                        Oficio creado = gestor.obtenerOcrearOficio(nombreNuevo);
+                        if (creado != null && !oficiosSeleccionados.contains(creado)) {
+                            oficiosSeleccionados.add(creado);
+                        }
+                        continue;
+                    }
+                    try {
+                        int idx = Integer.parseInt(t);
+                        if (idx >= 1 && idx <= existentes.size()) {
+                            Oficio o = existentes.get(idx - 1);
+                            if (o != null && !oficiosSeleccionados.contains(o)) {
+                                oficiosSeleccionados.add(o);
+                            }
+                        }
+                    } catch (NumberFormatException ignore) {
+                    }
+                }
+            }
         }
+
+        // Si no selecciono ninguno de la lista, ofrecer crear uno nuevo por nombre
         if (oficiosSeleccionados.isEmpty()) {
-            System.out.println("Ningun oficio ingresado es valido.");
-            return null;
+            System.out.print("No selecciono oficios. Ingrese nombre de oficio para crear (o ENTER para cancelar): ");
+            String nombreNuevo = sc.nextLine();
+            if (nombreNuevo == null || nombreNuevo.trim().isEmpty()) {
+                System.out.println("Debe seleccionar o crear al menos un oficio.");
+                return null;
+            }
+            Oficio creado = gestor.obtenerOcrearOficio(nombreNuevo);
+            if (creado != null) {
+                oficiosSeleccionados.add(creado);
+            } else {
+                System.out.println("Nombre de oficio invalido.");
+                return null;
+            }
         }
         Direccion direccion;
         try {

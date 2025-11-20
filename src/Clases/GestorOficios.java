@@ -62,8 +62,13 @@ public class GestorOficios {
     }
 
     public Oficio buscarOficioPorNombre(String nombre) throws OficioNoDisponibleException {
+        String key = Validaciones.claveNombreOficio(nombre);
+        if (key == null || key.isEmpty()) {
+            throw new OficioNoDisponibleException("Nombre de oficio invalido.");
+        }
         for (Oficio oficio : oficios.listar()) {
-            if (oficio.coincideConNombre(nombre)) return oficio;
+            String ok = Validaciones.claveNombreOficio(oficio.getNombre());
+            if (key.equals(ok)) return oficio;
         }
         throw new OficioNoDisponibleException("El oficio que busca no se encuentra disponible.");
     }
@@ -133,6 +138,10 @@ public class GestorOficios {
     public void mostrarOficios() {
 
         List<Oficio> lista = oficios.listar();
+        // Ordenar por nombre normalizado (ignora acentos y mayusculas)
+        if (lista != null) {
+            lista.sort(java.util.Comparator.comparing(o -> Validaciones.normalizarNombreOficio(o.getNombre()), String.CASE_INSENSITIVE_ORDER));
+        }
         if (lista.isEmpty()) {
             System.out.println("No hay oficios cargados.");
             return;
@@ -145,8 +154,8 @@ public class GestorOficios {
 
     public Oficio obtenerOcrearOficio(String nombre) {
         if (nombre == null) return null;
-        String normalizado = nombre.trim();
-        if (normalizado.isEmpty()) return null;
+        String normalizado = Validaciones.normalizarNombreOficio(nombre);
+        if (normalizado == null || normalizado.isEmpty()) return null;
         if (!Validaciones.esNombreOficioValido(normalizado)) {
             System.out.println("Nombre de oficio invalido. Solo letras y espacios.");
             return null;
@@ -420,12 +429,14 @@ public class GestorOficios {
             if (nombre == null) continue;
             String n = nombre.trim();
             if (n.isEmpty()) continue;
-            String key = n.toLowerCase();
+            String key = Validaciones.claveNombreOficio(n);
             if (nombresCargados.contains(key)) {
                 continue;
             }
             if (!Validaciones.esNombreOficioValido(n)) continue;
-            Oficio oficio = new Oficio(id, n);
+            // Guardar con nombre normalizado para evitar duplicados visuales por tildes
+            String nombreNormalizado = Validaciones.normalizarNombreOficio(n);
+            Oficio oficio = new Oficio(id, nombreNormalizado);
             oficios.agregar(oficio);
             nombresCargados.add(key);
         }

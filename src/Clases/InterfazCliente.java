@@ -107,14 +107,24 @@ public class InterfazCliente {
         Scanner sc = new Scanner(System.in);
 
         System.out.println("\n--- CONTRATAR SERVICIO ---");
-        System.out.print("Ingrese el oficio deseado: ");
-        String nombreOficio = sc.nextLine();
-        Oficio oficio = gestor.obtenerOcrearOficio(nombreOficio);
-
-        if (oficio == null) {
-            System.out.println("Debe ingresar un oficio valido.");
+        // Elegir oficio desde lista existente (sin crear nuevos)
+        java.util.List<Oficio> oficios = gestor.getOficios().listar();
+        if (oficios == null || oficios.isEmpty()) {
+            System.out.println("No hay oficios disponibles.");
             return;
         }
+        oficios.sort(java.util.Comparator.comparing(o -> Clases.Validaciones.normalizarNombreOficio(o.getNombre()), String.CASE_INSENSITIVE_ORDER));
+        System.out.println("Oficios disponibles (seleccione por numero):");
+        for (int i = 0; i < oficios.size(); i++) {
+            System.out.println((i + 1) + " - " + oficios.get(i).getNombre());
+        }
+        System.out.print("Opcion: ");
+        int idxOfi = -1; try { idxOfi = Integer.parseInt(sc.nextLine().trim()); } catch (Exception ignore) {}
+        if (idxOfi < 1 || idxOfi > oficios.size()) {
+            System.out.println("Opcion invalida.");
+            return;
+        }
+        Oficio oficio = oficios.get(idxOfi - 1);
 
         // Solicitar fecha primero para listar solo los disponibles ese dia
         System.out.print("Ingrese la fecha (yyyy-MM-dd): ");
@@ -147,10 +157,10 @@ public class InterfazCliente {
         }
 
         System.out.println("Empleados disponibles para " + fecha + " (ordenados por reputacion):");
-        for (Empleado empleado : disponibles) {
-            System.out.println("- " + empleado.getNombre() + " " + empleado.getApellido() +
-                    " | DNI: " + empleado.getDni() +
-                    " | Reputacion: " + String.format("%.2f", empleado.getReputacion()));
+        for (Empleado emp : disponibles) {
+            System.out.println("- " + emp.getNombre() + " " + emp.getApellido() +
+                    " | DNI: " + emp.getDni() +
+                    " | Reputacion: " + String.format("%.2f", emp.getReputacion()));
         }
 
         System.out.print("Ingrese el DNI del empleado elegido: ");
@@ -169,9 +179,12 @@ public class InterfazCliente {
             return;
         }
 
-        
-
-        if (!empleadoSeleccionado.estaDisponible(fecha)) {
+        // Validar que esté entre los mostrados como disponibles
+        boolean estaEnLista = false;
+        for (Empleado emp : disponibles) {
+            if (emp.getDni().equalsIgnoreCase(empleadoSeleccionado.getDni())) { estaEnLista = true; break; }
+        }
+        if (!estaEnLista || !empleadoSeleccionado.estaDisponible(fecha)) {
             System.out.println("El empleado no esta disponible ese dia.");
             return;
         }
@@ -205,6 +218,10 @@ public class InterfazCliente {
         }
         System.out.println("\n--- MIS CONTRATACIONES ---");
         for (Contrataciones c : lista) {
+            String estadoActual = c.getEstado();
+            if ("CANCELADO".equalsIgnoreCase(estadoActual) || "RECHAZADO".equalsIgnoreCase(estadoActual)) {
+                continue; // ocultar canceladas/rechazadas
+            }
             String oficioTxt = (c.getOficio()==null)?"(sin oficio)":c.getOficio().getNombre();
             String empTxt = (c.getEmpleado()==null)?"Sin asignar":(c.getEmpleado().getNombre()+" "+c.getEmpleado().getApellido());
             String estado = c.getEstado() == null ? "(sin estado)" : c.getEstado();
@@ -319,7 +336,12 @@ public class InterfazCliente {
         List<Contrataciones> mias = gestor.obtenerContratacionesDeCliente(cliente);
         java.util.List<Contrataciones> pendientes = new java.util.ArrayList<>();
         for (Contrataciones c : mias) {
-            if (c.getEmpleado() == null) pendientes.add(c);
+            if (c.getEmpleado() == null) {
+                String estado = c.getEstado();
+                if (estado == null || (!"CANCELADO".equalsIgnoreCase(estado) && !"RECHAZADO".equalsIgnoreCase(estado))) {
+                    pendientes.add(c);
+                }
+            }
         }
         System.out.println("\n--- CONTRATACIONES PENDIENTES ---");
         if (pendientes.isEmpty()) {
@@ -352,9 +374,11 @@ public class InterfazCliente {
         java.time.LocalDate hoy = java.time.LocalDate.now();
         java.util.List<Contrataciones> futuras = new java.util.ArrayList<>();
         for (Contrataciones c : mias) {
-            if (c.getFecha() != null && c.getFecha().isAfter(hoy)) {
+            if (c.getFecha() != null && !c.getFecha().isBefore(hoy)) { // incluye hoy y futuro
                 String estado = c.getEstado();
-                if (estado == null || (!"CANCELADO".equalsIgnoreCase(estado) && !"RECHAZADO".equalsIgnoreCase(estado))) {
+                boolean activa = (estado == null || (!"CANCELADO".equalsIgnoreCase(estado) && !"RECHAZADO".equalsIgnoreCase(estado)));
+                boolean aceptadaHoyNoCancelable = ("ACEPTADO".equalsIgnoreCase(estado) && c.getFecha().isEqual(hoy));
+                if (activa && !aceptadaHoyNoCancelable) {
                     futuras.add(c);
                 }
             }
@@ -366,7 +390,8 @@ public class InterfazCliente {
         System.out.println("\n--- MIS CONTRATACIONES FUTURAS ---");
         for (Contrataciones c : futuras) {
             String precio = c.getPrecio() == null ? "(sin precio)" : String.format("$%.2f", c.getPrecio());
-            System.out.println("- ID " + c.getIdServicio() + " | Fecha " + c.getFecha() + " | '" + c.getDescripcion() + "' | Precio: " + precio);
+            String estado = c.getEstado() == null ? "(sin estado)" : c.getEstado();
+            System.out.println("- ID " + c.getIdServicio() + " | Fecha " + c.getFecha() + " | '" + c.getDescripcion() + "' | Estado: " + estado + " | Precio: " + precio);
         }
     }
 
@@ -379,7 +404,7 @@ public class InterfazCliente {
         java.time.LocalDate hoy = java.time.LocalDate.now();
         java.util.List<Contrataciones> futuras = new java.util.ArrayList<>();
         for (Contrataciones c : mias) {
-            if (c.getFecha() != null && c.getFecha().isAfter(hoy)) {
+            if (c.getFecha() != null && !c.getFecha().isBefore(hoy)) { // incluye hoy y futuro
                 String estado = c.getEstado();
                 if (estado == null || (!"CANCELADO".equalsIgnoreCase(estado) && !"RECHAZADO".equalsIgnoreCase(estado))) {
                     futuras.add(c);
@@ -390,10 +415,11 @@ public class InterfazCliente {
             System.out.println("No hay contrataciones futuras para cancelar.");
             return;
         }
-        System.out.println("\n--- MIS CONTRATACIONES FUTURAS ---");
+        System.out.println("\n--- CONTRATACIONES CANCELABLES ---");
         for (Contrataciones c : futuras) {
             String precio = c.getPrecio() == null ? "(sin precio)" : String.format("$%.2f", c.getPrecio());
-            System.out.println("- ID " + c.getIdServicio() + " | Fecha " + c.getFecha() + " | '" + c.getDescripcion() + "' | Precio: " + precio);
+            String estado = c.getEstado() == null ? "(sin estado)" : c.getEstado();
+            System.out.println("- ID " + c.getIdServicio() + " | Fecha " + c.getFecha() + " | '" + c.getDescripcion() + "' | Estado: " + estado + " | Precio: " + precio);
         }
         Scanner sc = new Scanner(System.in);
         System.out.print("Ingrese el ID a cancelar: ");
@@ -410,9 +436,30 @@ public class InterfazCliente {
             System.out.println("La contratacion indicada no pertenece a usted.");
             return;
         }
-        if (seleccionada.getFecha() == null || !seleccionada.getFecha().isAfter(java.time.LocalDate.now())) {
-            System.out.println("Solo puede cancelar contrataciones futuras.");
+        if (seleccionada.getFecha() == null || seleccionada.getFecha().isBefore(java.time.LocalDate.now())) {
+            System.out.println("Solo puede cancelar contrataciones de hoy o futuras.");
             return;
+        }
+        String estadoSel = seleccionada.getEstado();
+        java.time.LocalDate hoy2 = java.time.LocalDate.now();
+        if (estadoSel != null) {
+            if ("CANCELADO".equalsIgnoreCase(estadoSel) || "RECHAZADO".equalsIgnoreCase(estadoSel)) {
+                System.out.println("La contratacion ya no esta activa (" + estadoSel + ").");
+                return;
+            }
+            if ("ACEPTADO".equalsIgnoreCase(estadoSel)) {
+                if (seleccionada.getFecha().isEqual(hoy2)) {
+                    System.out.println("No puede cancelar una contratacion aceptada para hoy. Contacte al empleado.");
+                    return;
+                } else {
+                    System.out.print("La contratacion fue aceptada con precio. ¿Desea cancelar igualmente? (s/n): ");
+                    String conf = sc.nextLine();
+                    if (conf.isEmpty() || Character.toLowerCase(conf.charAt(0)) != 's') {
+                        System.out.println("Cancelacion abortada.");
+                        return;
+                    }
+                }
+            }
         }
         gestor.cancelarContratacionPorCliente(cliente, seleccionada);
         System.out.println("Contratacion cancelada.");

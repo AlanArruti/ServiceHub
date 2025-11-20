@@ -35,6 +35,27 @@ public class Validaciones {
         return !t.isEmpty() && t.matches("[\\p{L} ]+");
     }
 
+    // Normaliza nombres de oficio para evitar duplicados por acentos/casos/espacios
+    public static String normalizarNombreOficio(String nombre) {
+        if (nombre == null) return null;
+        String t = nombre.trim();
+        if (t.isEmpty()) return "";
+        // Eliminar diacríticos
+        t = Normalizer.normalize(t, Normalizer.Form.NFD);
+        t = t.replaceAll("\\p{M}+", "");
+        // Mantener solo letras y espacios
+        t = t.replaceAll("[^\\p{L} ]", "");
+        // Compactar espacios
+        t = t.replaceAll("\\s+", " ").trim();
+        return t;
+    }
+
+    // Clave canónica en minúsculas para comparar nombres de oficios
+    public static String claveNombreOficio(String nombre) {
+        String n = normalizarNombreOficio(nombre);
+        return n == null ? null : n.toLowerCase();
+    }
+
     public static String normalizarDescripcion(String descripcion) {
         if (descripcion == null) return null;
         String t = descripcion.trim();

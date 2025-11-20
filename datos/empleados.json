@@ -61,5 +61,22 @@
         "nombre": "iara",
         "dni": "47156598",
         "email": "iara@gmail.com"
+    },
+    {
+        "password": "123",
+        "oficios": [{
+            "id": "OFI4",
+            "nombre": "Peluquera"
+        }],
+        "apellido": "kuc",
+        "direccion": {
+            "numero": 123,
+            "ciudad": "mardel",
+            "calle": "tucuman"
+        },
+        "telefono": "2212147258",
+        "nombre": "damian",
+        "dni": "147",
+        "email": "djuc@gmail.com"
     }
 ]
